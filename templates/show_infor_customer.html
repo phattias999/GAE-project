@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>Pluto - Responsive Bootstrap Admin Panel Templates</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- site icon -->
+
+    <script src="https://kit.fontawesome.com/dbf4841881.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/color_2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfect-scrollbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/semantic.min.css') }}">
+
+    <!-- ... và các tệp khác -->
+
+
+</head>
+
+<body class="inner_page widgets">
+    <div class="full_container">
+        <div class="inner_container">
+            <!-- Sidebar  -->
+            <nav id="sidebar">
+                <div class="sidebar_blog_1">
+                    <div class="sidebar-header">
+                        <div class="logo_section">
+                            <a href=""><img class="logo_icon img-responsive"
+                                    src="{{ url_for('static', filename='images/logo/logo_icon.png') }}" alt="#">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sidebar_user_info">
+                        <div class="icon_setting"></div>
+                        <div class="user_profle_side">
+                            <div class="user_img"><img class="img-responsive"
+                                    src="{{ url_for('static', filename='images/layout_img/user.png') }}" alt="#" />
+                            </div>
+                            <div class="user_info">
+                                <h6>Manager</h6>
+                                <p><span class="online_animation"></span> Online</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar_blog_2">
+                    <h4>General</h4>
+                    <ul class="list-unstyled components">
+                        <li><a href="/widgets.html"><i class="fa-solid fa-bed orange_color"></i> <span>List
+                                    Rooms</span></a>
+                        </li>
+                        <li>
+                            <a href="#element" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                                    class="fa fa-diamond purple_color"></i> <span>Room rental voucher</span></a>
+                            <ul class="collapse list-unstyled" id="element">
+                                <li><a href="{{url_for('general_elements')}}"> <span>> Extend the rental date</span></a>
+                                </li>
+                                <li><a href="{{url_for('media_gallery')}}">> <span>Room Status</span></a></li>
+                                <li><a href="{{url_for('icons')}}">> <span>Destroy the rental room</span></a></li>
+                                <li><a href="{{url_for('invoice')}}">> <span>Change the rental date </span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{{url_for('tables')}}"><i class="fa-solid fa-person purple_color2"></i> <span>List
+                                    Customers</span></a>
+                        </li>
+                        <li><a href="{{url_for('price')}}"><i
+                                    class="fa-solid fa-person-military-pointing blue1_color"></i>
+                                <span>List
+                                    Employee</span></a></li>
+                        <li>
+                            <a href="{{url_for('contact')}}">
+                                <i class="fa fa-paper-plane red_color"></i> <span>Room rental voucher</span></a>
+                        </li>
+                        <li><a href="{{url_for('map')}}"><i class="fa-solid fa-wallet purple_color2"></i> <span>Room
+                                    Bill</span></a>
+                        </li>
+                        <li><a href="{{url_for('charts')}}"><i class="fa-solid fa-money-bill green_color"></i>
+                                <span>Restaurant
+                                    Bill</span></a></li>
+                        <li><a href="{{url_for('settings')}}"><i class="fa fa-cog yellow_color"></i>
+                                <span>Settings</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end sidebar -->
+            <!-- right content -->
+            <div id="content">
+                <!-- topbar -->
+                <div class="topbar">
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <div class="full">
+                            <button type="button" id="sidebarCollapse" class="sidebar_toggle"><i
+                                    class="fa fa-bars"></i></button>
+                            <div class="logo_section">
+                                <a href="index.html"><img class="img-responsive"
+                                        src="{{ url_for('static', filename='images/logo/logo_icon.png') }}"
+                                        alt="#" /></a>
+                            </div>
+                            <div class="right_topbar">
+                                <div class="icon_info">
+                                    <ul class="user_profile_dd">
+                                        <li>
+                                            <a class="dropdown-toggle" data-toggle="dropdown"><img
+                                                    class="img-responsive rounded-circle"
+                                                    src="{{ url_for('static', filename='images/layout_img/user.png') }}"
+                                                    alt="#" /><span class="name_user">Manager</span></a>
+                                            <div class="dropdown-menu">
+                                                <!-- <a class="dropdown-item" href="profile.html">My Profile</a> -->
+                                                <a class="dropdown-item" href="settings.html">Settings</a>
+                                                <!-- <a class="dropdown-item" href="help.html">Help</a> -->
+                                                <a class="dropdown-item" href="{{url_for('logout')}}"><span>Log
+                                                        Out</span> <i class="fa fa-sign-out"></i></a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <!-- end topbar -->
+                <!-- dashboard inner -->
+                <div class="midde_cont">
+                    <div class="container-fluid">
+                        <div class="row column_title">
+                            <div class="col-md-12">
+                                <div class="page_title">
+                                    <h2>List rooms</small></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- row -->
+                        <div class="row">
+                            <!-- invoice section -->
+                            <div class="col-md-12">
+                                <div class="white_shd full margin_bottom_30">
+                                    <div class="full padding_infor_info">
+                                        <div class="table_row">
+                                            <div class="table-responsive">
+                                                <form action="" class="table table-striped">
+                                                    <div class="form-group">
+                                                        <label for="MAKH">Mã khách hàng</label>
+                                                        <input type="text" class="form-control" id="MAKH"
+                                                            name="MAKH" required readonly value="{{data_infor_customter[0]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="HoTen_KH">Họ Tên khách hàng</label>
+                                                        <input type="text" class="form-control" id="HoTen_KH"
+                                                            name="HoTen_KH" required readonly value="{{data_infor_customter[1]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="NgaySinh_KH">Ngày sinh khách hàng</label>
+                                                        <input type="text" class="form-control" id="NgaySinh_KH"
+                                                            name="NgaySinh_KH" required readonly value="{{data_infor_customter[2]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="SDT_KH">Số điện thoại khách hàng</label>
+                                                        <input type="text" class="form-control" id="SDT_KH"
+                                                            name="SDT_KH" required readonly value="{{data_infor_customter[3]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Email_KH">Email khách hàng</label>
+                                                        <input type="text" class="form-control" id="Email_KH"
+                                                            name="Email_KH" required readonly value="{{data_infor_customter[4]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="DiaChi_KH">Địa chỉ khách hàng</label>
+                                                        <input type="text" class="form-control" id="DiaChi_KH"
+                                                            name="DiaChi_KH" required readonly value="{{data_infor_customter[5]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="CMND_Passport_KH">CMND/Passport khách hàng</label>
+                                                        <input type="text" class="form-control" id="CMND_Passport_KH"
+                                                            name="CMND_Passport_KH" required readonly value="{{data_infor_customter[6]}}">
+                                                    </div>
+                                    
+                                                    <div class="form-group">
+                                                        <label for="QuocTich_KH">Quốc tịch khách hàng</label>
+                                                        <input type="text" class="form-control" id="QuocTich_KH"
+                                                            name="QuocTich_KH" required readonly value="{{data_infor_customter[7]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="GioiTinh_KH">Giới tính khách hàng</label>
+                                                        
+                                                        <input type="text" class="form-control" id="GioiTinh_KH"
+                                                            name="GioiTinh_KH" required readonly value="{{data_infor_customter[8]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="TenTaiKhoan_KH">Tên tài khoản khách hàng</label>
+                                                        <input type="text" class="form-control" id="TenTaiKhoan_KH"
+                                                            name="TenTaiKhoan_KH" required readonly value="{{data_infor_customter[9]}}">
+                                                    </div> 
+                                                    <div class="form-group">
+                                                        <label for="MatKhau_KH">Mật khẩu khách hàng</label>
+                                                        <input type="text" class="form-control" id="MatKhau_KH"
+                                                            name="MatKhau_KH" required readonly value="{{data_infor_customter[10]}}">
+                                                    </div>      
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <a href="" class="btn btn-warning btn-block">Back</a>
+                                                        </div>
+                                                        <div class="col-md-4">                                                      
+                                                            <a href="" onclick="" class="btn btn-primary btn-block">Delete Room</a>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="footer">
+                            <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animate.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-select.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/owl.carousel.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Chart.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/analyser.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</body>
+
+</html>
