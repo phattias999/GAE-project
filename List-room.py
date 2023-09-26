@@ -128,7 +128,6 @@ def add_infor_room():
         return render_template("add_infor_room.html", message=message)
     return redirect("login")
 
-
 # Điều hướng đến trang xem chi tiết phòng
 @app.route("/show_infor_room/<item_id>", methods=["GET"])
 def show_infor_room(item_id):
