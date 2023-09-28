@@ -154,90 +154,62 @@
                                             <div class="table-responsive">
                                                 <form action="" class="table table-striped">
                                                     <div class="form-group">
-                                                        <label for="MAKH">Mã khách hàng</label>
-                                                        <input type="text" class="form-control" id="MAKH" name="MAKH"
-                                                            required readonly value="{{data_edit_customter[0]}}">
+                                                        <label for="MANV">MÃ NHÂN VIÊN</label>
+                                                        <input type="text" class="form-control" id="MACVNV"
+                                                            name="MACVNV" required readonly ">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="HoTen_KH">Họ Tên khách hàng</label>
-                                                        <input type="text" class="form-control" id="HoTen_KH"
-                                                            name="HoTen_KH" required value="{{data_edit_customter[1]}}">
+                                                        <label for="HoTen_NV">HỌ TÊN NHÂN VIÊN</label>
+                                                        <input type="text" class="form-control" id="HoTen_NV"
+                                                            name="HoTen_NV" required readonly ">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="NgaySinh_KH">Ngày sinh khách hàng</label>
-                                                        <input type="date" class="form-control" id="NgaySinh_KH"
-                                                            name="NgaySinh_KH" required
-                                                            value="{{data_edit_customter[2]}}">
+                                                        <label for="NgaySinh_NV">NGÀY SINH NHÂN VIÊN</label>
+                                                        <input type="text" class="form-control" id="NgaySinh_NV"
+                                                            name="NgaySinh_NV" required readonly ">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="SDT_KH">Số điện thoại khách hàng</label>
-                                                        <input type="text" class="form-control" id="SDT_KH"
-                                                            name="SDT_KH" required value="{{data_edit_customter[3]}}">
+                                                        <label for="ChucVu_NV">CHỨC VỤ NHÂN VIÊN</label>
+                                                        <input type="text" class="form-control" id="ChucVu_NV"
+                                                            name="ChucVu_NV" required readonly ">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="Email_KH">Email khách hàng</label>
-                                                        <input type="text" class="form-control" id="Email_KH"
-                                                            name="Email_KH" required value="{{data_edit_customter[4]}}">
+                                                        <label for="SDT_NV">SỐ ĐIỆN THOẠI</label>
+                                                        <input type="text" class="form-control" id="SDT_NV"
+                                                            name="SDT_NV" required readonly ">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="DiaChi_KH">Địa chỉ khách hàng</label>
-                                                        <textarea name="DiaChi_KH" id="DiaChi_KH" rows="4"
-                                                            class="form-control">{{data_edit_customter[5]}}</textarea>
-
+                                                        <label for="Email_NV">EMAIL NHÂN VIÊN</label>
+                                                        <input type="text" class="form-control" id="Email_NV"
+                                                            name="Email_NV" required readonly ">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="CMND_Passport_KH">CMND/Passport khách hàng</label>
-                                                        <input type="text" class="form-control" id="CMND_Passport_KH"
-                                                            name="CMND_Passport_KH" required
-                                                            value="{{data_edit_customter[6]}}">
+                                                        <label for="DiaChi_NV">ĐỊA CHỈ NHÂN VIÊN</label>
+                                                        <input type="text" class="form-control" id="DiaChi_NV"
+                                                            name="DiaChi_NV" required readonly ">
                                                     </div>
-
-                                                    <!-- <div class="form-group">
-                                                        <label for="QuocTich_KH">Quốc tịch khách hàng</label>
-                                                        <input type="text" class="form-control" id="QuocTich_KH"
-                                                            name="QuocTich_KH" required
-                                                            value="{{data_edit_customter[7]}}">                                                          
-                                                    </div> -->
                                                     <div class="form-group">
-                                                        <label for="QuocTich_KH">Quốc tịch khách hàng</label>
-                                                        <select class="form-control" id="QuocTich_KH" name="QuocTich_KH"
+                                                        <label for="GioiTinh_NV">GIỚI TÍNH NHÂN VIÊN</label>
+                                                        <select class="form-control" id="GioiTinh_NV" name="GioiTinh_NV"
                                                             required>
-                                                            {%for countries in data_country%}
-                                                                {%if data_edit_customter[7]==countries.alpha_2 %}
-                                                                    <option value="{{ countries.alpha_2 }}">{{countries.name}}</option>                                   
-                                                                {% endif %}
-                                                            {% endfor %}
+                                                            <option value="Nam">Nam</option>
+                                                            <option value="Nữ">Nữ</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="GioiTinh_KH">Giới tính khách hàng</label>
-                                                        <select class="form-control" id="GioiTinh_KH"" name="
-                                                            GioiTinh_KH" required>
-                                                            <option value="Nam" {% if data_edit_customter[8]=='Nam'
-                                                                %}selected{% endif %}>Nam</option>
-                                                            <option value="Nữ" {% if data_edit_customter[8] !='Nam'
-                                                                %}selected{% endif %}>Nữ</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="TenTaiKhoan_KH">Tên tài khoản khách hàng</label>
-                                                        <input type="text" class="form-control" id="TenTaiKhoan_KH"
-                                                            name="TenTaiKhoan_KH" required readonly
-                                                            value="{{data_edit_customter[9]}}">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="MatKhau_KH">Mật khẩu khách hàng</label>
-                                                        <input type="text" class="form-control" id="MatKhau_KH"
-                                                            name="MatKhau_KH" required
-                                                            value="{{data_edit_customter[10]}}">
-                                                    </div>
+                                                        <label for="NgayBatDauLamViec">NGÀY BẮT ĐẦU LÀM VIỆC</label>
+                                                        <input type="date" class="form-control" id="NgayBatDauLamViec"
+                                                            name="NgayBatDauLamViec" required readonly ">
+                                                    </div>                                                                 
                                                     <div class="row">
-                                                        
                                                         <div class="col-md-4">
-                                                            <a href="" onclick="history.back()"class="btn btn-warning btn-block">Back</a>
+                                                            <a href="" class="btn btn-danger btn-block">Add Room</a>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <button type="submit" class="btn btn-primary btn-block">Update Customer</button>                 
+                                                            <a href="" class="btn btn-warning btn-block">Edit Room</a>
+                                                        </div>
+                                                        <div class="col-md-4">                                                      
+                                                            <a href="" onclick="" class="btn btn-primary btn-block">Delete Room</a>
                                                         </div>
                                                     </div>
                                                 </form>

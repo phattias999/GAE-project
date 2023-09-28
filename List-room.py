@@ -761,8 +761,8 @@ def edit_infor_customer(item_id):
                         data_country=countries,
                     )
                 else:
-                    sql_insert_customer = ""
-                    val_insert_customer = (
+                    sql_update_customer = "UPDATE khachhang SET HoTen_KH=%s, NgaySinh_khachhang=%s, SDT_KH=%s,Email_KH=%s,DiaChi_KH=%s,CMND_Passport_KH=%s,QuocTich_KH=%s,GioiTinh_KH=%s,TenTaiKhoan_KH=%s"
+                    val_update_customer = (
                         HoTen_KH,
                         NgaySinh_khachhang,
                         SDT_KH,
@@ -772,10 +772,9 @@ def edit_infor_customer(item_id):
                         QuocTich_KH,
                         GioiTinh_KH,
                         Email_KH,
-                        SDT_KH,
                     )
                     try:  # kiểm tra có lưu thành công chưa
-                        mycursor.execute(sql_insert_customer, val_insert_customer)
+                        mycursor.execute(sql_update_customer, val_update_customer)
                         mydb.commit()
                         message = "Thêm thành công"
                     except Exception as ex:
@@ -788,7 +787,6 @@ def edit_infor_customer(item_id):
             else:
                 message = "Đã tồn tại, vui lòng kiểm tra lại"
 
-           
         return render_template(
             "edit_infor_customer.html",
             message=message,
@@ -799,6 +797,23 @@ def edit_infor_customer(item_id):
     else:
         return redirect("login")
 
+# xóa thông tin trang khách hàng
+@app.route("/delete_infor_customer/<item_id>")
+def delete_infor_customer(item_id):
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql = "DELETE FROM khachhang WHERE MAKH  = %s"
+        val = (item_id,)  # Đảm bảo val là một tuple chứa giá trị item_id
+        mycursor.execute(sql, val)
+        mydb.commit()
+        # Sau khi xóa phòng, bạn có thể chuyển hướng người dùng đến trang khách hàng hoặc bất kỳ trang nào bạn muốn.
+        return redirect("tables")
+    else:
+        return redirect("login")
+    
 
 # Điều hướng đến trang nhân viên
 @app.route("/price.html")
@@ -814,7 +829,18 @@ def price():
         return render_template("price.html", data=result)
     else:
         return redirect("login")
-
+# Điều hướng trang đến trang xem chi tiết nhân viên
+@app.route("/show_infor_employee/<item_id>", methods=["POST", "GET"])
+def show_infor_employee(item_id):
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+       
+        return render_template("show_infor_employee.html", item_id=item_id)
+    else:
+        return redirect("login")
 
 # Điều hướng đến trang voucher
 @app.route("/contact.html")

@@ -189,7 +189,7 @@
                                              <td><a href="/show_infor_customer/{{khachhang[0]}}"><i
                                                       class="fa-solid fa-eye"></i></a></td>
                                              <td><a href="/edit_infor_customer/{{khachhang[0]}}"><i class="fa-solid fa-wrench"></i></a></td>
-                                             <td><i class="fa-solid fa-delete-left"></i></td>
+                                             <td><a href="" onclick="delete_infor_customer('{{khachhang[0]}}')"><i class="fa-solid fa-delete-left"></i></a></td>
                                           </tr>
                                           {%endfor%}
                                        </tbody>
@@ -211,7 +211,28 @@
          </div>
       </div>
    </div>
-
+   <script>
+      function delete_infor_customer(item_id) {
+         if (confirm("Bạn có chắc muốn xóa không?.")) {
+            // Nếu người dùng đồng ý xóa
+            fetch(`/delete_infor_customer/${item_id}`, {
+               method: "GET",
+            })
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     // Phòng đã được xóa thành công, chuyển hướng người dùng đến trang khác
+                     alert("Phòng đã được xóa thành công!");
+                  } else {
+                     alert("Không thể xóa phòng. Hãy thử lại sau.");
+                  }
+               })
+               .catch(error => {
+                  console.error("Lỗi khi xóa phòng:", error);
+               });
+         }
+      }
+   </script>
    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

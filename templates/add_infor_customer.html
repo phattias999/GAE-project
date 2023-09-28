@@ -230,26 +230,6 @@
             </div>
         </div>
     </div>
-    <script>
-        function searchCountry() {
-            // Lấy giá trị từ ô tìm kiếm
-            var input, filter, select, option, i, txtValue;
-            input = document.getElementById("searchInput");
-            filter = input.value.toUpperCase();
-            select = document.getElementById("QuocTich_KH");
-            option = select.getElementsByTagName("option");
-
-            // Lặp qua tất cả các tùy chọn và ẩn hoặc hiển thị chúng dựa trên giá trị tìm kiếm
-            for (i = 0; i < option.length; i++) {
-                txtValue = option[i].textContent || option[i].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    option[i].style.display = "";
-                } else {
-                    option[i].style.display = "none";
-                }
-            }
-        }
-    </script>
     <style>
         /* Định nghĩa lớp cho hộp thoại alert */
         .centered-alert {
