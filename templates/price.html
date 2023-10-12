@@ -26,6 +26,12 @@
 </head>
 
 <body class="inner_page price_table">
+   <style>
+      .listroom {
+         display: flex;
+         justify-content: space-between;
+      }
+   </style>
    <div class="full_container">
       <div class="inner_container">
          <!-- Sidebar  -->
@@ -127,8 +133,13 @@
                <div class="container-fluid">
                   <div class="row column_title">
                      <div class="col-md-12">
-                        <div class="page_title">
-                           <h2>List Employee</small></h2>
+                        <div class="page_title listroom">
+                           <div>
+                              <h2>List Employees</small></h2>
+                           </div>
+                           <div>
+                              <a href="{{url_for('add_infor_employees')}}" class="btn btn-danger btn-block">Add Employees</a>
+                           </div>
                         </div>
                      </div>
                   </div>
