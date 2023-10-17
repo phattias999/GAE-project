@@ -25,7 +25,13 @@
    <link rel="stylesheet" href="{{ url_for('static', filename='css/semantic.min.css') }}">
 </head>
 
-<body class="inner_page contact_page">
+<body class="inner_page price_table">
+   <style>
+      .listroom {
+         display: flex;
+         justify-content: space-between;
+      }
+   </style>
    <div class="full_container">
       <div class="inner_container">
          <!-- Sidebar  -->
@@ -127,8 +133,14 @@
                <div class="container-fluid">
                   <div class="row column_title">
                      <div class="col-md-12">
-                        <div class="page_title">
-                           <h2>Change the retal date</small></h2>
+                        <div class="page_title listroom">
+                           <div>
+                              <h2>Room retal voucher</small></h2>
+                           </div>
+                           <div>
+                              <a href="{{url_for('add_infor_roomretalvoucher')}}" class="btn btn-danger btn-block">Add
+                                 Room retal voucher</a>
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -158,23 +170,23 @@
                                           </tr>
                                        </thead>
                                        <tbody>
+                                          {% for phieuthuephong in data%}
                                           <tr>
-                                             <td>1</td>
-                                             <td>Product One</td>
-                                             <td>005-475-321</td>
-                                             <td>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-                                                dolore eu fugiat nulla pariatur.</td>
-                                             <td>005-475-321</td>
-                                             <td>Product One</td>
-                                             <td>005-475-321</td>
-                                             <td>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-                                                dolore eu fugiat nulla pariatur.</td>
-                                             <td>005-475-321</td>
-                                             <td><i class="fa-solid fa-eye"></i>
+                                             <td>{{phieuthuephong[1]}}</td>
+                                             <td>{{phieuthuephong[2]}}</td>
+                                             <td>{{phieuthuephong[3]}}</td>
+                                             <td>{{phieuthuephong[4]}}</td>
+                                             <td>{{phieuthuephong[5]}}</td>
+                                             <td>{{phieuthuephong[6]}}</td>
+                                             <td>{{phieuthuephong[7]}}</td>
+                                             <td>{{phieuthuephong[8]}}</td>
+                                             <td>{{phieuthuephong[11]}}</td>
+                                             <td><a href="show_infor_bill/{{phieuthuephong[0]}}"><i class="fa-solid fa-eye"></i></a></i>
                                              </td>
-                                             <td><i class="fa-solid fa-check"></i></td>
-                                             <td><i class="fa-solid fa-delete-left"></i></td>
+                                             <td><a href=""><i class="fa-solid fa-check"></i></a></td>
+                                             <td><a href=""><i class="fa-solid fa-delete-left"></i></a></i></td>
                                           </tr>
+                                          {% endfor %}
                                        </tbody>
                                     </table>
                                  </div>
@@ -190,9 +202,32 @@
                   </div>
                </div>
             </div>
+            <!-- end model popup -->
          </div>
       </div>
    </div>
+   <script>
+      function delete_infor_employees(item_id) {
+         if (confirm("Bạn có chắc muốn xóa không?.")) {
+            // Nếu người dùng đồng ý xóa
+            fetch(`/delete_infor_employees/${item_id}`, {
+               method: "GET",
+            })
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     // Phòng đã được xóa thành công, chuyển hướng người dùng đến trang khác
+                     alert("Phòng đã được xóa thành công!");
+                  } else {
+                     alert("Không thể xóa phòng. Hãy thử lại sau.");
+                  }
+               })
+               .catch(error => {
+                  console.error("Lỗi khi xóa phòng:", error);
+               });
+         }
+      }
+   </script>
    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

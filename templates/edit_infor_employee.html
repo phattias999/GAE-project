@@ -140,7 +140,7 @@
                         <div class="row column_title">
                             <div class="col-md-12">
                                 <div class="page_title">
-                                    <h2>Employees</small></h2>
+                                    <h2>Edit information emloyees</small></h2>
                                 </div>
                             </div>
                         </div>
@@ -152,71 +152,93 @@
                                     <div class="full padding_infor_info">
                                         <div class="table_row">
                                             <div class="table-responsive">
-                                                <form action="" class="table table-striped" method="post"
-                                                    enctype="multipart/form-data">
-                                                    <!-- <div class="form-group">
-                                                        <label for="MACVNV">MÃ CÔNG VIỆC</label>
+                                                <form action="" class="table table-striped"
+                                                   method="post">
+                                                    <div class="form-group">
+                                                        <label for="MACVNV">MÃ Chức vụ</label>
                                                         <input type="text" class="form-control" id="MACVNV"
-                                                            name="MACVNV" required>
-                                                    </div> -->
+                                                            name="MACVNV" required
+                                                            value="{{result_Get_infor_employee[1]}}">
+                                                    </div>
                                                     <div class="form-group">
                                                         <label for="HoTen_NV">Họ Tên nhân viên</label>
                                                         <input type="text" class="form-control" id="HoTen_NV"
-                                                            name="HoTen_NV" required>
+                                                            name="HoTen_NV" required
+                                                            value="{{result_Get_infor_employee[2]}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="NgaySinh_NV">Ngày sinh nhân viên</label>
                                                         <input type="date" class="form-control" id="NgaySinh_NV"
-                                                            name="NgaySinh_NV" required>
+                                                            name="NgaySinh_NV" required
+                                                            value="{{result_Get_infor_employee[3]}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="ChucVu_NV">Chức Vụ Nhân Viên</label>
                                                         <select class="form-control" id="ChucVu_NV" name="ChucVu_NV"
                                                             required>
-                                                            <option value="Giám Đốc">Giám Đốc</option>
-                                                            <option value="Quản lý">Quản lý</option>
-                                                            <option value="Lễ Tân">Lễ Tân</option>
-                                                            <option value="Phục Vụ Phòng">Phục Vụ Phòng</option>
-                                                            <option value="Phục vụ bàn">Phục vụ bàn</option>      
-                                                            <option value="Thu Ngân">Thu Ngân</option>                                      
+                                                            <option value="Giám Đốc" {% if
+                                                                result_Get_infor_employee[4]=='Giám Đốc' %} selected {%
+                                                                endif %}>Giám Đốc</option>
+                                                            <option value="Quản lý" {% if
+                                                                result_Get_infor_employee[4]=='Quản Lý' %} selected {%
+                                                                endif %}>Quản lý</option>
+                                                            <option value="Lễ Tân" {% if
+                                                                result_Get_infor_employee[4]=='Lễ Tân' %} selected {%
+                                                                endif %}>Lễ Tân</option>
+                                                            <option value="Phục Vụ Phòng" {% if
+                                                                result_Get_infor_employee[4]=='Phục Vụ Phòng' %}
+                                                                selected {% endif %}>Phục Vụ Phòng</option>
+                                                            <option value="Phục vụ bàn" {% if
+                                                                result_Get_infor_employee[4]=='Phục Vụ Bàn' %} selected
+                                                                {% endif %}>Phục vụ bàn</option>
+                                                            <option value="Thu Ngân" {% if
+                                                                result_Get_infor_employee[4]=='Thu Ngân' %} selected {%
+                                                                endif %}>Thu Ngân</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="SDT_NV">Số điện thoại nhân viên</label>
                                                         <input type="text" class="form-control" id="SDT_KH"
-                                                            name="SDT_NV" required>
+                                                            name="SDT_NV" required
+                                                            value="{{result_Get_infor_employee[5]}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="Email_NV">Email nhân viên</label>
                                                         <input type="text" class="form-control" id="Email_NV"
-                                                            name="Email_NV" required>
+                                                            name="Email_NV" required
+                                                            value="{{result_Get_infor_employee[6]}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="DiaChi_NV">Địa chỉ nhân viên</label>
-                                                        <textarea name="DiaChi_NV" id="DiaChi_NV"rows="4" required class="form-control"></textarea>
-                                                    
+                                                        <textarea name="DiaChi_NV" id="DiaChi_NV" rows="4" required
+                                                            class="form-control">{{result_Get_infor_employee[7]}}</textarea>
                                                     </div>
-                                                 
                                                     <div class="form-group">
                                                         <label for="GioiTinh_NV">Giới tính Nhân viên</label>
-                                                        <select class="form-control" id="GioiTinh_NV" name="GioiTinh_NV" 
+                                                        <select class="form-control" id="GioiTinh_NV" name="GioiTinh_NV"
                                                             required>
-                                                            <option value="Nam">Nam</option>
-                                                            <option value="Nữ">Nữ</option>
+                                                            <option value="Nam" {% if
+                                                                result_Get_infor_employee[8]=='Nam' %} selected {% endif
+                                                                %}>Nam</option>
+                                                            <option value="Nữ" {% if result_Get_infor_employee[8]=='Nữ'
+                                                                %} selected {% endif %}>Nữ</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="NgayBatDauLamViec">Ngày bắt đầu làm việc</label>
-                                                        <input type="date" name="NgayBatDauLamViec" class="form-control">
+                                                        <input type="date" name="NgayBatDauLamViec" class="form-control"
+                                                            value="{{result_Get_infor_employee[9]}}">
                                                     </div>
-                                                    <div class=" row">
+                                                    <div class="row">
+
                                                         <div class="col-md-4">
-                                                            <button type="" onclick="history.back()" 
-                                                                class="btn btn-danger btn-block">Back</button>
+                                                            <a href="" onclick="history.back()"
+                                                                class="btn btn-warning btn-block">Back</a>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <button type="submit" class="btn btn-warning btn-block">Add
-                                                                Customer</button>
+                                                            <button type="submit"
+                                                                class="btn btn-primary btn-block">Update
+                                                                Employees</button>
                                                         </div>
                                                     </div>
                                                 </form>

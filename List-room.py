@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, session, url_for
+from flask import Flask, jsonify, request, render_template, redirect, session, url_for
 from google.cloud import storage
 import mysql.connector
 import datetime as dt
@@ -797,6 +797,7 @@ def edit_infor_customer(item_id):
     else:
         return redirect("login")
 
+
 # xóa thông tin trang khách hàng
 @app.route("/delete_infor_customer/<item_id>")
 def delete_infor_customer(item_id):
@@ -813,7 +814,7 @@ def delete_infor_customer(item_id):
         return redirect("tables")
     else:
         return redirect("login")
-    
+
 
 # Điều hướng đến trang nhân viên
 @app.route("/price.html")
@@ -829,7 +830,8 @@ def price():
         return render_template("price.html", data=result)
     else:
         return redirect("login")
-    
+
+
 # Điều hướng trang đến trang xem chi tiết nhân viên
 @app.route("/show_infor_employee/<item_id>", methods=["POST", "GET"])
 def show_infor_employee(item_id):
@@ -838,85 +840,126 @@ def show_infor_employee(item_id):
             host="localhost", user="root", password="", database="cnpm"
         )
         mycursor = mydb.cursor()
-        sql_show_infor_employee="SELECT * FROM nhanvien WHERE MANV=%s"
-        val_show_infor_employee=(item_id,)
-        mycursor.execute(sql_show_infor_employee,val_show_infor_employee)
-        result_show_infor_employee=mycursor.fetchone()
-        return render_template("show_infor_employee.html", item_id=item_id ,data_show_infor_employee=result_show_infor_employee)
+        sql_show_infor_employee = "SELECT * FROM nhanvien WHERE MANV=%s"
+        val_show_infor_employee = (item_id,)
+        mycursor.execute(sql_show_infor_employee, val_show_infor_employee)
+        result_show_infor_employee = mycursor.fetchone()
+        return render_template(
+            "show_infor_employee.html",
+            item_id=item_id,
+            data_show_infor_employee=result_show_infor_employee,
+        )
     else:
         return redirect("login")
+
+
 # Điều hướng đến trang thêm nhân viên
 @app.route("/add_infor_employees.html", methods=["POST", "GET"])
 def add_infor_employees():
-    message=""
+    message = ""
     if "email" in session:
         mydb = mysql.connector.connect(
             host="localhost", user="root", password="", database="cnpm"
         )
         mycursor = mydb.cursor()
-        if request.method=="POST":
-            #lấy dữ liệu từ trang add-infor_employee
-            HoTen_NV=request.form["HoTen_NV"]
-            NgaySinh_NV=request.form["NgaySinh_NV"]
-            NgaySinh_nhanvien=dt.datetime.strptime(NgaySinh_NV,"%Y-%m-%d")   #chuyền đổi ngày sinh nhân viên thành năm-tháng-ngày
-            namsinh_nhanvien=NgaySinh_nhanvien.year
-            chuoi_ngay_hien_tai = dt.datetime.now().strftime("%Y-%m-%d")  # Lấy ngày tháng hiện tại dưới dạng chuỗi "yyyy-mm-dd"
-            Ngay_hien_tai = dt.datetime.strptime(chuoi_ngay_hien_tai, "%Y-%m-%d")   # Chuyển đổi chuỗi ngày tháng thành đối tượng datetime
+        if request.method == "POST":
+            # lấy dữ liệu từ trang add-infor_employee
+            HoTen_NV = request.form["HoTen_NV"]
+            NgaySinh_NV = request.form["NgaySinh_NV"]
+            NgaySinh_nhanvien = dt.datetime.strptime(
+                NgaySinh_NV, "%Y-%m-%d"
+            )  # chuyền đổi ngày sinh nhân viên thành năm-tháng-ngày
+            namsinh_nhanvien = NgaySinh_nhanvien.year
+            chuoi_ngay_hien_tai = dt.datetime.now().strftime(
+                "%Y-%m-%d"
+            )  # Lấy ngày tháng hiện tại dưới dạng chuỗi "yyyy-mm-dd"
+            Ngay_hien_tai = dt.datetime.strptime(
+                chuoi_ngay_hien_tai, "%Y-%m-%d"
+            )  # Chuyển đổi chuỗi ngày tháng thành đối tượng datetime
             Nam_hien_tai = Ngay_hien_tai.year  # Lấy năm hiện tại từ đối tượng datetime
-            ChucVu_NV=request.form["ChucVu_NV"]
-            SDT_NV=request.form["SDT_NV"]
-            Email_NV=request.form["Email_NV"]
+            ChucVu_NV = request.form["ChucVu_NV"]
+            SDT_NV = request.form["SDT_NV"]
+            Email_NV = request.form["Email_NV"]
             regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"  # ký tự đặc biệt của email
-            DiaChi_NV=request.form["DiaChi_NV"]
-            GioiTinh_NV=request.form["GioiTinh_NV"]
-            NgayBatDauLamViec=request.form["NgayBatDauLamViec"]
-            NBĐLV=dt.datetime.strptime(NgayBatDauLamViec,"%Y-%m-%d")
-            #kiểm tra có trùng dữ liệu
-            sql_check_infor_employees="SELECT SDT_NV,Email_NV FROM nhanvien WHERE SDT_NV=%s AND Email_NV=%s"
-            val_check_infor_empoyees=(SDT_NV, Email_NV)
-            check_exits=mycursor.execute(sql_check_infor_employees,val_check_infor_empoyees)
+            DiaChi_NV = request.form["DiaChi_NV"]
+            GioiTinh_NV = request.form["GioiTinh_NV"]
+            NgayBatDauLamViec = request.form["NgayBatDauLamViec"]
+            NBĐLV = dt.datetime.strptime(NgayBatDauLamViec, "%Y-%m-%d")
+            # kiểm tra có trùng dữ liệu
+            sql_check_infor_employees = (
+                "SELECT SDT_NV,Email_NV FROM nhanvien WHERE SDT_NV=%s AND Email_NV=%s"
+            )
+            val_check_infor_empoyees = (SDT_NV, Email_NV)
+            check_exits = mycursor.execute(
+                sql_check_infor_employees, val_check_infor_empoyees
+            )
             mycursor.reset()
             if check_exits:
-                message="Thông tin đã tồn tại vui lòng kiếm tra lại" #thông báo thông tin đã tồn tại
+                message = "Thông tin đã tồn tại vui lòng kiếm tra lại"  # thông báo thông tin đã tồn tại
             else:
-                if len(HoTen_NV)<6: 
-                    message="Tên phải lớn hơn 6 ký tự"
-                    return render_template("add_infor_employees.html",message=message) #trả về thông kết quả
-                elif  NgaySinh_nhanvien >  Ngay_hien_tai or Nam_hien_tai-namsinh_nhanvien<18:
-                    #thông báo kiếm tra ngày tháng năm sinh 
-                    message="Nhân viên phải trên 18 tuổi và ngày tháng năm sinh không được lớn hơn ngày tháng năm hiện tại" 
-                    return render_template("add_infor_employees.html",message=message) #trả về kết quả
-                elif len(SDT_NV)!=10 or not SDT_NV.isdigit() or int(SDT_NV[0])!=0: # kiếm tra số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0
-                    message="số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0" 
-                    return render_template("add_infor_employees.html",message=message) #trả về kết quả
-                elif re.fullmatch(Email_NV, regex): #kiêm tra email có hợp lệ 
-                    message="Địa chỉ email không hợp lệ" 
-                    return render_template("add_infor_employees.html",message=message) #trả về kết quả
-                elif len(ChucVu_NV)==0: # kiểm tra chức vụ có rỗng không
-                    message="chức vụ không được đẻ rỗng " # thông báo 
-                    return render_template("add_infor_employees.html",message=message) #trả về kết quả
-                elif len(DiaChi_NV) < 10: # kiêm tra xem địa chỉ có 10 ký tự. 
-                    message="Địa chỉ phải hơn 10 ký tự" # thông báo 
-                    return render_template("add_infor_employees.html",message=message) #trả về kết quả
-                elif len(GioiTinh_NV)==0: # kiêm tra giói tính nhân viên có rỗng.
-                    message="Địa chỉ phải hơn 10 ký tự" # thông báo
-                    return render_template("add_infor_employees.html",message=message) #trả về kết quả
-                elif NBĐLV<Ngay_hien_tai: # kiểm tra ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại
-                    message="ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại" # thông báo
-                    return render_template("add_infor_employees.html",message=message) #trả về kết quả
-                else: #thỏa mãn mọi điều kiện thực hiện câu lệnh insert dữ liệu vào database
+                if len(HoTen_NV) < 6:
+                    message = "Tên phải lớn hơn 6 ký tự"
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về thông kết quả
+                elif (
+                    NgaySinh_nhanvien > Ngay_hien_tai
+                    or Nam_hien_tai - namsinh_nhanvien < 18
+                ):
+                    # thông báo kiếm tra ngày tháng năm sinh
+                    message = "Nhân viên phải trên 18 tuổi và ngày tháng năm sinh không được lớn hơn ngày tháng năm hiện tại"
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về kết quả
+                elif (
+                    len(SDT_NV) != 10 or not SDT_NV.isdigit() or int(SDT_NV[0]) != 0
+                ):  # kiếm tra số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0
+                    message = "số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0"
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về kết quả
+                elif re.fullmatch(Email_NV, regex):  # kiêm tra email có hợp lệ
+                    message = "Địa chỉ email không hợp lệ"
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về kết quả
+                elif len(ChucVu_NV) == 0:  # kiểm tra chức vụ có rỗng không
+                    message = "chức vụ không được đẻ rỗng "  # thông báo
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về kết quả
+                elif len(DiaChi_NV) < 10:  # kiêm tra xem địa chỉ có 10 ký tự.
+                    message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về kết quả
+                elif len(GioiTinh_NV) == 0:  # kiêm tra giói tính nhân viên có rỗng.
+                    message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về kết quả
+                elif (
+                    NBĐLV < Ngay_hien_tai
+                ):  # kiểm tra ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại
+                    message = "ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại"  # thông báo
+                    return render_template(
+                        "add_infor_employees.html", message=message
+                    )  # trả về kết quả
+                else:  # thỏa mãn mọi điều kiện thực hiện câu lệnh insert dữ liệu vào database
                     ma = None  # Đặt giá trị mặc định cho biến 'ma'
-                        # Kiểm tra và thiết lập giá trị mã 'ma' dựa trên 'ChucVu_NV'
-                    if ChucVu_NV == "GĐ":
+                    # Kiểm tra và thiết lập giá trị mã 'ma' dựa trên 'ChucVu_NV'
+                    if ChucVu_NV == "Giám Đốc":
                         ma = "GĐ"
-                    elif ChucVu_NV == "QL":
+                    elif ChucVu_NV == "Quản lý":
                         ma = "QL"
-                    elif ChucVu_NV == "LT":
+                    elif ChucVu_NV == "Lễ Tân":
                         ma = "LT"
-                    elif ChucVu_NV == "PVP":
+                    elif ChucVu_NV == "Phục Vụ Phòng":
                         ma = "PVP"
-                    elif ChucVu_NV == "PVB":
+                    elif ChucVu_NV == "Phục vụ bàn":
                         ma = "PVB"
+                    elif ChucVu_NV == "Thu Ngân":
+                        ma = "TN"
                     else:
                         message = "Lỗi không tìm thấy"
                     # Kiểm tra nếu 'ma' không phải là None
@@ -925,18 +968,20 @@ def add_infor_employees():
                         new_macvnv = f"{ma}{last_number:03d}"
                         print(new_macvnv)
                         # Thực hiện truy vấn kiểm tra 'MACVNV' đã tồn tại hay chưa
-                        sql_check_macvnv = "SELECT MACVNV FROM nhanvien WHERE MACVNV = %s"
+                        sql_check_macvnv = (
+                            "SELECT MACVNV FROM nhanvien WHERE MACVNV = %s"
+                        )
                         val_check_macvnv = (new_macvnv,)
                         mycursor.execute(sql_check_macvnv, val_check_macvnv)
                         result_check_macvnv = mycursor.fetchone()
-                        #Kiểm tra kết quả của truy vấn kiểm tra
+                        # Kiểm tra kết quả của truy vấn kiểm tra
                         if result_check_macvnv:
                             # Bản ghi đã tồn tại, xử lý tương ứng
                             sql_check_exits_macvnv = "SELECT MACVNV FROM nhanvien ORDER BY MACVNV DESC LIMIT 1"
                             mycursor.execute(sql_check_exits_macvnv)
                             result = mycursor.fetchone()
                             if result:
-                                last_number = int(result[0][len(ma):])
+                                last_number = int(result[0][len(ma) :])
                                 new_number = last_number + 1
                                 new_macvnv = f"{ma}{new_number:03d}"
                                 print(new_macvnv)
@@ -946,22 +991,240 @@ def add_infor_employees():
                             print(new_macvnv)
                     else:
                         message = "Mã none"
-                    sql_insert_infor_employees="INSERT INTO `nhanvien`(`MACVNV`, `HoTen_NV`, `NgaySinh_NV`, `ChucVu_NV`, `SDT_NV`, `Email_NV`, `DiaChi_NV`, `GioiTinh_NV`, `NgayBatDauLamViec`) VALUES (MACVNV=%s, HoTen_NV=%s, NgaySinh_NV=%s, ChucVu_NV=%s, SDT_NV=%s, Email_NV=%s, DiaChi_NV=%s, GioiTinh_NV=%s, NgayBatDauLamViec=%s)"
-                    val_insert_infor_employees=(new_macvnv, HoTen_NV,NgaySinh_nhanvien,ChucVu_NV,SDT_NV,Email_NV,DiaChi_NV, GioiTinh_NV, NgayBatDauLamViec)
+                    sql_insert_infor_employees = "INSERT INTO `nhanvien`(`MACVNV`, `HoTen_NV`, `NgaySinh_NV`, `ChucVu_NV`, `SDT_NV`, `Email_NV`, `DiaChi_NV`, `GioiTinh_NV`, `NgayBatDauLamViec`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                    val_insert_infor_employees = (
+                        new_macvnv,
+                        HoTen_NV,
+                        NgaySinh_nhanvien,
+                        ChucVu_NV,
+                        SDT_NV,
+                        Email_NV,
+                        DiaChi_NV,
+                        GioiTinh_NV,
+                        NgayBatDauLamViec,
+                    )
                     try:
-                        mycursor.execute(sql_insert_infor_employees, val_insert_infor_employees)
+                        mycursor.execute(
+                            sql_insert_infor_employees, val_insert_infor_employees
+                        )
                         mydb.commit()
-                        print(mycursor.lastrowid)
-                        message="Thêm thành công"
+                        message = "Thêm thành công"
                     except Exception as ex:
-                        message="Lỗi thêm"
+                        message = "Lỗi thêm"
                         print(ex)
-            return render_template("add_infor_employees.html",message=message) #trả về kết quả
-  
+            return render_template(
+                "add_infor_employees.html", message=message
+            )  # trả về kết quả
         return render_template("add_infor_employees.html")
-            
-    else:       
+    else:
         return redirect("login")
+
+
+# Điều hướng đến trang chỉnh sửa thông tin nhân viên
+@app.route("/edit_infor_employee/<item_id>", methods=["POST", "GET"])
+def edit_infor_employee(item_id):
+    message = ""
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql_select_infor_employees = "SELECT * FROM nhanvien WHERE MANV=%s"
+        val_select_infor_empoyees = (item_id,)
+        mycursor.execute(sql_select_infor_employees, val_select_infor_empoyees)
+        Get_infor_employee = mycursor.fetchone()
+        if request.method == "POST":
+            # lấy dữ liệu từ trang add-infor_employee
+            HoTen_NV = request.form["HoTen_NV"]
+            NgaySinh_NV = request.form["NgaySinh_NV"]
+            NgaySinh_nhanvien = dt.datetime.strptime(
+                NgaySinh_NV, "%Y-%m-%d"
+            )  # chuyền đổi ngày sinh nhân viên thành năm-tháng-ngày
+            namsinh_nhanvien = NgaySinh_nhanvien.year
+            chuoi_ngay_hien_tai = dt.datetime.now().strftime(
+                "%Y-%m-%d"
+            )  # Lấy ngày tháng hiện tại dưới dạng chuỗi "yyyy-mm-dd"
+            Ngay_hien_tai = dt.datetime.strptime(
+                chuoi_ngay_hien_tai, "%Y-%m-%d"
+            )  # Chuyển đổi chuỗi ngày tháng thành đối tượng datetime
+            Nam_hien_tai = Ngay_hien_tai.year  # Lấy năm hiện tại từ đối tượng datetime
+            Lamviecsau30ngay = dt.timedelta(days=30)
+            ChucVu_NV = request.form["ChucVu_NV"]
+            SDT_NV = request.form["SDT_NV"]
+            Email_NV = request.form["Email_NV"]
+            regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"  # ký tự đặc biệt của email
+            DiaChi_NV = request.form["DiaChi_NV"]
+            GioiTinh_NV = request.form["GioiTinh_NV"]
+            NgayBatDauLamViec = request.form["NgayBatDauLamViec"]
+            NBĐLV = dt.datetime.strptime(NgayBatDauLamViec, "%Y-%m-%d")
+            if len(HoTen_NV) < 6:
+                message = "Tên phải lớn hơn 6 ký tự"
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            elif (
+                NgaySinh_nhanvien > Ngay_hien_tai
+                or Nam_hien_tai - namsinh_nhanvien < 18
+            ):
+                # thông báo kiếm tra ngày tháng năm sinh
+                message = "Nhân viên phải trên 18 tuổi và ngày tháng năm sinh không được lớn hơn ngày tháng năm hiện tại"
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            elif (
+                len(SDT_NV) != 10 or not SDT_NV.isdigit() or int(SDT_NV[0]) != 0
+            ):  # kiếm tra số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0
+                message = (
+                    "số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0"
+                )
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            elif re.fullmatch(Email_NV, regex):  # kiêm tra email có hợp lệ
+                message = "Địa chỉ email không hợp lệ"
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            elif len(ChucVu_NV) == 0:  # kiểm tra chức vụ có rỗng không
+                message = "chức vụ không được đẻ rỗng "  # thông báo
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            elif len(DiaChi_NV) < 10:  # kiêm tra xem địa chỉ có 10 ký tự.
+                message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            elif len(GioiTinh_NV) == 0:  # kiêm tra giói tính nhân viên có rỗng.
+                message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            elif (
+                Ngay_hien_tai - NBĐLV < Lamviecsau30ngay
+            ):  # kiểm tra ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại
+                message = "ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại"  # thông báo
+                return render_template(
+                    "edit_infor_employee.html",
+                    message=message,
+                    result_Get_infor_employee=Get_infor_employee,
+                )  # trả về kết quả
+            else:
+                ma = None  # Đặt giá trị mặc định cho biến 'ma'
+                # Kiểm tra và thiết lập giá trị mã 'ma' dựa trên 'ChucVu_NV'
+                if ChucVu_NV == "Giám Đốc":
+                    ma = "GĐ"
+                elif ChucVu_NV == "Quản lý":
+                    ma = "QL"
+                elif ChucVu_NV == "Lễ Tân":
+                    ma = "LT"
+                elif ChucVu_NV == "Phục Vụ Phòng":
+                    ma = "PVP"
+                elif ChucVu_NV == "Phục vụ bàn":
+                    ma = "PVB"
+                elif ChucVu_NV == "Thu Ngân":
+                    ma = "TN"
+                else:
+                    message = "Lỗi không tìm thấy"
+                    # Kiểm tra nếu 'ma' không phải là None
+                if ma is not None:
+                    last_number = 1
+                    new_macvnv = f"{ma}{last_number:03d}"
+                    print(new_macvnv)
+                    # Thực hiện truy vấn kiểm tra 'MACVNV' đã tồn tại hay chưa
+                    sql_check_macvnv = "SELECT MACVNV FROM nhanvien WHERE MACVNV = %s"
+                    val_check_macvnv = (new_macvnv,)
+                    mycursor.execute(sql_check_macvnv, val_check_macvnv)
+                    result_check_macvnv = mycursor.fetchone()
+                    # Kiểm tra kết quả của truy vấn kiểm tra
+                    if result_check_macvnv:
+                        # Bản ghi đã tồn tại, xử lý tương ứng
+                        sql_check_exits_macvnv = (
+                            "SELECT MACVNV FROM nhanvien ORDER BY MACVNV DESC LIMIT 1"
+                        )
+                        mycursor.execute(sql_check_exits_macvnv)
+                        result = mycursor.fetchone()
+                        if result:
+                            last_number = int(result[0][len(ma) :])
+                            new_number = last_number + 1
+                            new_macvnv = f"{ma}{new_number:03d}"
+                            print(new_macvnv)
+                    else:
+                        last_number = 1
+                        new_macvnv = f"{ma}{last_number:03d}"
+                        print(new_macvnv)
+                else:
+                    message = "Mã none"
+
+                sql_update_infor_employee = "UPDATE `nhanvien` SET `MACVNV`=%s,`HoTen_NV`=%s,`NgaySinh_NV`=%s,`ChucVu_NV`=%s,`SDT_NV`=%s,`Email_NV`=%s,`DiaChi_NV`=%s,`GioiTinh_NV`=%s,`NgayBatDauLamViec`=%s WHERE MANV=%s"
+                val_update_infor_employee = (
+                    new_macvnv,
+                    HoTen_NV,
+                    NgaySinh_nhanvien,
+                    ChucVu_NV,
+                    SDT_NV,
+                    Email_NV,
+                    DiaChi_NV,
+                    GioiTinh_NV,
+                    NBĐLV,
+                    item_id,
+                )
+                print(sql_update_infor_employee)
+                print(val_update_infor_employee)
+                try:
+                    mycursor.execute(
+                        sql_update_infor_employee, val_update_infor_employee
+                    )
+                    mydb.commit()
+                    message = "Cập nhật thành công"
+                except Exception as ex:
+                    message = "Cập nhật thất bại: " + str(ex)
+                    print(ex)
+            return render_template(
+                "edit_infor_employee.html",
+                message=message,
+                result_Get_infor_employee=Get_infor_employee,
+                item_id=item_id,
+            )
+        return render_template(
+            "edit_infor_employee.html",
+            result_Get_infor_employee=Get_infor_employee,
+            item_id=item_id,
+        )
+    else:
+        return redirect("login")
+
+
+# Xóa thông tin nhân viên
+@app.route("/delete_infor_employees/<item_id>")
+def delete_infor_employees(item_id):
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql_delete_infor_employees = "DELETE FROM `nhanvien` WHERE MANV=%s"
+        val_delete_infor_employees = (item_id,)
+        mycursor.execute(sql_delete_infor_employees, val_delete_infor_employees)
+        mydb.commit()
+        return redirect("price")
+    else:
+        return redirect("login")
+
 
 # Điều hướng đến trang voucher
 @app.route("/contact.html")
@@ -971,7 +1234,7 @@ def contact():
             host="localhost", user="root", password="", database="cnpm"
         )
         mycursor = mydb.cursor()
-        sql = "SELECT * FROM voucher"
+        sql = "SELECT * FROM phieuthuephong"
         mycursor.execute(sql)
         result = mycursor.fetchall()
         return render_template("contact.html", data=result)
@@ -979,7 +1242,162 @@ def contact():
         return redirect("login")
 
 
-# Điều hướng trang hóa đơn thanh toán
+# Điều hướng đến trang xem hóa đơn
+@app.route("/show_infor_bill/<item_id>", methods=["GET", "POST"])
+def show_infor_bill(item_id):
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql_show_infor_bill = "SELECT * FROM phieuthuephong  WHERE MAPTP=%s"
+        val_show_infor_bill = (item_id,)
+        mycursor.execute(sql_show_infor_bill, val_show_infor_bill)
+        result_show_infor_bill = mycursor.fetchone()
+        return render_template(
+            "show_infor_bill.html",
+            item_id=item_id,
+            show_infor_bill=result_show_infor_bill,
+        )
+    else:
+        return redirect("login")
+
+# update tổng tiền tự động
+@app.route("/update_total_price", methods=["POST"])
+def update_total_price():
+    selected_room = request.get_json().get(
+        "selected_room"
+    )  # Lấy giá trị Mã Phòng từ yêu cầu POST
+    print(selected_room)
+    mydb = mysql.connector.connect(
+        host="localhost", user="root", password="", database="cnpm"
+    )
+    mycursor = mydb.cursor()
+    try:
+        sql_get_dongia = "SELECT DonGia FROM phong WHERE stt = %s"
+        print("sql", sql_get_dongia)
+        val_get_dongia = (selected_room,)
+        mycursor.execute(sql_get_dongia, val_get_dongia)
+        row = mycursor.fetchone()
+        print("row is: ", row)
+        if row is not None:
+            total_price = row[0]
+            return jsonify({"total_price": total_price})
+        else:
+            return jsonify({"total_price": None})
+    except Exception as e:
+        # Xử lý lỗi ở đây, ví dụ in ra thông báo lỗi:
+        print("Lỗi: ", str(e))
+        return jsonify(
+            {"total_price": None}
+        )  # Hoặc trả về giá trị mặc định hoặc thông báo lỗi khác.
+
+# Điều hướng đến trang tạo hóa đơn
+@app.route("/add_infor_roomretalvoucher.html")
+def add_infor_roomretalvoucher():
+    message = ""
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        # Get thông tin phòng
+        sql_get_room = "SELECT MAPHONG,stt FROM phong"
+        mycursor.execute(
+            sql_get_room,
+        )
+        result_get_room = mycursor.fetchall()
+        # Get thông tin khách hàng
+        sql_get_customers = "SELECT Email_KH, MAKH FROM khachhang"
+        mycursor.execute(
+            sql_get_customers,
+        )
+        result_get_customers = mycursor.fetchall()
+        # thông tin mã voucher
+        sql_get_voucher="SELECT * FROM voucher"
+        mycursor.execute(sql_get_voucher)
+        row=mycursor.fetchall()
+        print("row voucher: ", row) # in thông tin của voucher lấy được 
+        if len(row)>0:
+            check_voucher=row[0][0] #lấy mã voucher
+            gia_tri_voucher=int(row[0][1]) # lấy giá trị của voucher
+            ngay_het_han_voucher=row[0][2] # lấy ngày hết hạn của voucher
+            ngay_phat_hanh_voucher=row[0][3] # lấy  ngày phát hàng voucher
+            so_luong_voucher=int(row[0][4]) # lấy số lượng voucher
+        # lấy ngày hiện tại của voucher 
+        ngay_hien_tai_voucher=dt.datetime.now().strftime("%Y-%m-%d")
+        #lây thông tin khách hàng điền từ form 
+        if request.method == "POST":
+            HinhThucThanhToan=request.form["HinhThucThanhToan"] # lấy thông tin của hình thức thanh toán
+            NgayNhanPhong=request.form["NgayNhanPhong"] # lấy thông ti của ngày nhận phòng
+            # Lấy năm hiện tại
+            current_year = dt.datetime.now().year
+            # Thêm 1 để có năm tiếp theo
+            next_year = current_year + 1
+            # chuyển đổi ngày nhận phòng từ chuỗi qua thời gian 
+            NgayNhanPhong_moi=dt.datetime.strptime( NgayNhanPhong,"%Y-%m-%d")
+            # chuyền đổi ngày nhận phòng thành yyyy-mm-dd và lấy ngày hiện tại trên máy tính
+            NgayNhanPhong_hientai=dt.datetime.now().strftime("%Y-%m-%d")
+            NgayTraPhong=request.form["NgayTraPhong"] # lấy thông tin của ngày trả phòng
+            # chuyền đổi thông tin ngày trả phòng từ chuỗi qua thời gian 
+            NgayTraPhong_moi=dt.datetime.strptime(NgayTraPhong,"%Y-%m-%d" )
+            # ngày trả phòng sau 30 ngày
+            NgayTraPhong_tuonglai=dt.timedelta(days=30)
+            SoLuongNguoiLon=request.form["SoLuongNguoiLon"] # lấy thông tin số lượng người lớn
+            SoLuongTreEm=int(request.form["SoLuongTreEm"]) # lấy thông tin số lượng trẻ em 
+            TongTien=float(request.form["TongTien"]) # lấy thông tin tổng tiền
+            GhiChu=request.form["GhiChu"] # lấy thông tin ghi chú
+            MaVoucher=request.form["MaVoucher"] # lấy thông tin mavoucher
+            MAKH=request.form["MAKH"] # lấy thông tin mã khách hàng
+            Maphong=request.from_values["Maphong"] # lấy thông tin mã phòng
+            if NgayNhanPhong_moi < NgayNhanPhong_hientai or current_year > next_year:
+                message="vui lòng kiểm tra lại ngày nhận phòng, ngày nhận phòng phải nhỏ hơn năm hiện tại" # thông báo
+                return render_template(
+                    "add_infor_roomretalvoucher.html",
+                    result_get_infor=result_get_room,
+                    result_get_customers=result_get_customers, message=message
+            )
+            elif NgayTraPhong_moi < NgayNhanPhong_hientai or NgayTraPhong_moi > NgayTraPhong_tuonglai:
+                message="vui lòng kiểm tra lại ngày trả phòng, ngày trả phòng không được quá 30 ngày" # thông báo
+                return render_template(
+                    "add_infor_roomretalvoucher.html",
+                    result_get_infor=result_get_room,
+                    result_get_customers=result_get_customers, message=message
+                )
+            elif SoLuongTreEm>1:
+                TongTien=TongTien*1.2
+            
+            
+
+        return render_template(
+            "add_infor_roomretalvoucher.html",
+            result_get_infor=result_get_room,
+            result_get_customers=result_get_customers,
+        )
+    else:
+        return redirect("login")
+
+@app.route("/check_email_availability", methods=["POST"])
+def check_email_availability():
+    data = request.form
+    email = data.get("email")
+    # Thực hiện kiểm tra email trong cơ sở dữ liệu của bạn.
+    email_available = is_email_available(email)
+    return jsonify({"available": email_available})
+
+def is_email_available(email):
+    mydb = mysql.connector.connect(
+        host="localhost", user="root", password="", database="cnpm"
+    )
+    mycursor = mydb.cursor()
+    sql_get_makh = "SELECT Email_KH FROM khachhang WHERE Email_KH = %s"
+    mycursor.execute(sql_get_makh, (email,))
+    result_get_email = mycursor.fetchone()
+    if result_get_email:
+        return result_get_email[0]
+    return False  # Đây là ví dụ. Bạn cần thay đổi mã này để phù hợp với cơ sở dữ liệu của bạn.
+
+
 @app.route("/map.html")
 def map():
     if "email" in session:

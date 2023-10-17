@@ -152,7 +152,7 @@
                                     <div class="full padding_infor_info">
                                         <div class="table_row">
                                             <div class="table-responsive">
-                                                <form action="" class="table table-striped">
+                                                <form action="" class="table table-striped" method="post" enctype="multipart/form-data">
                                                     <div class="form-group">
                                                         <label for="MAKH">Mã khách hàng</label>
                                                         <input type="text" class="form-control" id="MAKH" name="MAKH"
@@ -213,8 +213,7 @@
                                                         <label for="GioiTinh_KH">Giới tính khách hàng</label>
                                                         <select class="form-control" id="GioiTinh_KH"" name="
                                                             GioiTinh_KH" required>
-                                                            <option value="Nam" {% if data_edit_customter[8]=='Nam'
-                                                                %}selected{% endif %}>Nam</option>
+                                                            <option value="Nam" {% if data_edit_customter[8]=='Nam'%}selected{% endif %}>Nam</option>
                                                             <option value="Nữ" {% if data_edit_customter[8] !='Nam'
                                                                 %}selected{% endif %}>Nữ</option>
                                                         </select>
@@ -257,6 +256,38 @@
             </div>
         </div>
     </div>
+    <script>
+        var message = "{{ message }}";  // Nhận thông báo từ Flask và chuyển thành JavaScript string
+
+        if (message) {
+            // Tạo một phần tử div để chứa hộp thoại
+            var alertDiv = document.createElement("div");
+            alertDiv.className = "centered-alert";
+
+            // Tạo hộp thoại alert và đưa nội dung vào
+            var alertBox = document.createElement("div");
+            alertBox.className = "alert-box";
+            alertBox.textContent = message;
+
+            // Tạo nút Oke
+            var okeButton = document.createElement("button");
+            okeButton.className = "oke-button";
+            okeButton.textContent = "Ok";
+
+            // Đưa nút Oke và hộp thoại alert vào phần tử div chứa
+            alertBox.appendChild(okeButton);
+            alertDiv.appendChild(alertBox);
+
+            // Đưa phần tử div chứa vào body của trang
+            document.body.appendChild(alertDiv);
+
+            // Bắt sự kiện khi người dùng bấm nút Oke và ẩn hộp thoại
+            okeButton.addEventListener("click", function () {
+                alertDiv.style.display = "none";
+            });
+        }
+    </script>
+
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

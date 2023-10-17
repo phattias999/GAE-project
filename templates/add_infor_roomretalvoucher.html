@@ -16,7 +16,7 @@
     <!-- site icon -->
 
     <script src="https://kit.fontawesome.com/dbf4841881.js" crossorigin="anonymous"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/color_2.css') }}">
@@ -140,7 +140,7 @@
                         <div class="row column_title">
                             <div class="col-md-12">
                                 <div class="page_title">
-                                    <h2>Employees</small></h2>
+                                    <h2>Rooom rental bill</small></h2>
                                 </div>
                             </div>
                         </div>
@@ -152,63 +152,71 @@
                                     <div class="full padding_infor_info">
                                         <div class="table_row">
                                             <div class="table-responsive">
-                                                <form action="" class="table table-striped" method="post"
-                                                    enctype="multipart/form-data">
-                                                    <!-- <div class="form-group">
-                                                        <label for="MACVNV">MÃ CÔNG VIỆC</label>
-                                                        <input type="text" class="form-control" id="MACVNV"
-                                                            name="MACVNV" required>
-                                                    </div> -->
+                                                <form action="" class="table table-striped">
                                                     <div class="form-group">
-                                                        <label for="HoTen_NV">Họ Tên nhân viên</label>
-                                                        <input type="text" class="form-control" id="HoTen_NV"
-                                                            name="HoTen_NV" required>
+                                                        <label for="MAKH">Hình Thức Thanh Toán</label>
+                                                        <input type="text" class="form-control" id="HinhThucThanhToan"
+                                                            name="HinhThucThanhToan" required readonly value="Trực tiếp"">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="NgaySinh_NV">Ngày sinh nhân viên</label>
-                                                        <input type="date" class="form-control" id="NgaySinh_NV"
-                                                            name="NgaySinh_NV" required>
+                                                        <label for="NgayNhanPhong">Ngày Nhận Phòng</label>
+                                                        <input type="date" class="form-control" id="NgayNhanPhong"
+                                                            name="NgayNhanPhong" required  >
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="ChucVu_NV">Chức Vụ Nhân Viên</label>
-                                                        <select class="form-control" id="ChucVu_NV" name="ChucVu_NV"
-                                                            required>
-                                                            <option value="Giám Đốc">Giám Đốc</option>
-                                                            <option value="Quản lý">Quản lý</option>
-                                                            <option value="Lễ Tân">Lễ Tân</option>
-                                                            <option value="Phục Vụ Phòng">Phục Vụ Phòng</option>
-                                                            <option value="Phục vụ bàn">Phục vụ bàn</option>      
-                                                            <option value="Thu Ngân">Thu Ngân</option>                                      
+                                                        <label for="NgayTraPhong">Ngày Trả Phòng</label>
+                                                        <input type="date" class="form-control" id="NgayTraPhong"
+                                                            name="NgayTraPhong" required  >
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="SoLuongNguoiLon">Số Lượng Người Lớn</label>
+                                                        <div class="input-group">
+                                                            <select class="form-control" id="SoLuongNguoiLon" name="SoLuongNguoiLon" required>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="SoLuongTreEm">Số Lượng Trẻ Em</label>
+                                                        <div class="input-group">
+                                                            <select class="form-control" id="SoLuongTreEm" name="SoLuongTreEm" required>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="TongTien">Tổng Tiền</label>
+                                                        <input type="text" class="form-control" id="TongTien"
+                                                            name="TongTien" required readonly value="0">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="GhiChu">Ghi Chú</label>
+                                                        <textarea name="GhiChu" id="GhiChu" rows="4" class="form-control"></textarea>      
+                                                    </div>
+                                    
+                                                    <div class="form-group">
+                                                        <label for="MaVoucher">Mã Voucher</label>
+                                                        <input type="text" class="form-control" id="MaVoucher"
+                                                            name="MaVoucher" required >
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="MAKH">Mã khách hàng</label>
+                                                        <input type="text" class="form-control" id="MAKH"
+                                                        name="MAKH" required >
+                                                    </div> 
+                                                    <div class="form-group">
+                                                        <label for="Maphong">Mã Phòng</label>
+                                                        <select class="form-control" id="Maphong" name="Maphong" required>
+                                                            <option value="" disabled selected>Chọn phòng</option>
+                                                            {% for room in result_get_infor %}
+                                                            <option value="{{ room[1] }}">{{ room[0] }}</option>
+                                                            {% endfor %}                                      
                                                         </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="SDT_NV">Số điện thoại nhân viên</label>
-                                                        <input type="text" class="form-control" id="SDT_KH"
-                                                            name="SDT_NV" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="Email_NV">Email nhân viên</label>
-                                                        <input type="text" class="form-control" id="Email_NV"
-                                                            name="Email_NV" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="DiaChi_NV">Địa chỉ nhân viên</label>
-                                                        <textarea name="DiaChi_NV" id="DiaChi_NV"rows="4" required class="form-control"></textarea>
-                                                    
-                                                    </div>
-                                                 
-                                                    <div class="form-group">
-                                                        <label for="GioiTinh_NV">Giới tính Nhân viên</label>
-                                                        <select class="form-control" id="GioiTinh_NV" name="GioiTinh_NV" 
-                                                            required>
-                                                            <option value="Nam">Nam</option>
-                                                            <option value="Nữ">Nữ</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="NgayBatDauLamViec">Ngày bắt đầu làm việc</label>
-                                                        <input type="date" name="NgayBatDauLamViec" class="form-control">
-                                                    </div>
+                
+                                                    </div>      
+                        
                                                     <div class=" row">
                                                         <div class="col-md-4">
                                                             <button type="" onclick="history.back()" 
@@ -216,7 +224,7 @@
                                                         </div>
                                                         <div class="col-md-4">
                                                             <button type="submit" class="btn btn-warning btn-block">Add
-                                                                Customer</button>
+                                                                Bill</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -236,6 +244,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById("Maphong").addEventListener("change", function() {
+            var selectedRoom = this.value; // Lấy giá trị phòng đã chọn
+            
+            // Gửi yêu cầu POST để cập nhật tổng tiền từ máy chủ
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/update_total_price", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById("TongTien").value = response.total_price+" VND";
+                }
+            };
+            xhr.send(JSON.stringify({ selected_room: selectedRoom }));
+        });
+    </script>
     <style>
         /* Định nghĩa lớp cho hộp thoại alert */
         .centered-alert {

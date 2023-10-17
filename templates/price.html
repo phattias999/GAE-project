@@ -138,7 +138,8 @@
                               <h2>List Employees</small></h2>
                            </div>
                            <div>
-                              <a href="{{url_for('add_infor_employees')}}" class="btn btn-danger btn-block">Add Employees</a>
+                              <a href="{{url_for('add_infor_employees')}}" class="btn btn-danger btn-block">Add
+                                 Employees</a>
                            </div>
                         </div>
                      </div>
@@ -154,6 +155,7 @@
                                     <table class="table table-striped">
                                        <thead>
                                           <tr>
+                                             <th>MÃ CHỨC VỤ</th>
                                              <th>Họ và Tên</th>
                                              <th>Ngày Sinh</th>
                                              <th>Chức vụ</th>
@@ -170,7 +172,6 @@
                                        <tbody>
                                           {%for nhanvien in data %}
                                           <tr>
-                                             <td>{{nhanvien[0]}}</td>
                                              <td>{{nhanvien[1]}}</td>
                                              <td>{{nhanvien[2]}}</td>
                                              <td>{{nhanvien[3]}}</td>
@@ -178,9 +179,13 @@
                                              <td>{{nhanvien[5]}}</td>
                                              <td>{{nhanvien[6]}}</td>
                                              <td>{{nhanvien[7]}}</td>
-                                             <td><a href="/show_infor_employee/{{nhanvien[0]}}"><i class="fa-solid fa-eye"></i></a></td>
-                                             <td><a href=""><i class="fa-solid fa-wrench"></i></a></td>
-                                             <td><a href=""><i class="fa-solid fa-delete-left"></i></a></td>
+                                             <td>{{nhanvien[8]}}</td>
+                                             <td>{{nhanvien[9]}}</td>
+                                             <td><a href="/show_infor_employee/{{nhanvien[0]}}"><i
+                                                      class="fa-solid fa-eye"></i></a></td>
+                                             <td><a href="/edit_infor_employee/{{nhanvien[0]}}"><i class="fa-solid fa-wrench"></i></a></td>
+                                             <td><a href="" onclick="delete_infor_employees('{{nhanvien[0]}}')"><i
+                                                      class="fa-solid fa-delete-left"></i></a></td>
                                           </tr>
                                           {% endfor %}
                                        </tbody>
@@ -202,6 +207,28 @@
          </div>
       </div>
    </div>
+   <script>
+      function delete_infor_employees(item_id) {
+         if (confirm("Bạn có chắc muốn xóa không?.")) {
+            // Nếu người dùng đồng ý xóa
+            fetch(`/delete_infor_employees/${item_id}`, {
+               method: "GET",
+            })
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     // Phòng đã được xóa thành công, chuyển hướng người dùng đến trang khác
+                     alert("Phòng đã được xóa thành công!");
+                  } else {
+                     alert("Không thể xóa phòng. Hãy thử lại sau.");
+                  }
+               })
+               .catch(error => {
+                  console.error("Lỗi khi xóa phòng:", error);
+               });
+         }
+      }
+   </script>
    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

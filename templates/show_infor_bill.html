@@ -140,7 +140,7 @@
                         <div class="row column_title">
                             <div class="col-md-12">
                                 <div class="page_title">
-                                    <h2>Employees</small></h2>
+                                    <h2>List rooms</small></h2>
                                 </div>
                             </div>
                         </div>
@@ -152,71 +152,68 @@
                                     <div class="full padding_infor_info">
                                         <div class="table_row">
                                             <div class="table-responsive">
-                                                <form action="" class="table table-striped" method="post"
-                                                    enctype="multipart/form-data">
-                                                    <!-- <div class="form-group">
-                                                        <label for="MACVNV">MÃ CÔNG VIỆC</label>
-                                                        <input type="text" class="form-control" id="MACVNV"
-                                                            name="MACVNV" required>
-                                                    </div> -->
+                                                <form action="" class="table table-striped">
                                                     <div class="form-group">
-                                                        <label for="HoTen_NV">Họ Tên nhân viên</label>
-                                                        <input type="text" class="form-control" id="HoTen_NV"
-                                                            name="HoTen_NV" required>
+                                                        <label for="MAKH">Hình Thức Thanh Toán</label>
+                                                        <input type="text" class="form-control" id="HinhThucThanhToan"
+                                                            name="HinhThucThanhToan" required readonly value="{{show_infor_bill[1]}}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="NgaySinh_NV">Ngày sinh nhân viên</label>
-                                                        <input type="date" class="form-control" id="NgaySinh_NV"
-                                                            name="NgaySinh_NV" required>
+                                                        <label for="NgayNhanPhong">Ngày Nhận Phòng</label>
+                                                        <input type="date" class="form-control" id="NgayNhanPhong"
+                                                            name="NgayNhanPhong" required readonly value="{{show_infor_bill[2]}}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="ChucVu_NV">Chức Vụ Nhân Viên</label>
-                                                        <select class="form-control" id="ChucVu_NV" name="ChucVu_NV"
-                                                            required>
-                                                            <option value="Giám Đốc">Giám Đốc</option>
-                                                            <option value="Quản lý">Quản lý</option>
-                                                            <option value="Lễ Tân">Lễ Tân</option>
-                                                            <option value="Phục Vụ Phòng">Phục Vụ Phòng</option>
-                                                            <option value="Phục vụ bàn">Phục vụ bàn</option>      
-                                                            <option value="Thu Ngân">Thu Ngân</option>                                      
-                                                        </select>
+                                                        <label for="NgayTraPhong">Ngày Trả Phòng</label>
+                                                        <input type="text" class="form-control" id="NgayTraPhong"
+                                                            name="NgayTraPhong" required readonly value="{{show_infor_bill[3]}}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="SDT_NV">Số điện thoại nhân viên</label>
-                                                        <input type="text" class="form-control" id="SDT_KH"
-                                                            name="SDT_NV" required>
+                                                        <label for="SoLuongNguoiLon">Số Lượng Người Lớn</label>
+                                                        <input type="text" class="form-control" id="SoLuongNguoiLon"
+                                                            name="SoLuongNguoiLon" required readonly value="{{show_infor_bill[4]}}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="Email_NV">Email nhân viên</label>
-                                                        <input type="text" class="form-control" id="Email_NV"
-                                                            name="Email_NV" required>
+                                                        <label for="SoLuongTreEm">Số Lượng Trẻ Em</label>
+                                                        <input type="text" class="form-control" id="SoLuongTreEm"
+                                                            name="SoLuongTreEm" required readonly value="{{show_infor_bill[5]}}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="DiaChi_NV">Địa chỉ nhân viên</label>
-                                                        <textarea name="DiaChi_NV" id="DiaChi_NV"rows="4" required class="form-control"></textarea>
-                                                    
-                                                    </div>
-                                                 
-                                                    <div class="form-group">
-                                                        <label for="GioiTinh_NV">Giới tính Nhân viên</label>
-                                                        <select class="form-control" id="GioiTinh_NV" name="GioiTinh_NV" 
-                                                            required>
-                                                            <option value="Nam">Nam</option>
-                                                            <option value="Nữ">Nữ</option>
-                                                        </select>
+                                                        <label for="TongTien">Tổng Tiền</label>
+                                                        <input type="text" class="form-control" id="TongTien"
+                                                            name="TongTien" required readonly value="{{show_infor_bill[7]}}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="NgayBatDauLamViec">Ngày bắt đầu làm việc</label>
-                                                        <input type="date" name="NgayBatDauLamViec" class="form-control">
+                                                        <label for="GhiChu">Ghi Chú</label>
+                                                        <textarea name="GhiChu" id="GhiChu" cols="3" class="form-control">{{show_infor_bill[8]}}</textarea>      
                                                     </div>
-                                                    <div class=" row">
+                                    
+                                                    <div class="form-group">
+                                                        <label for="MaVoucher">Mã Voucher</label>
+                                                        <input type="text" class="form-control" id="MaVoucher"
+                                                            name="MaVoucher" required readonly value="{{show_infor_bill[9]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="GioiTinh_KH">Mã Nhân viên</label>                          
+                                                        <input type="text" class="form-control" id="MANV"
+                                                            name="MANV" required readonly value="{{show_infor_bill[10]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="MAKH">MÃ khách hàng</label>
+                                                        <input type="text" class="form-control" id="MAKH"
+                                                            name="MAKH" required readonly value="{{show_infor_bill[11]}}">
+                                                    </div> 
+                                                    <div class="form-group">
+                                                        <label for="Maphong">Mã Phòng</label>
+                                                        <input type="text" class="form-control" id="Maphong"
+                                                            name="Maphong" required readonly value="{{show_infor_bill[12]}}">
+                                                    </div>      
+                                                    <div class="row">
                                                         <div class="col-md-4">
-                                                            <button type="" onclick="history.back()" 
-                                                                class="btn btn-danger btn-block">Back</button>
+                                                            <a href="" class="btn btn-warning btn-block">Back</a>
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <button type="submit" class="btn btn-warning btn-block">Add
-                                                                Customer</button>
+                                                        <div class="col-md-4">                                                      
+                                                            <a href="" onclick="" class="btn btn-primary btn-block">Delete Room</a>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -236,77 +233,7 @@
             </div>
         </div>
     </div>
-    <style>
-        /* Định nghĩa lớp cho hộp thoại alert */
-        .centered-alert {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            /* Màu nền đục để tạo hiệu ứng xám */
-            z-index: 9999;
-            /* Đảm bảo hộp thoại hiển thị trên cùng */
-        }
-
-        .alert-box {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
-            text-align: center;
-            padding: 20px;
-            max-width: 400px;
-            width: 80%;
-        }
-
-        .oke-button {
-            margin-top: 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-left: 20px;
-        }
-    </style>
-
-    <script>
-        var message = "{{ message }}";  // Nhận thông báo từ Flask và chuyển thành JavaScript string
-
-        if (message) {
-            // Tạo một phần tử div để chứa hộp thoại
-            var alertDiv = document.createElement("div");
-            alertDiv.className = "centered-alert";
-
-            // Tạo hộp thoại alert và đưa nội dung vào
-            var alertBox = document.createElement("div");
-            alertBox.className = "alert-box";
-            alertBox.textContent = message;
-
-            // Tạo nút Oke
-            var okeButton = document.createElement("button");
-            okeButton.className = "oke-button";
-            okeButton.textContent = "Ok";
-
-            // Đưa nút Oke và hộp thoại alert vào phần tử div chứa
-            alertBox.appendChild(okeButton);
-            alertDiv.appendChild(alertBox);
-
-            // Đưa phần tử div chứa vào body của trang
-            document.body.appendChild(alertDiv);
-
-            // Bắt sự kiện khi người dùng bấm nút Oke và ẩn hộp thoại
-            okeButton.addEventListener("click", function () {
-                alertDiv.style.display = "none";
-            });
-        }
-    </script>
-
+   
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
