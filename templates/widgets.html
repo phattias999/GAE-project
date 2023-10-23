@@ -33,7 +33,7 @@
 
 <body class="inner_page widgets">
    <style>
-      .listroom{
+      .listroom {
          display: flex;
          justify-content: space-between;
       }
@@ -182,9 +182,12 @@
                                              <td>{{ record[4] }}</td>
                                              <td>{{ record[5] }}</td>
                                              <td><img src="{{ record[6] }}" width="150"></td>
-                                             <td><a href="/show_infor_room/{{ record[0]}}"><i class="fa-solid fa-eye"></i></a></td>
-                                             <td><a href="/edit_infor_room/{{ record[0]}}"><i class="fas fa-edit"></i></a></td>
-                                             <td><a href="" onclick="deleteRoom('{{ record[0] }}')"><i class="fa-solid fa-delete-left"></i></a></td>
+                                             <td><a href="/show_infor_room/{{ record[0]}}"><i
+                                                      class="fa-solid fa-eye"></i></a></td>
+                                             <td><a href="/edit_infor_room/{{ record[0]}}"><i
+                                                      class="fas fa-edit"></i></a></td>
+                                             <td><a href="" onclick="deleteRoom('{{ record[0] }}')"><i
+                                                      class="fa-solid fa-delete-left"></i></a></td>
                                           </tr>
                                           {% endfor %}
                                        </tbody>
@@ -205,29 +208,136 @@
          </div>
       </div>
    </div>
+   <style>
+       .buttoncheck {
+         border: none;
+      }
+
+      /* Đổi màu cho biểu tượng fa-check */
+      .fa-check {
+         color: black;
+         /* Màu hiển thị */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm đường viền cho biểu tượng fa-eye */
+      .fa-eye {
+         color: blue;
+         /* Màu hiển thị */
+         font-size: 22px;
+         /* Đường viền */
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-wrench */
+      .fa-edit {
+         color: orange;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-delete-left */
+      .fa-delete-left {
+         color: red;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+      /* Định nghĩa lớp cho hộp thoại alert */
+      .centered-alert {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background-color: rgba(0, 0, 0, 0.5);
+         /* Màu nền đục để tạo hiệu ứng xám */
+         z-index: 9999;
+         /* Đảm bảo hộp thoại hiển thị trên cùng */
+      }
+
+      .alert-box {
+         background-color: #fff;
+         border-radius: 5px;
+         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+         text-align: center;
+         padding: 20px;
+         max-width: 400px;
+         width: 80%;
+      }
+
+      .oke-button {
+         margin-top: 20px;
+         background-color: #007BFF;
+         color: white;
+         border: none;
+         border-radius: 5px;
+         padding: 10px 20px;
+         cursor: pointer;
+         margin-left: 20px;
+      }
+   </style>
+
+   <script>
+      var message = "{{ message }}";  // Nhận thông báo từ Flask và chuyển thành JavaScript string
+
+      if (message) {
+         // Tạo một phần tử div để chứa hộp thoại
+         var alertDiv = document.createElement("div");
+         alertDiv.className = "centered-alert";
+
+         // Tạo hộp thoại alert và đưa nội dung vào
+         var alertBox = document.createElement("div");
+         alertBox.className = "alert-box";
+         alertBox.textContent = message;
+
+         // Tạo nút Oke
+         var okeButton = document.createElement("button");
+         okeButton.className = "oke-button";
+         okeButton.textContent = "Ok";
+
+         // Đưa nút Oke và hộp thoại alert vào phần tử div chứa
+         alertBox.appendChild(okeButton);
+         alertDiv.appendChild(alertBox);
+
+         // Đưa phần tử div chứa vào body của trang
+         document.body.appendChild(alertDiv);
+
+         // Bắt sự kiện khi người dùng bấm nút Oke và ẩn hộp thoại
+         okeButton.addEventListener("click", function () {
+            alertDiv.style.display = "none";
+         });
+      }
+   </script>
+
    <script>
       function deleteRoom(item_id) {
-          if (confirm("Bạn có chắc chắn muốn xóa này không?")) {
-              // Nếu người dùng đồng ý xóa
-              fetch(`/delete_room/${item_id}`, {
-                  method: "GET",
-              })
-              .then(response => response.json())
-              .then(data => {
+         if (confirm("Bạn có chắc chắn muốn xóa này không?")) {
+            // Nếu người dùng đồng ý xóa
+            fetch(`/delete_room/${item_id}`, {
+               method: "GET",
+            })
+               .then(response => response.json())
+               .then(data => {
                   if (data.success) {
-                      // Phòng đã được xóa thành công, chuyển hướng người dùng đến trang khác
-                      alert("đã được xóa thành công!");
+                     // Phòng đã được xóa thành công, chuyển hướng người dùng đến trang khác
+                     alert("đã được xóa thành công!");
                   } else {
-                      alert("Không thể xóa. Hãy thử lại sau.");
+                     alert("Không thể xóa. Hãy thử lại sau.");
                   }
-              })
-              .catch(error => {
+               })
+               .catch(error => {
                   console.error("Lỗi khi xóa:", error);
-              });
-          }
+               });
+         }
       }
-      </script>
-      
+   </script>
+
    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

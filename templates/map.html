@@ -192,6 +192,76 @@
          </div>
       </div>
    </div>
+   <style>
+      /* Định nghĩa lớp cho hộp thoại alert */
+      .centered-alert {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          /* Màu nền đục để tạo hiệu ứng xám */
+          z-index: 9999;
+          /* Đảm bảo hộp thoại hiển thị trên cùng */
+      }
+
+      .alert-box {
+          background-color: #fff;
+          border-radius: 5px;
+          box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+          text-align: center;
+          padding: 20px;
+          max-width: 400px;
+          width: 80%;
+      }
+
+      .oke-button {
+          margin-top: 20px;
+          background-color: #007BFF;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          padding: 10px 20px;
+          cursor: pointer;
+          margin-left: 20px;
+      }
+  </style>
+
+  <script>
+      var message = "{{ message }}";  // Nhận thông báo từ Flask và chuyển thành JavaScript string
+
+      if (message) {
+          // Tạo một phần tử div để chứa hộp thoại
+          var alertDiv = document.createElement("div");
+          alertDiv.className = "centered-alert";
+
+          // Tạo hộp thoại alert và đưa nội dung vào
+          var alertBox = document.createElement("div");
+          alertBox.className = "alert-box";
+          alertBox.textContent = message;
+
+          // Tạo nút Oke
+          var okeButton = document.createElement("button");
+          okeButton.className = "oke-button";
+          okeButton.textContent = "Ok";
+
+          // Đưa nút Oke và hộp thoại alert vào phần tử div chứa
+          alertBox.appendChild(okeButton);
+          alertDiv.appendChild(alertBox);
+
+          // Đưa phần tử div chứa vào body của trang
+          document.body.appendChild(alertDiv);
+
+          // Bắt sự kiện khi người dùng bấm nút Oke và ẩn hộp thoại
+          okeButton.addEventListener("click", function () {
+              alertDiv.style.display = "none";
+          });
+      }
+  </script>
    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

@@ -1,8 +1,8 @@
+import os
 from flask import Flask, jsonify, request, render_template, redirect, session, url_for
 from google.cloud import storage
 import mysql.connector
 import datetime as dt
-from firebase_admin import credentials
 import pycountry
 import re
 
@@ -54,7 +54,9 @@ def Room():
         )
         mycursor = mydb.cursor()
         Sqlquery = "SELECT 	MAPHONG,TenPhong,LoaiPhong,DonGia,TinhTrang,GhiChu,	Imagephong FROM phong"
-        mycursor.execute(Sqlquery)
+        mycursor.execute(
+            Sqlquery,
+        )
         result = mycursor.fetchall()
         mycursor.close()
         mydb.close()
@@ -68,7 +70,6 @@ def Room():
         )  # Điều hướng đến trang login nếu email không tồn tại trong session
 
 
-# Điều hướng đến trang thêm phòng
 @app.route("/add_infor_room", methods=["GET", "POST"])
 def add_infor_room():
     message = ""  # Khởi tạo biến thông báo rỗng
@@ -83,48 +84,83 @@ def add_infor_room():
             GHICHU = request.form["GHICHU"]
 
             file = request.files["IMAGEPHONG"]  # Sửa key này thành "IMAGEPHONG"
+            # Lấy thư mục chạy ứng dụng
+            app_root = os.path.dirname(os.path.abspath(__file__))
+
+            # Tạo một đường dẫn tới thư mục tạm thời
+            temporary_folder = os.path.join(app_root, "temp_files")
+
+            # Đảm bảo thư mục tạm thời tồn tại, nếu không thì tạo nó
+            if not os.path.exists(temporary_folder):
+                os.makedirs(temporary_folder)
+
+            # Tạo đường dẫn tới tệp tạm thời
+            temporary_file_path = os.path.join(temporary_folder, "temporary_file.png")
+
             if file:
-                bucket_name = "image-899c9.appspot.com"  # Tên bucket name trên Firebase
+                # Lưu dữ liệu từ FileStorage vào tệp tạm thời
+                file.save(temporary_file_path)
+
+                # Tạo một client Storage
                 storage_client = storage.Client.from_service_account_json(
                     "E:/path/to/your/serviceAccountKey.json"
                 )
+
+                # Xác định bucket name
+                bucket_name = "image-899c9.appspot.com"
+
+                # Lấy bucket
                 bucket = storage_client.get_bucket(bucket_name)
-                blob = bucket.blob("images/" + file.filename)
-                blob.upload_from_file(file)
-                image_url = blob.public_url
 
-                # Kết nối CSDL và thêm dữ liệu
-                mydb = mysql.connector.connect(
-                    host="localhost", user="root", password="", database="cnpm"
-                )
-                mycursor = mydb.cursor()
+                # Tạo tên tập tin trên Firebase Storage
+                destination_blob_name = "images/" + file.filename
 
-                # Kiểm tra sự tồn tại của phòng
-                sqlcheck = "SELECT MAPHONG FROM phong WHERE MAPHONG=%s"
-                val = MAPHONG
-                mycursor.execute(sqlcheck, val)
-                existing_room = mycursor.fetchone()
-
-                if existing_room:
-                    message = "Mã phòng đã tồn tại!"  # Đặt thông báo tồn tại mã phòng
+                # Kiểm tra sự tồn tại của tệp trên Firebase Storage
+                blob = bucket.blob(destination_blob_name)
+                if not blob.exists():
+                    blob.upload_from_filename(
+                        temporary_file_path, content_type=file.content_type
+                    )
                 else:
-                    sql = "INSERT INTO phong (MAPHONG, TenPhong, LoaiPhong, DonGia, TinhTrang, GhiChu, Imagephong) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-                    val = (
-                        MAPHONG,
-                        TENPHONG,
-                        LOAIPHONG,
-                        DONGIA,
-                        TINHTRANG,
-                        GHICHU,
-                        image_url,
+                    message = "Hình ảnh đã tồn tại"
+                # Xóa tệp tạm thời
+                os.remove(temporary_file_path)
+
+                if not message:  # Chỉ thêm vào cơ sở dữ liệu nếu không có thông báo lỗi
+                    # Lấy URL công khai của hình ảnh tải lên
+                    image_url = blob.public_url
+                    print("image_url", image_url)
+                    mydb = mysql.connector.connect(
+                        host="localhost", user="root", password="", database="cnpm"
                     )
-                    mycursor.execute(sql, val)
-                    mydb.commit()  # Commit thay đổi vào cơ sở dữ liệu
-                    message = (
-                        "Thêm thông tin phòng thành công!"  # Đặt thông báo thành công
-                    )
-                    return render_template("add_infor_room.html", message=message)
-                return render_template("add_infor_room.html", message=message)
+                    mycursor = mydb.cursor()
+
+                    # Kiểm tra sự tồn tại của phòng
+                    sqlcheck = "SELECT MAPHONG FROM phong WHERE MAPHONG=%s"
+                    val = (MAPHONG,)
+                    mycursor.execute(sqlcheck, val)
+                    existing_room = mycursor.fetchone()
+                    if existing_room:
+                        message = "Phòng đã tồn tại "
+                    else:
+                        sql = "INSERT INTO phong(MAPHONG, TenPhong, LoaiPhong, DonGia, TinhTrang, GhiChu, Imagephong) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                        val = (
+                            MAPHONG,
+                            TENPHONG,
+                            LOAIPHONG,
+                            DONGIA,
+                            TINHTRANG,
+                            GHICHU,
+                            image_url,
+                        )
+                        try:
+                            mycursor.execute(sql, val)
+                            mydb.commit()  # Commit thay đổi vào cơ sở dữ liệu
+                            message = "Thêm thông tin phòng thành công!"  # Đặt thông báo thành công
+                        except Exception as ex:
+                            message = "Thêm phòng thất bại"
+                            print("Lỗi " + str(ex))
+            return render_template("add_infor_room.html", message=message)
         return render_template("add_infor_room.html", message=message)
     return redirect("login")
 
@@ -311,12 +347,6 @@ def delete_retal_date(item_id):
         return redirect("general_elements")
     else:
         return redirect("login")
-
-
-# Điều hướng tình trạng phòng
-@app.route("/media_gallery.html")
-def media_gallery():
-    return render_template("media_gallery.html")
 
 
 # Điều hướng hủy phòng
@@ -808,8 +838,11 @@ def delete_infor_customer(item_id):
         mycursor = mydb.cursor()
         sql = "DELETE FROM khachhang WHERE MAKH  = %s"
         val = (item_id,)  # Đảm bảo val là một tuple chứa giá trị item_id
-        mycursor.execute(sql, val)
-        mydb.commit()
+        try:
+            mycursor.execute(sql, val)
+            mydb.commit()
+        except Exception as ex:
+            print("lỗi", str(ex))
         # Sau khi xóa phòng, bạn có thể chuyển hướng người dùng đến trang khách hàng hoặc bất kỳ trang nào bạn muốn.
         return redirect("tables")
     else:
@@ -1226,14 +1259,47 @@ def delete_infor_employees(item_id):
         return redirect("login")
 
 
-# Điều hướng đến trang voucher
+# @app.route("/contact.html")
+# def contact():
+#     iconClicked = False
+#     if "email" in session:
+#         mydb = mysql.connector.connect(
+#             host="localhost", user="root", password="", database="cnpm"
+#         )
+#         mycursor = mydb.cursor()
+#         sql = "SELECT * FROM phieuthuephong"
+#         mycursor.execute(sql)
+#         result = mycursor.fetchall()
+#         if len(result) > 0:
+#             sql_get_limit = "SELECT * FROM phieuthuephong ORDER BY MAPTP DESC LIMIT 1"
+#             mycursor.execute(sql_get_limit)
+#             result_limit = mycursor.fetchone()
+
+#             CHECKIN = result_limit[
+#                 9
+#             ]  # Sử dụng chỉ số để truy cập HinhThucThanhToan (7 là chỉ số của HinhThucThanhToan trong tuple)
+#             print("CHECKIN", CHECKIN)
+#             if CHECKIN == "check":
+#                 iconClicked = True
+
+#         return render_template(
+#             "contact.html", data=result, iconClicked=str(iconClicked)
+#         )
+#     else:
+#         return redirect("login")
+
+
+# hiển thị trang phiếu thuê phòng
 @app.route("/contact.html")
 def contact():
+    # iconClicked = False
+    message = session.get("message")  # Lấy thông điệp từ biến phiên
     if "email" in session:
         mydb = mysql.connector.connect(
             host="localhost", user="root", password="", database="cnpm"
         )
         mycursor = mydb.cursor()
+        # Lấy thông tin từ bảng phieuthuephong kết hợp với bảng phong thông qua trường MAPHONG
         sql = "SELECT * FROM phieuthuephong"
         mycursor.execute(sql)
         result = mycursor.fetchall()
@@ -1262,6 +1328,7 @@ def show_infor_bill(item_id):
     else:
         return redirect("login")
 
+
 # update tổng tiền tự động
 @app.route("/update_total_price", methods=["POST"])
 def update_total_price():
@@ -1275,11 +1342,11 @@ def update_total_price():
     mycursor = mydb.cursor()
     try:
         sql_get_dongia = "SELECT DonGia FROM phong WHERE stt = %s"
-        print("sql", sql_get_dongia)
+        # print("sql", sql_get_dongia)
         val_get_dongia = (selected_room,)
         mycursor.execute(sql_get_dongia, val_get_dongia)
         row = mycursor.fetchone()
-        print("row is: ", row)
+        # print("row is: ", row)
         if row is not None:
             total_price = row[0]
             return jsonify({"total_price": total_price})
@@ -1292,8 +1359,9 @@ def update_total_price():
             {"total_price": None}
         )  # Hoặc trả về giá trị mặc định hoặc thông báo lỗi khác.
 
+
 # Điều hướng đến trang tạo hóa đơn
-@app.route("/add_infor_roomretalvoucher.html")
+@app.route("/add_infor_roomretalvoucher.html", methods=["POST", "GET"])
 def add_infor_roomretalvoucher():
     message = ""
     if "email" in session:
@@ -1301,7 +1369,7 @@ def add_infor_roomretalvoucher():
             host="localhost", user="root", password="", database="cnpm"
         )
         mycursor = mydb.cursor()
-        # Get thông tin phòng
+        # # Get thông tin phòng
         sql_get_room = "SELECT MAPHONG,stt FROM phong"
         mycursor.execute(
             sql_get_room,
@@ -1313,89 +1381,324 @@ def add_infor_roomretalvoucher():
             sql_get_customers,
         )
         result_get_customers = mycursor.fetchall()
-        # thông tin mã voucher
-        sql_get_voucher="SELECT * FROM voucher"
-        mycursor.execute(sql_get_voucher)
-        row=mycursor.fetchall()
-        print("row voucher: ", row) # in thông tin của voucher lấy được 
-        if len(row)>0:
-            check_voucher=row[0][0] #lấy mã voucher
-            gia_tri_voucher=int(row[0][1]) # lấy giá trị của voucher
-            ngay_het_han_voucher=row[0][2] # lấy ngày hết hạn của voucher
-            ngay_phat_hanh_voucher=row[0][3] # lấy  ngày phát hàng voucher
-            so_luong_voucher=int(row[0][4]) # lấy số lượng voucher
-        # lấy ngày hiện tại của voucher 
-        ngay_hien_tai_voucher=dt.datetime.now().strftime("%Y-%m-%d")
-        #lây thông tin khách hàng điền từ form 
+        regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"  # ký tự đặc biệt của email
+        # lây thông tin khách hàng điền từ form
         if request.method == "POST":
-            HinhThucThanhToan=request.form["HinhThucThanhToan"] # lấy thông tin của hình thức thanh toán
-            NgayNhanPhong=request.form["NgayNhanPhong"] # lấy thông ti của ngày nhận phòng
+            HinhThucThanhToan = request.form[
+                "HinhThucThanhToan"
+            ]  # lấy thông tin của hình thức thanh toán
+            NgayNhanPhong = request.form[
+                "NgayNhanPhong"
+            ]  # lấy thông ti của ngày nhận phòng
             # Lấy năm hiện tại
             current_year = dt.datetime.now().year
+
             # Thêm 1 để có năm tiếp theo
             next_year = current_year + 1
-            # chuyển đổi ngày nhận phòng từ chuỗi qua thời gian 
-            NgayNhanPhong_moi=dt.datetime.strptime( NgayNhanPhong,"%Y-%m-%d")
-            # chuyền đổi ngày nhận phòng thành yyyy-mm-dd và lấy ngày hiện tại trên máy tính
-            NgayNhanPhong_hientai=dt.datetime.now().strftime("%Y-%m-%d")
-            NgayTraPhong=request.form["NgayTraPhong"] # lấy thông tin của ngày trả phòng
-            # chuyền đổi thông tin ngày trả phòng từ chuỗi qua thời gian 
-            NgayTraPhong_moi=dt.datetime.strptime(NgayTraPhong,"%Y-%m-%d" )
-            # ngày trả phòng sau 30 ngày
-            NgayTraPhong_tuonglai=dt.timedelta(days=30)
-            SoLuongNguoiLon=request.form["SoLuongNguoiLon"] # lấy thông tin số lượng người lớn
-            SoLuongTreEm=int(request.form["SoLuongTreEm"]) # lấy thông tin số lượng trẻ em 
-            TongTien=float(request.form["TongTien"]) # lấy thông tin tổng tiền
-            GhiChu=request.form["GhiChu"] # lấy thông tin ghi chú
-            MaVoucher=request.form["MaVoucher"] # lấy thông tin mavoucher
-            MAKH=request.form["MAKH"] # lấy thông tin mã khách hàng
-            Maphong=request.from_values["Maphong"] # lấy thông tin mã phòng
-            if NgayNhanPhong_moi < NgayNhanPhong_hientai or current_year > next_year:
-                message="vui lòng kiểm tra lại ngày nhận phòng, ngày nhận phòng phải nhỏ hơn năm hiện tại" # thông báo
-                return render_template(
-                    "add_infor_roomretalvoucher.html",
-                    result_get_infor=result_get_room,
-                    result_get_customers=result_get_customers, message=message
-            )
-            elif NgayTraPhong_moi < NgayNhanPhong_hientai or NgayTraPhong_moi > NgayTraPhong_tuonglai:
-                message="vui lòng kiểm tra lại ngày trả phòng, ngày trả phòng không được quá 30 ngày" # thông báo
-                return render_template(
-                    "add_infor_roomretalvoucher.html",
-                    result_get_infor=result_get_room,
-                    result_get_customers=result_get_customers, message=message
-                )
-            elif SoLuongTreEm>1:
-                TongTien=TongTien*1.2
-            
-            
 
+            # chuyển đổi ngày nhận phòng từ chuỗi qua thời gian
+            NgayNhanPhong_moi = dt.datetime.strptime(NgayNhanPhong, "%Y-%m-%d")
+
+            # chuyền đổi ngày nhận phòng thành yyyy-mm-dd và lấy ngày hiện tại trên máy tính
+            Ngayhientai = dt.datetime.now()
+
+            NgayTraPhong = request.form[
+                "NgayTraPhong"
+            ]  # lấy thông tin của ngày trả phòng
+            # chuyền đổi thông tin ngày trả phòng từ chuỗi qua thời gian
+            NgayTraPhong_moi = dt.datetime.strptime(NgayTraPhong, "%Y-%m-%d")
+            SoLuongNguoiLon = request.form[
+                "SoLuongNguoiLon"
+            ]  # lấy thông tin số lượng người lớn
+            SoLuongTreEm = int(
+                request.form["SoLuongTreEm"]
+            )  # lấy thông tin số lượng trẻ em
+            TongTien = request.form["TongTien"]  # lấy thông tin tổng tiền
+            # loại bỏ các kí tự không phải số
+            Tongtien_str = "".join(filter(str.isdigit, TongTien))
+            Tongtienmoi = float(Tongtien_str)
+            GhiChu = request.form["GhiChu"]  # lấy thông tin ghi chú
+            MAKH = request.form["MAKH"]  # lấy thông tin mã khách hàng
+            print("MAKH", MAKH)
+            Maphong = request.form["Maphong"]  # lấy thông tin mã phòng
+            if NgayNhanPhong_moi <= Ngayhientai or current_year > next_year:
+                message = "vui lòng kiểm tra lại ngày nhận phòng, ngày nhận phòng phải nhỏ hơn năm hiện tại"
+                return render_template(
+                    "add_infor_roomretalvoucher.html",
+                    result_get_infor=result_get_room,
+                    result_get_customers=result_get_customers,
+                    message=message,
+                )
+                #
+            if (
+                NgayTraPhong_moi > (Ngayhientai + dt.timedelta(days=30))
+                or NgayTraPhong_moi < NgayNhanPhong_moi
+            ):
+                message = "vui lòng kiểm tra lại ngày trả phòng, ngày trả phòng không được quá 30 ngày"
+                return render_template(
+                    "add_infor_roomretalvoucher.html",
+                    result_get_infor=result_get_room,
+                    result_get_customers=result_get_customers,
+                    message=message,
+                )
+            if SoLuongTreEm > 1 and SoLuongNguoiLon >= 2:
+                Tongtienmoi = Tongtienmoi * (20 / 100)
+                print("tongtienmoi", Tongtienmoi)
+            if SoLuongTreEm >= 2 and SoLuongNguoiLon > 1:
+                Tongtienmoi = Tongtienmoi * (20 / 100)
+                print("tongtienmoi", Tongtienmoi)
+            if re.fullmatch(MAKH, regex):
+                message = "Địa chỉ email không hợp lệ"
+                return render_template(
+                    "add_infor_roomretalvoucher.html",
+                    result_get_infor=result_get_room,
+                    result_get_customers=result_get_customers,
+                    message=message,
+                )
+                # kiểm tra email tồn tại hay chưa
+            sql_check_email = "SELECT MAKH FROM khachhang WHERE Email_KH=%s"
+            val_check_enail = (MAKH,)
+            mycursor.execute(sql_check_email, val_check_enail)
+            check_email = mycursor.fetchone()
+            print("check_email", check_email)
+            if check_email:
+                MAKH = check_email[0]
+            else:
+                sql_insert_infor_khachhang = (
+                    "INSERT INTO `khachhang`(`Email_KH`) VALUES (%s)"
+                )
+                val_insert_infor_khachhang = (MAKH,)
+                mycursor.execute(sql_insert_infor_khachhang, val_insert_infor_khachhang)
+                mydb.commit()
+                MAKH = mycursor.lastrowid
+                print(MAKH)
+            print(Maphong)
+            sql_get_stt = "SELECT stt FROM phong WHERE stt=%s"
+            val_get_stt = (Maphong,)
+            mycursor.execute(sql_get_stt, val_get_stt)
+            row = mycursor.fetchone()
+            print("row", row)
+            Maphong = row[0]
+            print(Maphong)
+            # kiểm tra phong đã có trong phiếu thuê phòng
+            get_kiemtra_maphong = "SELECT Maphong FROM phieuthuephong WHERE Maphong=%s"
+            val_kiemtra_maphong = (Maphong,)
+            mycursor.execute(get_kiemtra_maphong, val_kiemtra_maphong)
+            kiemtra_maphong = mycursor.fetchone()
+            if kiemtra_maphong:
+                message = "Phòng đã được đặt"
+                return render_template(
+                    "add_infor_roomretalvoucher.html",
+                    result_get_infor=result_get_room,
+                    result_get_customers=result_get_customers,
+                    message=message,
+                )
+            else:
+                sql_insert_infor_roomretalvoucher = "INSERT INTO `phieuthuephong`(`HinhThucThanhToan`, `NgayNhanPhong`, `NgayTraPhong`, `SoLuongNguoiLon`, `SoLuongTreEm`, `TongTien`, `GhiChu`, `CHECKIN`,`MANV`, `MAKH`, `Maphong`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                val_insert_infor_roomretalvoucher = (
+                    HinhThucThanhToan,
+                    NgayNhanPhong_moi,
+                    NgayTraPhong_moi,
+                    SoLuongNguoiLon,
+                    SoLuongTreEm,
+                    Tongtienmoi,
+                    GhiChu,
+                    "check",
+                    None,
+                    MAKH,
+                    Maphong,
+                )
+                try:
+                    mycursor.execute(
+                        sql_insert_infor_roomretalvoucher,
+                        val_insert_infor_roomretalvoucher,
+                    )
+                    mydb.commit()
+                    message = "Tạo thành công"
+                except Exception as e:
+                    message = "Tạo thất bại"
+                    print("Lỗi ", str(e))
+                print(message)
+                return redirect("contact.html")
         return render_template(
             "add_infor_roomretalvoucher.html",
             result_get_infor=result_get_room,
             result_get_customers=result_get_customers,
+            message=message,
         )
     else:
         return redirect("login")
 
-@app.route("/check_email_availability", methods=["POST"])
-def check_email_availability():
-    data = request.form
-    email = data.get("email")
-    # Thực hiện kiểm tra email trong cơ sở dữ liệu của bạn.
-    email_available = is_email_available(email)
-    return jsonify({"available": email_available})
 
-def is_email_available(email):
-    mydb = mysql.connector.connect(
-        host="localhost", user="root", password="", database="cnpm"
-    )
-    mycursor = mydb.cursor()
-    sql_get_makh = "SELECT Email_KH FROM khachhang WHERE Email_KH = %s"
-    mycursor.execute(sql_get_makh, (email,))
-    result_get_email = mycursor.fetchone()
-    if result_get_email:
-        return result_get_email[0]
-    return False  # Đây là ví dụ. Bạn cần thay đổi mã này để phù hợp với cơ sở dữ liệu của bạn.
+# chấp nhận thông tin khách hàng
+@app.route("/reciveIconClicked/<item_id>", methods=["POST", "GET"])
+def reciveIconClicked(item_id):
+    message = ""
+    if "email" in session:
+        data = request.get_json()
+        iconClicked = data.get("iconClicked")
+        print("click_accept(item_id):", iconClicked, item_id)
+        print("data", data)
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        if iconClicked == True:
+            sql_update_again_phieuthuephong = (
+                "UPDATE `phieuthuephong` SET `CHECKIN`=%s WHERE `MAPTP`=%s"
+            )
+            val_update_again_phieuthuephong = ("check", item_id)
+            try:
+                mycursor.execute(
+                    sql_update_again_phieuthuephong, val_update_again_phieuthuephong
+                )
+                mydb.commit()
+                message = "thành công"
+                session["message"] = message
+            except Exception as ex:
+                print("Lỗi ", str(ex))
+            return redirect(url_for("contact"))
+        else:
+            sql_update_again_phieuthuephong = (
+                "UPDATE `phieuthuephong` SET `CHECKIN`=%s WHERE `MAPTP`=%s"
+            )
+            val_update_again_phieuthuephong = ("not check", item_id)
+            try:
+                mycursor.execute(
+                    sql_update_again_phieuthuephong, val_update_again_phieuthuephong
+                )
+                mydb.commit()
+                message = "thất bại"
+                session["message"] = message
+            except Exception as ex:
+                print("Lỗi ", str(ex))
+            return redirect(url_for("contact"))
+    else:
+        return redirect("login")
+
+
+# xóa thông tin phiếu thuê phòng
+@app.route("/delete_infor_rentalroom/<item_id>")
+def delete_infor_rentalroom(item_id):
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql_get_makhachhang = "SELECT MAKH FROM phieuthuephong WHERE MAPTP=%s"
+        val_get_makhachhang = (item_id,)
+        mycursor.execute(sql_get_makhachhang, val_get_makhachhang)
+        row_khachhang = mycursor.fetchone()
+        # xóa thông tin phiếu thuê phòng
+        sql_delete_phieuthuephong = "DELETE FROM `phieuthuephong` WHERE MAPTP=%s"
+        val_delete_phieuthuephong = (item_id,)
+        try:
+            mycursor.execute(sql_delete_phieuthuephong, val_delete_phieuthuephong)
+            mydb.commit()
+            print("Xóa thành công")
+        except Exception as e:
+            print("Lỗi:", str(e))
+        # xóa thông tin khách hàng trùng với phiếu thuê phòng
+        sql_delete_khachhang = "DELETE FROM `khachhang` WHERE MAKH=%s"
+        val_delete_khachhang = (row_khachhang[0],)
+        try:
+            mycursor.execute(sql_delete_khachhang, val_delete_khachhang)
+            mydb.commit()
+            print("Xóa thành công")
+        except Exception as e:
+            print("Lỗi:", str(e))
+        return redirect("contact")
+    else:
+        return redirect("login")
+
+
+# Điều hướng tình trạng phòng
+@app.route("/media_gallery.html")
+def media_gallery():
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql_get_status_phong = "SELECT * FROM phong ORDER BY LoaiPhong ASC"
+        mycursor.execute(sql_get_status_phong)
+        result_status = mycursor.fetchall()
+        sql_get_status_phieuthuephong = "SELECT * FROM phieuthuephong"
+        mycursor.execute(sql_get_status_phieuthuephong)
+        result_status_phieuthuephong = mycursor.fetchall()
+
+        sql_get_status_phieu = "SELECT DISTINCT Maphong FROM phieuthuephong"
+        mycursor.execute(sql_get_status_phieu)
+        result_status_phieu = mycursor.fetchall()
+        if result_status:
+            stt = [status[0] for status in result_status]
+            maphieuthuephong = [statusphieu[0] for statusphieu in  result_status_phieu]
+            print("maphieuthuephongs", maphieuthuephong)
+            print("stt của phòng", stt)  # CHECKIN='check' AND
+            sql_status_phiethuephong = "SELECT * FROM phieuthuephong WHERE CHECKIN='check' AND Maphong IN ({})".format(
+                ", ".join(["%s"] * len(stt))
+            )
+            print("sql_status_phiethuephong", sql_status_phiethuephong)
+            val_status_phiethuephong = stt
+            mycursor.execute(sql_status_phiethuephong, val_status_phiethuephong)
+            result_status_phieuthuephong = mycursor.fetchall()
+            if result_status_phieuthuephong:
+                print(result_status_phieuthuephong)
+                CHECKIN = [checkin[9] for checkin in result_status_phieuthuephong]
+                Maphong = [Maphong[12] for Maphong in result_status_phieuthuephong]
+                print("CHECKIN", CHECKIN)
+                print("Maphong", Maphong)
+              
+                # status = [maphong for maphong in stt if maphong in Maphong]
+                # print("status",status)
+                if "check" in CHECKIN:
+                    status = Maphong
+            return render_template(
+                "media_gallery.html",
+                result_status=result_status,
+                checkstatus=status,
+                phongstt= maphieuthuephong,
+            )
+        else:
+            # Xử lý khi không có dòng nào được trả về (tuỳ theo yêu cầu của bạn)
+            return "Không có dữ liệu phòng thuê."
+    else:
+        return redirect("login")
+
+
+# @app.route("/media_gallery.html")
+# def media_gallery():
+#     if "email" in session:
+#         mydb = mysql.connector.connect(
+#             host="localhost", user="root", password="", database="cnpm"
+#         )
+#         mycursor = mydb.cursor()
+#         sql_get_status_phong = "SELECT * FROM phong"
+#         mycursor.execute(sql_get_status_phong)
+#         result_status = mycursor.fetchall()
+
+#         sql_get_status_phieuthuephong = "SELECT DISTINCT Maphong FROM phieuthuephong"
+#         mycursor.execute(sql_get_status_phieuthuephong)
+#         result_status_phieuthuephong = mycursor.fetchall()
+
+#         if result_status:
+#             stt = [status[0] for status in result_status]
+#             print("stt",stt)
+#             maphieuthuephong = [statusphieu[0] for statusphieu in result_status_phieuthuephong]
+#             print(" maphieuthuephong", maphieuthuephong)
+#             # Kiểm tra sự tồn tại của mã phòng trong danh sách phieuthuephong
+#             phong_khong_ton_tai = [maphong for maphong in stt if maphong not in maphieuthuephong]
+#             print()
+#             return render_template(
+#                 "media_gallery.html",
+#                 result_status=result_status,
+#                 phong_khong_ton_tai=phong_khong_ton_tai,
+#             )
+#         else:
+#             # Xử lý khi không có dòng nào được trả về (tuỳ theo yêu cầu của bạn)
+#             return "Không có dữ liệu phòng thuê."
+#     else:
+#         return redirect("login")
 
 
 @app.route("/map.html")
@@ -1444,3 +1747,18 @@ if __name__ == "__main__":
 # fetchall(): Phương thức này trả về tất cả các dòng của kết quả truy vấn dưới dạng danh sách các tuple.
 
 # fetchmany(size): Phương thức này trả về số lượng dòng cụ thể (được chỉ định bởi size) của kết quả truy vấn dưới dạng danh sách các tuple.
+
+
+# thông tin mã voucher
+# sql_get_voucher = "SELECT * FROM voucher"
+# mycursor.execute(sql_get_voucher)
+# row = mycursor.fetchall()
+# print("row voucher: ", row)  # in thông tin của voucher lấy được
+# if len(row) > 0:
+#     check_voucher = row[0][0]  # lấy mã voucher
+#     gia_tri_voucher = int(row[0][1])  # lấy giá trị của voucher
+#     ngay_het_han_voucher = row[0][2]  # lấy ngày hết hạn của voucher
+#     ngay_phat_hanh_voucher = row[0][3]  # lấy  ngày phát hàng voucher
+#     so_luong_voucher = int(row[0][4])  # lấy số lượng voucher
+# # lấy ngày hiện tại của voucher
+# ngay_hien_tai_voucher = dt.datetime.now().strftime("%Y-%m-%d")

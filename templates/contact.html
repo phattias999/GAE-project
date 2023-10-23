@@ -13,8 +13,9 @@
    <meta name="keywords" content="">
    <meta name="description" content="">
    <meta name="author" content="">
+   <!-- <meta http-equiv="refresh" content="2"> -->
    <script src="https://kit.fontawesome.com/dbf4841881.js" crossorigin="anonymous"></script>
-
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
    <link rel="stylesheet" href="{{ url_for('static', filename='css/color_2.css') }}">
@@ -164,12 +165,15 @@
                                              <th>GHI CHÚ</th>
                                              <th>MaVoucher</th>
                                              <th>MÃ PHÒNG</th>
-                                             <th>Xem</th>
                                              <th>CHECK</th>
+                                             <th>Xem</th>
+                                             <th>Edit</th>
                                              <th>Xóa</th>
                                           </tr>
                                        </thead>
                                        <tbody>
+                                          <!-- <div id="statusMessage"></div> -->
+                                          <!-- <p>Giá trị của iconClicked: {{ iconClicked }}</p> -->
                                           {% for phieuthuephong in data%}
                                           <tr>
                                              <td>{{phieuthuephong[1]}}</td>
@@ -180,11 +184,18 @@
                                              <td>{{phieuthuephong[6]}}</td>
                                              <td>{{phieuthuephong[7]}}</td>
                                              <td>{{phieuthuephong[8]}}</td>
-                                             <td>{{phieuthuephong[11]}}</td>
-                                             <td><a href="show_infor_bill/{{phieuthuephong[0]}}"><i class="fa-solid fa-eye"></i></a></i>
+                                             <td>{{phieuthuephong[12]}}</td>
+                                             <td><button class="buttoncheck"><i class="fa-solid fa-check"
+                                                      id="checkIcon{{ phieuthuephong[0] }}"
+                                                      onclick="click_accept('{{ phieuthuephong[0] }}')"></i></button>
                                              </td>
-                                             <td><a href=""><i class="fa-solid fa-check"></i></a></td>
-                                             <td><a href=""><i class="fa-solid fa-delete-left"></i></a></i></td>
+                                             <td><a href="show_infor_bill/{{phieuthuephong[0]}}"><i
+                                                      class="fa-solid fa-eye"></i></a></i>
+                                             </td>
+                                             <td><a href=""><i class="fa-solid fa-wrench"></i></a></td>
+                                             <td><a href=""
+                                                   onclick="delete_infor_rentalroom('{{phieuthuephong[0]}}')"><i
+                                                      class="fa-solid fa-delete-left"></i></a></i></td>
                                           </tr>
                                           {% endfor %}
                                        </tbody>
@@ -206,11 +217,157 @@
          </div>
       </div>
    </div>
+   <style>
+      /* Đây là một ví dụ về các quy tắc CSS để tạo hiệu ứng cho các biểu tượng FontAwesome */
+      /* Đảm bảo rằng bạn đã tùy chỉnh nó cho nhu cầu cụ thể của bạn */
+
+      .buttoncheck {
+         border: none;
+      }
+
+      /* Đổi màu cho biểu tượng fa-check */
+      .fa-check {
+         color: black;
+         /* Màu hiển thị */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm đường viền cho biểu tượng fa-eye */
+      .fa-eye {
+         color: blue;
+         /* Màu hiển thị */
+         font-size: 22px;
+         /* Đường viền */
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-wrench */
+      .fa-wrench {
+         color: orange;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-delete-left */
+      .fa-delete-left {
+         color: red;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+
+      /* Định nghĩa lớp cho hộp thoại alert */
+      .centered-alert {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background-color: rgba(0, 0, 0, 0.5);
+         /* Màu nền đục để tạo hiệu ứng xám */
+         z-index: 9999;
+         /* Đảm bảo hộp thoại hiển thị trên cùng */
+      }
+
+      .alert-box {
+         background-color: #fff;
+         border-radius: 5px;
+         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+         text-align: center;
+         padding: 20px;
+         max-width: 400px;
+         width: 80%;
+      }
+
+      .oke-button {
+         margin-top: 20px;
+         background-color: #007BFF;
+         color: white;
+         border: none;
+         border-radius: 5px;
+         padding: 10px 20px;
+         cursor: pointer;
+         margin-left: 20px;
+      }
+   </style>
    <script>
-      function delete_infor_employees(item_id) {
+      $(document).ready(function () {
+         $("[id^='checkIcon']").each(function () {
+            var item_id = this.id.substring(9);
+            var iconClicked = localStorage.getItem("iconClicked" + item_id);
+
+            if (iconClicked === null || iconClicked === "true") {
+               iconClicked = true;
+               this.style.color = "green";
+            } else {
+               iconClicked = false;
+               this.style.color = "black";
+            }
+
+            $(this).click(function () {
+               click_accept(this); // Truyền biểu tượng thay vì item_id
+            });
+         });
+      });
+
+      function click_accept(icon) {
+         var item_id = icon.id.substring(9); // Lấy item_id từ id của biểu tượng
+         var iconClicked = localStorage.getItem("iconClicked" + item_id);
+
+         if (confirm("Bạn có chắc muốn đồng ý")) {
+            if (iconClicked === null || iconClicked === "false") {
+               iconClicked = true;
+               localStorage.setItem("iconClicked" + item_id, "true");
+               icon.style.color = "green"; // Đổi màu về xanh khi được click
+            } else {
+               iconClicked = false;
+               localStorage.setItem("iconClicked" + item_id, "false");
+               icon.style.color = "black"; // Đổi màu về đen khi được click
+            }
+
+            sendIconClickedToPython(item_id, iconClicked);
+         }
+      }
+
+      function sendIconClickedToPython(item_id, iconClicked) {
+         $.ajax({
+            type: "POST",
+            url: "/reciveIconClicked/" + item_id,
+            contentType: "application/json",
+            data: JSON.stringify({ iconClicked: iconClicked }),
+            success: function (response) {
+               if (response.success) {
+                  $("#statusMessage").text("Giá trị đã được gửi và xử lý thành công!");
+                  console.log("Giá trị đã được gửi và xử lý thành công!");
+                  // Đặt thời gian chờ trước khi tải lại trang
+                  // setTimeout(function () {
+                  //    window.location.href = "/contact.html?timestamp=" + new Date().getTime();
+                  // }, 2000); // Tải lại sau 2 giây (thay đổi thời gian tùy theo nhu cầu)
+                  location.reload(); // Tải lại trang ngay lập tức
+               } else {
+                  $("#statusMessage").text("Có lỗi trong quá trình xử lý.");
+                  console.log("Có lỗi trong quá trình xử lý.");
+               }
+            },
+            error: function (error) {
+               $("#statusMessage").text("Lỗi trong quá trình gửi giá trị.");
+               console.error("Lỗi trong quá trình gửi giá trị.");
+            }
+         });
+      }
+   </script>
+
+  
+   <script>
+      function delete_infor_rentalroom(item_id) {
          if (confirm("Bạn có chắc muốn xóa không?.")) {
             // Nếu người dùng đồng ý xóa
-            fetch(`/delete_infor_employees/${item_id}`, {
+            fetch(`/delete_infor_rentalroom/${item_id}`, {
                method: "GET",
             })
                .then(response => response.json())
@@ -228,7 +385,37 @@
          }
       }
    </script>
-   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+   <script>
+      var message = "{{ message }}";  // Nhận thông báo từ Flask và chuyển thành JavaScript string
+
+      if (message) {
+         // Tạo một phần tử div để chứa hộp thoại
+         var alertDiv = document.createElement("div");
+         alertDiv.className = "centered-alert";
+
+         // Tạo hộp thoại alert và đưa nội dung vào
+         var alertBox = document.createElement("div");
+         alertBox.className = "alert-box";
+         alertBox.textContent = message;
+
+         // Tạo nút Oke
+         var okeButton = document.createElement("button");
+         okeButton.className = "oke-button";
+         okeButton.textContent = "Ok";
+
+         // Đưa nút Oke và hộp thoại alert vào phần tử div chứa
+         alertBox.appendChild(okeButton);
+         alertDiv.appendChild(alertBox);
+
+         // Đưa phần tử div chứa vào body của trang
+         document.body.appendChild(alertDiv);
+
+         // Bắt sự kiện khi người dùng bấm nút Oke và ẩn hộp thoại
+         okeButton.addEventListener("click", function () {
+            alertDiv.style.display = "none";
+         });
+      }
+   </script>
    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/animate.js') }}"></script>

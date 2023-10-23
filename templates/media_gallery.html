@@ -28,6 +28,54 @@
 </head>
 
 <body class="inner_page media_gallery">
+   <style>
+      .chuthich {
+         display: flex;
+      }
+
+      .container_chuthich {
+         display: flex;
+      }
+
+      .square {
+         height: 20px;
+         width: 20px;
+         background-color: red;
+         margin-left: 20px;
+         margin-right: 20px;
+      }
+
+      .square2 {
+         height: 20px;
+         width: 20px;
+         background-color: green;
+         margin-left: 20px;
+         margin-right: 20px;
+      }
+
+      .square3 {
+         height: 20px;
+         width: 20px;
+         background-color: blue;
+         margin-left: 20px;
+         margin-right: 20px;
+      }
+
+      .heading_section {
+         border-top: solid #15283c 2px;
+         background: green;
+
+      }
+
+      /* #1ed085 */
+      .heading_section h4 {
+         color: #fff;
+         margin: 0;
+         font-weight: 200;
+         padding: 8px 8px 8px;
+         font-size: 15px;
+      }
+   </style>
    <div class="full_container">
       <div class="inner_container">
          <!-- Sidebar  -->
@@ -130,7 +178,7 @@
                   <div class="row column_title">
                      <div class="col-md-12">
                         <div class="page_title">
-                           <h2>Media Gallery</h2>
+                           <h2>Room status</h2>
                         </div>
                      </div>
                   </div>
@@ -140,312 +188,39 @@
                      <div class="col-md-12">
                         <div class="white_shd full margin_bottom_30">
                            <div class="full graph_head">
-                              <div class="heading1 margin_0">
-                                 <h2>Media Gallery Design Elements</h2>
+                              <div class="container_chuthich">
+                                 <div class="chuthich">
+                                    <h3>Đã đặt: </h3>
+                                    <div class="square"></div>
+                                 </div>
+                                 <div class="chuthich">
+                                    <h3>Trống: </h3>
+                                    <div class="square2"></div>
+                                 </div>
+                                 <div class="chuthich">
+                                    <h3>Đang chờ : </h3>
+                                    <div class="square3"></div>
+                                 </div>
                               </div>
                            </div>
+                           <!-- <p>Giá trị của checkstatus: {{checkstatus}}</p>
+                           <p>Giá trị của phongstt: {{phongstt}}</p> -->
+                           <div id="statusDisplay"></div>
                            <div class="full gallery_section_inner padding_infor_info">
                               <div class="row">
+                                 {% for status in result_status %}
                                  <div class="col-sm-4 col-md-3 margin_bottom_30">
                                     <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g1.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g1.jpg') }}"
-                                             alt="#" /></a>
+                                       <a data-fancybox="gallery" href="{{ status[7] }}"><img class="img-responsive"
+                                             src="{{ status[7] }}" alt="#" /></a>
                                     </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g2.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g2.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
+
+                                    <div class="heading_section" id="setcolor-{{ status[0] }}">
+                                       <h4>Tên Phòng: {{ status[2] }} </h4>
+                                       <h4>Mã phòng: {{ status[1] }}</h4>
                                     </div>
                                  </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g3.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g3.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g4.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g4.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g5.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g5.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g6.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g6.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g7.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g7.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g8.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g8.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g9.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g9.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g10.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g10.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g11.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g11.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g12.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g12.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g13.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g13.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g14.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g14.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g15.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g15.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g16.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g16.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g1.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g1.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g2.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g2.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g3.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g3.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g4.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g4.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g5.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g5.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g6.jpg') }}"><img
-                                             class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g6.jpg') }}"
-                                             alt="#" /></a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g7.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g7.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-4 col-md-3 margin_bottom_30">
-                                    <div class="column">
-                                       <a data-fancybox="gallery"
-                                          href="{{ url_for('static', filename='images/layout_img/g8.jpg') }}">
-                                          <img class="img-responsive"
-                                             src="{{ url_for('static', filename='images/layout_img/g8.jpg') }}"
-                                             alt="#" />
-                                       </a>
-                                    </div>
-                                    <div class="heading_section">
-                                       <h4>Sed ut perspiciatis</h4>
-                                    </div>
-                                 </div>
+                                 {%endfor%}
                               </div>
                            </div>
                         </div>
@@ -487,6 +262,35 @@
          <!-- end model popup -->
       </div>
    </div>
+   <script>
+      var checkstatus = JSON.parse("{{ checkstatus }}");
+      var phongstt = JSON.parse("{{ phongstt }}");
+      for (let i = 0; i < phongstt.length; i++) {
+
+         let status = phongstt[i];
+
+         let setColorElement = document.getElementById("setcolor-" + status);
+
+         let isFound = false;
+
+         for (let j = 0; j < checkstatus.length; j++) {
+            if (status === checkstatus[j]) {
+               isFound = true;
+               break;
+            }
+         }
+
+         if (isFound==true) {
+            setColorElement.style.backgroundColor = "red";
+         } else if(isFound==false) {
+            setColorElement.style.backgroundColor = "blue";
+         }else{
+            setColorElement.style.backgroundColor = "green";
+         }
+
+      }
+   </script>
+
    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
