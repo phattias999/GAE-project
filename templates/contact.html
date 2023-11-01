@@ -156,6 +156,7 @@
                                     <table class="table table-striped">
                                        <thead>
                                           <tr>
+                                             <th></th>
                                              <th>HÌNH THỨC THANH TOÁN</th>
                                              <th>NGÀY NHẬN PHÒNG</th>
                                              <th>NGÀY TRẢ PHÒNG</th>
@@ -172,10 +173,12 @@
                                           </tr>
                                        </thead>
                                        <tbody>
-                                          <!-- <div id="statusMessage"></div> -->
-                                          <!-- <p>Giá trị của iconClicked: {{ iconClicked }}</p> -->
+                                          <!-- <div id="checksuccess"></div> -->
+                                          <!-- <p>success: {{ success }}</p> -->
                                           {% for phieuthuephong in data%}
                                           <tr>
+                                             <td> <input type="checkbox" id="mycheck-{{phieuthuephong[0]}}"
+                                                   name="{{phieuthuephong[0]}}" value="{{phieuthuephong[0]}}"></td>
                                              <td>{{phieuthuephong[1]}}</td>
                                              <td>{{phieuthuephong[2]}}</td>
                                              <td>{{phieuthuephong[3]}}</td>
@@ -185,9 +188,13 @@
                                              <td>{{phieuthuephong[7]}}</td>
                                              <td>{{phieuthuephong[8]}}</td>
                                              <td>{{phieuthuephong[12]}}</td>
-                                             <td><button class="buttoncheck"><i class="fa-solid fa-check"
-                                                      id="checkIcon{{ phieuthuephong[0] }}"
-                                                      onclick="click_accept('{{ phieuthuephong[0] }}')"></i></button>
+                                             <td>
+                                                <button class="buttoncheck">
+                                                   <i class="fa fa-check" id="checkIcon{{ phieuthuephong[0] }}"
+                                                      data-icon-color="green"
+                                                      onclick="click_accept('{{ phieuthuephong[0] }}')">
+                                                   </i>
+                                                </button>
                                              </td>
                                              <td><a href="show_infor_bill/{{phieuthuephong[0]}}"><i
                                                       class="fa-solid fa-eye"></i></a></i>
@@ -201,6 +208,8 @@
                                        </tbody>
                                     </table>
                                  </div>
+                                 <div class="col-md-4 css_taohoadon"><button class="btn btn-info "
+                                       onclick="onCreateInvoice()">Tạo hóa đơn</button></div>
                               </div>
                            </div>
                         </div>
@@ -218,8 +227,10 @@
       </div>
    </div>
    <style>
-      /* Đây là một ví dụ về các quy tắc CSS để tạo hiệu ứng cho các biểu tượng FontAwesome */
-      /* Đảm bảo rằng bạn đã tùy chỉnh nó cho nhu cầu cụ thể của bạn */
+      .css_taohoadon {
+         margin-top: 50px;
+         margin-left: 980px;
+      }
 
       .buttoncheck {
          border: none;
@@ -344,11 +355,6 @@
                if (response.success) {
                   $("#statusMessage").text("Giá trị đã được gửi và xử lý thành công!");
                   console.log("Giá trị đã được gửi và xử lý thành công!");
-                  // Đặt thời gian chờ trước khi tải lại trang
-                  // setTimeout(function () {
-                  //    window.location.href = "/contact.html?timestamp=" + new Date().getTime();
-                  // }, 2000); // Tải lại sau 2 giây (thay đổi thời gian tùy theo nhu cầu)
-                  location.reload(); // Tải lại trang ngay lập tức
                } else {
                   $("#statusMessage").text("Có lỗi trong quá trình xử lý.");
                   console.log("Có lỗi trong quá trình xử lý.");
@@ -361,8 +367,50 @@
          });
       }
    </script>
+   <script>
+      function onCreateInvoice() {
+         // Lấy tất cả các phần tử checkbox được chọn
+         var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+         // Danh sách lưu trữ các giá trị ID của các phần tử được chọn
+         var selectedIds = [];
 
-  
+         checkboxes.forEach(function (checkbox) {
+            selectedIds.push(checkbox.value);
+            console.log(" selectedIds " + selectedIds)
+         });
+         // Gửi danh sách ID được chọn về máy chủ để xử lý việc tạo hóa đơn
+         if (selectedIds.length > 0) {
+            // Sử dụng Ajax để gửi dữ liệu lên máy chủ
+            $.ajax({
+               type: "POST",  // Phương thức POST
+               url: "/checkboxdata",  // Đường dẫn xử lý tạo hóa đơn trên máy chủ
+               data: JSON.stringify({ selectedIds: selectedIds }),  // Dữ liệu gửi đi, trong trường hợp này là danh sách các ID đã chọn
+               contentType: "application/json",  // Định dạng dữ liệu là JSON
+               success: function (response) {
+                  if (response.success) {
+                     // Xử lý thành công
+                     $("#checksuccess").text("thành công");
+                     alert("thành công")
+                     if(alert){
+                        window.location.reload();
+                     }
+                  } else {
+                     // Xử lý thất bại
+                     $("#checksuccess").text("thất bại");
+                     alert("vui lòng kiếm tra lại ")
+                     if(alert){
+                        window.location.reload();
+                     }
+                  }
+               },
+               error: function (error) {
+                  // Lỗi trong quá trình gửi dữ liệu
+                  $("#checksuccess").text("lỗi trong quá trình gửi dữ liệu");
+               }
+            });
+         }
+      }
+   </script>
    <script>
       function delete_infor_rentalroom(item_id) {
          if (confirm("Bạn có chắc muốn xóa không?.")) {
@@ -426,7 +474,6 @@
    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
    <script src="{{ url_for('static', filename='js/analyser.js') }}"></script>
    <script src="{{ url_for('static', filename='js/perfect-scrollbar.min.js') }}"></script>
-   <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 </body>
 
 </html>

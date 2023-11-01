@@ -140,7 +140,7 @@
                         <div class="row column_title">
                             <div class="col-md-12">
                                 <div class="page_title">
-                                    <h2>Xem thông tin hóa đơn</small></h2>
+                                    <h2>Edit Retal date</small></h2>
                                 </div>
                             </div>
                         </div>
@@ -152,47 +152,59 @@
                                     <div class="full padding_infor_info">
                                         <div class="table_row">
                                             <div class="table-responsive">
-                                                <form action="" class="table table-striped">
+                                                <form action="" class="table table-striped" method="post"
+                                                    enctype="multipart/form-data">
                                                     <div class="form-group">
                                                         <label for="MAKH">Hình Thức Thanh Toán</label>
                                                         <input type="text" class="form-control" id="HinhThucThanhToan"
-                                                            name="HinhThucThanhToan" required readonly value="{{show_infor_bill[1]}}">
+                                                            name="HinhThucThanhToan" required readonly
+                                                            value="{{ result_edit_infor_bill[1]}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="SoTienPhuThem">So Tien Phu Them</label>
                                                         <input type="text" class="form-control" id="SoTienPhuThem"
-                                                            name="SoTienPhuThem" required readonly value="{{show_infor_bill[2]}}">
+                                                            name="SoTienPhuThem" required
+                                                            value="{{ result_edit_infor_bill[2]}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="TongTienThanhToan	">Tong Tien Thanh Toan</label>
                                                         <input type="text" class="form-control" id="TongTienThanhToan"
-                                                            name="TongTienThanhToan" required readonly value="{{show_infor_bill[3]}}">
+                                                            name="TongTienThanhToan" required
+                                                            value="{{ result_edit_infor_bill[3]}}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="NguoiThanhToan">Nguoi Thanh Toan</label>
                                                         <input type="text" class="form-control" id="NguoiThanhToan"
-                                                            name="NguoiThanhToan" required readonly value="{{show_infor_bill[4]}}">
-                                                    </div>                      
-                                                    <div class="form-group">
-                                                        <label for="GhiChu">Ghi Chú</label>
-                                                        <textarea name="GhiChu" id="GhiChu" cols="3" class="form-control">{{show_infor_bill[5]}}</textarea>      
-                                                    </div>                                  
-                                                    <div class="form-group">
-                                                        <label for="MAptp">Mã Phiếu thuê Phòng</label>
-                                                        <input type="text" class="form-control" id="MAptp"
-                                                            name="MAptp" required readonly value="{{show_infor_bill[6]}}">
+                                                            name="NguoiThanhToan" required readonly
+                                                            value="{{ result_edit_infor_bill[4]}}">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="MAHDNH">Mã hóa đơn nhà hàng</label>                          
+                                                        <label for="GhiChu">Ghi Chú</label>
+                                                        <textarea name="GhiChu" id="GhiChu" cols="3"
+                                                            class="form-control">{{ result_edit_infor_bill[5]}}</textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="MAptp">Mã Phiếu thuê Phòng</label>
+                                                        <input type="text" class="form-control" id="MAptp" name="MAptp"
+                                                            required readonly value="{{ result_edit_infor_bill[6]}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="MAHDNH">Mã hóa đơn nhà hàng</label>
                                                         <input type="text" class="form-control" id="MAHDNH"
-                                                            name="MAHDNH" required readonly value="{{show_infor_bill[7]}}">
-                                                    </div>                                                
+                                                            name="MAHDNH" required readonly
+                                                            value="{{ result_edit_infor_bill[7]}}">
+                                                    </div>
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <a href="" class="btn btn-warning btn-block">Back</a>
+                                                            <button type="submit"
+                                                                class="btn btn-warning btn-block">Update bill
+                                                            </button>
                                                         </div>
-                                                        <div class="col-md-4">                                                      
-                                                            <a href="" onclick="" class="btn btn-primary btn-block">Delete Room</a>
+                                                        <div class="col-md-4">
+                                                            <a href="" class="btn btn-primary btn-block"
+                                                                onclick="">Delete
+                                                                destroy
+                                                                room</a>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -212,7 +224,97 @@
             </div>
         </div>
     </div>
-   
+    <script>
+        function delete_retal_date(item_id) {
+            if (confirm("Bạn có chắc muốn xóa không?.")) {
+                // Nếu người dùng đồng ý xóa
+                fetch(`/delete_retaldate/${item_id}`, {
+                    method: "GET",
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Phòng đã được xóa thành công, chuyển hướng người dùng đến trang khác
+                            alert("Phòng đã được xóa thành công!");
+                        } else {
+                            alert("Không thể xóa phòng. Hãy thử lại sau.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Lỗi khi xóa phòng:", error);
+                    });
+            }
+        }
+    </script>
+    <style>
+        /* Định nghĩa lớp cho hộp thoại alert */
+        .centered-alert {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Màu nền đục để tạo hiệu ứng xám */
+            z-index: 9999;
+            /* Đảm bảo hộp thoại hiển thị trên cùng */
+        }
+
+        .alert-box {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+            text-align: center;
+            padding: 20px;
+            max-width: 400px;
+            width: 80%;
+        }
+
+        .oke-button {
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+    </style>
+    <script>
+        var message = "{{ message }}";  // Nhận thông báo từ Flask và chuyển thành JavaScript string
+
+        if (message) {
+            // Tạo một phần tử div để chứa hộp thoại
+            var alertDiv = document.createElement("div");
+            alertDiv.className = "centered-alert";
+
+            // Tạo hộp thoại alert và đưa nội dung vào
+            var alertBox = document.createElement("div");
+            alertBox.className = "alert-box";
+            alertBox.textContent = message;
+
+            // Tạo nút Oke
+            var okeButton = document.createElement("button");
+            okeButton.className = "oke-button";
+            okeButton.textContent = "Ok";
+
+            // Đưa nút Oke và hộp thoại alert vào phần tử div chứa
+            alertBox.appendChild(okeButton);
+            alertDiv.appendChild(alertBox);
+
+            // Đưa phần tử div chứa vào body của trang
+            document.body.appendChild(alertDiv);
+
+            // Bắt sự kiện khi người dùng bấm nút Oke và ẩn hộp thoại
+            okeButton.addEventListener("click", function () {
+                alertDiv.style.display = "none";
+            });
+        }
+    </script>
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

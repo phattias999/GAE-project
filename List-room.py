@@ -1259,41 +1259,10 @@ def delete_infor_employees(item_id):
         return redirect("login")
 
 
-# @app.route("/contact.html")
-# def contact():
-#     iconClicked = False
-#     if "email" in session:
-#         mydb = mysql.connector.connect(
-#             host="localhost", user="root", password="", database="cnpm"
-#         )
-#         mycursor = mydb.cursor()
-#         sql = "SELECT * FROM phieuthuephong"
-#         mycursor.execute(sql)
-#         result = mycursor.fetchall()
-#         if len(result) > 0:
-#             sql_get_limit = "SELECT * FROM phieuthuephong ORDER BY MAPTP DESC LIMIT 1"
-#             mycursor.execute(sql_get_limit)
-#             result_limit = mycursor.fetchone()
-
-#             CHECKIN = result_limit[
-#                 9
-#             ]  # Sử dụng chỉ số để truy cập HinhThucThanhToan (7 là chỉ số của HinhThucThanhToan trong tuple)
-#             print("CHECKIN", CHECKIN)
-#             if CHECKIN == "check":
-#                 iconClicked = True
-
-#         return render_template(
-#             "contact.html", data=result, iconClicked=str(iconClicked)
-#         )
-#     else:
-#         return redirect("login")
-
-
 # hiển thị trang phiếu thuê phòng
 @app.route("/contact.html")
 def contact():
     # iconClicked = False
-    message = session.get("message")  # Lấy thông điệp từ biến phiên
     if "email" in session:
         mydb = mysql.connector.connect(
             host="localhost", user="root", password="", database="cnpm"
@@ -1306,28 +1275,6 @@ def contact():
         return render_template("contact.html", data=result)
     else:
         return redirect("login")
-
-
-# Điều hướng đến trang xem hóa đơn
-@app.route("/show_infor_bill/<item_id>", methods=["GET", "POST"])
-def show_infor_bill(item_id):
-    if "email" in session:
-        mydb = mysql.connector.connect(
-            host="localhost", user="root", password="", database="cnpm"
-        )
-        mycursor = mydb.cursor()
-        sql_show_infor_bill = "SELECT * FROM phieuthuephong  WHERE MAPTP=%s"
-        val_show_infor_bill = (item_id,)
-        mycursor.execute(sql_show_infor_bill, val_show_infor_bill)
-        result_show_infor_bill = mycursor.fetchone()
-        return render_template(
-            "show_infor_bill.html",
-            item_id=item_id,
-            show_infor_bill=result_show_infor_bill,
-        )
-    else:
-        return redirect("login")
-
 
 # update tổng tiền tự động
 @app.route("/update_total_price", methods=["POST"])
@@ -1577,6 +1524,76 @@ def reciveIconClicked(item_id):
         return redirect("login")
 
 
+# lấy thông tin phòng checkbox
+@app.route("/checkboxdata", methods=["POST", "GET"])
+def checkboxdata():
+    message = ""
+    if "email" in session:
+        data = request.get_json()
+        checkboxdata = data.get("selectedIds")
+        print("checkboxdata", checkboxdata)
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        success = True  # Mặc định là thành công
+        # Lặp qua danh sách checkboxdata và kiểm tra trạng thái "CHECKIN" của từng phòng
+        for maphong in checkboxdata:
+            sql_checkbox_checkphieuthuephong = f"SELECT CHECKIN,HinhThucThanhToan,TongTien,MAKH,MAPTP FROM phieuthuephong WHERE MAPTP = {maphong}"
+            mycursor.execute(sql_checkbox_checkphieuthuephong)
+            row = mycursor.fetchone()
+            print("checkin ", row)
+            if row and row[0] == "not check":
+                print("false")
+                return jsonify(success=False)
+            HinhThucThanhToan = row[1]
+            TongTien = row[2]
+            MAKH = row[3]
+            MAPTP = row[4]
+            SoTienPhuThem = 0
+            GhiChu = None
+            sql_checkbox_getkhachhang = (
+                f"SELECT HoTen_KH FROM khachhang WHERE MAKH={MAKH}"
+            )
+            mycursor.execute(sql_checkbox_getkhachhang)
+            get_name_khachhang = mycursor.fetchone()
+            Name_client = get_name_khachhang[0]
+            print("name khách hàng + ", Name_client)
+            print("HinhThucThanhToan", HinhThucThanhToan)
+        # check tồn tại
+        sql_check_insert_hoadon = f"SELECT * FROM hoadonthanhtoan WHERE MAptp={maphong}"
+        mycursor.execute(
+            sql_check_insert_hoadon,
+        )
+        check_insert_hoadon_exist =mycursor.fetchone()
+        if check_insert_hoadon_exist:
+            return jsonify(success=False)
+        else:
+            sql_insert_hoadon = "INSERT INTO `hoadonthanhtoan`(`HinhThucThanhToan`, `SoTienPhuThem`, `TongTienThanhToan`, `NguoiThanhToan`, `GhiChu`, `MAptp`, `MAHDNH`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+            val_insert_hoadon = (
+                HinhThucThanhToan,
+                SoTienPhuThem,
+                TongTien,
+                Name_client,
+                GhiChu,
+                MAPTP,
+                None,
+            )
+            try:
+                mycursor.execute(sql_insert_hoadon, val_insert_hoadon)
+                mydb.commit()
+                message = "Create bill successful"
+            except Exception as ex:
+                print("Lỗi ", str(ex))
+                success = False
+        if success:
+            return jsonify(success=True)
+        else:
+            return jsonify(success=False)
+    else:
+        return redirect("login")
+
+
 # xóa thông tin phiếu thuê phòng
 @app.route("/delete_infor_rentalroom/<item_id>")
 def delete_infor_rentalroom(item_id):
@@ -1623,16 +1640,15 @@ def media_gallery():
         sql_get_status_phong = "SELECT * FROM phong ORDER BY LoaiPhong ASC"
         mycursor.execute(sql_get_status_phong)
         result_status = mycursor.fetchall()
-        sql_get_status_phieuthuephong = "SELECT * FROM phieuthuephong"
-        mycursor.execute(sql_get_status_phieuthuephong)
-        result_status_phieuthuephong = mycursor.fetchall()
-
+        # sql_get_status_phieuthuephong = "SELECT * FROM phieuthuephong"
+        # mycursor.execute(sql_get_status_phieuthuephong)
+        # result_status_phieuthuephong = mycursor.fetchall()
         sql_get_status_phieu = "SELECT DISTINCT Maphong FROM phieuthuephong"
         mycursor.execute(sql_get_status_phieu)
         result_status_phieu = mycursor.fetchall()
         if result_status:
             stt = [status[0] for status in result_status]
-            maphieuthuephong = [statusphieu[0] for statusphieu in  result_status_phieu]
+            maphieuthuephong = [statusphieu[0] for statusphieu in result_status_phieu]
             print("maphieuthuephongs", maphieuthuephong)
             print("stt của phòng", stt)  # CHECKIN='check' AND
             sql_status_phiethuephong = "SELECT * FROM phieuthuephong WHERE CHECKIN='check' AND Maphong IN ({})".format(
@@ -1648,7 +1664,7 @@ def media_gallery():
                 Maphong = [Maphong[12] for Maphong in result_status_phieuthuephong]
                 print("CHECKIN", CHECKIN)
                 print("Maphong", Maphong)
-              
+
                 # status = [maphong for maphong in stt if maphong in Maphong]
                 # print("status",status)
                 if "check" in CHECKIN:
@@ -1657,48 +1673,13 @@ def media_gallery():
                 "media_gallery.html",
                 result_status=result_status,
                 checkstatus=status,
-                phongstt= maphieuthuephong,
+                phongstt=maphieuthuephong,
             )
         else:
             # Xử lý khi không có dòng nào được trả về (tuỳ theo yêu cầu của bạn)
             return "Không có dữ liệu phòng thuê."
     else:
         return redirect("login")
-
-
-# @app.route("/media_gallery.html")
-# def media_gallery():
-#     if "email" in session:
-#         mydb = mysql.connector.connect(
-#             host="localhost", user="root", password="", database="cnpm"
-#         )
-#         mycursor = mydb.cursor()
-#         sql_get_status_phong = "SELECT * FROM phong"
-#         mycursor.execute(sql_get_status_phong)
-#         result_status = mycursor.fetchall()
-
-#         sql_get_status_phieuthuephong = "SELECT DISTINCT Maphong FROM phieuthuephong"
-#         mycursor.execute(sql_get_status_phieuthuephong)
-#         result_status_phieuthuephong = mycursor.fetchall()
-
-#         if result_status:
-#             stt = [status[0] for status in result_status]
-#             print("stt",stt)
-#             maphieuthuephong = [statusphieu[0] for statusphieu in result_status_phieuthuephong]
-#             print(" maphieuthuephong", maphieuthuephong)
-#             # Kiểm tra sự tồn tại của mã phòng trong danh sách phieuthuephong
-#             phong_khong_ton_tai = [maphong for maphong in stt if maphong not in maphieuthuephong]
-#             print()
-#             return render_template(
-#                 "media_gallery.html",
-#                 result_status=result_status,
-#                 phong_khong_ton_tai=phong_khong_ton_tai,
-#             )
-#         else:
-#             # Xử lý khi không có dòng nào được trả về (tuỳ theo yêu cầu của bạn)
-#             return "Không có dữ liệu phòng thuê."
-#     else:
-#         return redirect("login")
 
 
 @app.route("/map.html")
@@ -1715,8 +1696,118 @@ def map():
     else:
         return redirect("login")
 
+# Điều hướng đến trang xem hóa đơn
+@app.route("/show_infor_bill/<item_id>", methods=["GET", "POST"])
+def show_infor_bill(item_id):
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql_show_infor_bill = "SELECT * FROM hoadonthanhtoan WHERE MAHD=%s"
+        val_show_infor_bill = (item_id,)
+        mycursor.execute(sql_show_infor_bill, val_show_infor_bill)
+        result_show_infor_bill = mycursor.fetchone()
+        return render_template(
+            "show_infor_bill.html",
+            item_id=item_id,
+            show_infor_bill=result_show_infor_bill,
+        )
+    else:
+        return redirect("login")
 
-# Điều hướng đến trang hóa đơn nhà hàng
+# Điều hướng trang chỉnh sửa thông tin hóa đơn 
+@app.route("/edit_infor_bill/<item_id>", methods=["POST","GET"])
+def edit_infor_bill(item_id):
+    message = ""
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        sql_show_infor_bill = "SELECT * FROM hoadonthanhtoan WHERE MAHD=%s"
+        val_show_infor_bill = (item_id,)
+        mycursor.execute(sql_show_infor_bill, val_show_infor_bill)
+        result_edit_infor_bill = mycursor.fetchone()
+        if request.method=="POST":
+            HinhThucThanhToan=request.form["HinhThucThanhToan"]
+            TongTienThanhToan=request.form["TongTienThanhToan"]
+            SoTienPhuThem=request.form["SoTienPhuThem"]
+            NguoiThanhToan=request.form["NguoiThanhToan"]
+            GhiChu=request.form["GhiChu"]
+            MAptp=request.form["MAptp"]
+            MAHDNH=request.form["MAHDNH"]
+            if float(TongTienThanhToan)<0:
+                message="Please enter again money"
+                return render_template("edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
+            elif float(SoTienPhuThem)<0:
+                message="Please enter again money and money > 0 "
+                return render_template("edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
+            else:
+                sql_update_hoadon="UPDATE `hoadonthanhtoan` SET `HinhThucThanhToan`=%s,`SoTienPhuThem`=%s,`TongTienThanhToan`=%s,`NguoiThanhToan`=%s,`GhiChu`=%s,`MAptp`=%s,`MAHDNH`=%s WHERE MAHD =%s"
+                val_update_hoadon=(HinhThucThanhToan,SoTienPhuThem,TongTienThanhToan,NguoiThanhToan,GhiChu,MAptp,MAHDNH,item_id,)
+                try:
+                    mycursor.execute(sql_update_hoadon,val_update_hoadon)
+                    mydb.commit()
+                    message="Update successful"
+                except Exception as ex:
+                    print("Lỗi update hóa đơn ", str(ex))
+                    message="Error update"
+        return render_template("edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
+    else:
+        return redirect("login")
+# xóa hóa đơn
+@app.route("/delete_bill/<item_id>")
+def delete_bill(item_id):
+    if "email" in session:
+        mydb = mysql.connector.connect(
+            host="localhost", user="root", password="", database="cnpm"
+        )
+        mycursor = mydb.cursor()
+        # lấy thông tin hóa đơn
+        sql_get_hoadon="SELECT MAptp FROM `hoadonthanhtoan` WHERE MAHD=%s"
+        val_get_hoadon=(item_id,)
+        mycursor.execute(sql_get_hoadon, val_get_hoadon)
+        row_hoadon=mycursor.fetchone()
+        print("row_hoadon ",row_hoadon)
+        # lấy mã khách hàng từ bảng khách hàng
+        sql_get_makhachhang = "SELECT MAKH FROM phieuthuephong WHERE MAPTP=%s"
+        val_get_makhachhang = (row_hoadon[0],)
+        mycursor.execute(sql_get_makhachhang, val_get_makhachhang)
+        row_khachhang = mycursor.fetchone()
+        #xóa thông tin hóa đơn
+        sql_delete_bill="DELETE FROM `hoadonthanhtoan` WHERE MAHD=%s"
+        val_delete_bill=(item_id,)
+        try:
+            mycursor.execute(sql_delete_bill,val_delete_bill,)
+            mydb.commit()
+            print("Xóa thành công hóa đơn")
+        except Exception as ex:
+            print("Lỗi bill ", str(ex))
+        # xóa thông tin phiếu thuê phòng
+        sql_delete_phieuthuephong = "DELETE FROM `phieuthuephong` WHERE MAPTP=%s"
+        val_delete_phieuthuephong = (row_hoadon[0],)
+        try:
+            mycursor.execute(sql_delete_phieuthuephong, val_delete_phieuthuephong)
+            mydb.commit()
+            print("Xóa thành công phiếu thuê phòng")
+        except Exception as e:
+            print("Lỗi:", str(e))
+        # xóa thông tin khách hàng trùng với phiếu thuê phòng
+        sql_delete_khachhang = "DELETE FROM `khachhang` WHERE MAKH=%s"
+        val_delete_khachhang = (row_khachhang[0],)
+        try:
+            mycursor.execute(sql_delete_khachhang, val_delete_khachhang)
+            mydb.commit()
+            print("Xóa thành công khách hàng")
+        except Exception as e:
+            print("Lỗi:", str(e))
+        return redirect("map")
+    else:
+        return redirect("login")
+
+    
+# Điều hướng đến trang thêm hóa đơn nhà hàng
 @app.route("/charts.html")
 def charts():
     if "email" in session:

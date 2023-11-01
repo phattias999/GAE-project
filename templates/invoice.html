@@ -184,6 +184,118 @@
       </div>
 
    </div>
+   <style>
+       .buttoncheck {
+         border: none;
+      }
+
+      /* Đổi màu cho biểu tượng fa-check */
+      .fa-check {
+         color: black;
+         /* Màu hiển thị */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm đường viền cho biểu tượng fa-eye */
+      .fa-eye {
+         color: blue;
+         /* Màu hiển thị */
+         font-size: 22px;
+         /* Đường viền */
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-wrench */
+      .fa-wrench {
+         color: orange;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-delete-left */
+      .fa-delete-left {
+         color: red;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+
+      /* Định nghĩa lớp cho hộp thoại alert */
+      .centered-alert {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background-color: rgba(0, 0, 0, 0.5);
+         /* Màu nền đục để tạo hiệu ứng xám */
+         z-index: 9999;
+         /* Đảm bảo hộp thoại hiển thị trên cùng */
+      }
+
+      .alert-box {
+         background-color: #fff;
+         border-radius: 5px;
+         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+         text-align: center;
+         padding: 20px;
+         max-width: 400px;
+         width: 80%;
+      }
+
+      .oke-button {
+         margin-top: 20px;
+         background-color: #007BFF;
+         color: white;
+         border: none;
+         border-radius: 5px;
+         padding: 10px 20px;
+         cursor: pointer;
+         margin-left: 20px;
+      }
+
+      /* Định nghĩa lớp cho hộp thoại alert */
+      .centered-alert {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background-color: rgba(0, 0, 0, 0.5);
+         /* Màu nền đục để tạo hiệu ứng xám */
+         z-index: 9999;
+         /* Đảm bảo hộp thoại hiển thị trên cùng */
+      }
+
+      .alert-box {
+         background-color: #fff;
+         border-radius: 5px;
+         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+         text-align: center;
+         padding: 20px;
+         max-width: 400px;
+         width: 80%;
+      }
+
+      .oke-button {
+         margin-top: 20px;
+         background-color: #007BFF;
+         color: white;
+         border: none;
+         border-radius: 5px;
+         padding: 10px 20px;
+         cursor: pointer;
+         margin-left: 20px;
+      }
+   </style>
    <script>
       function data_change_room(item_id) {
           if (confirm("Bạn có chắc chắn muốn xóa phòng này không?")) {

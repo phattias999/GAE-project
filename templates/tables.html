@@ -175,6 +175,7 @@
                                        <tbody>
                                           {%for khachhang in data%}
                                           <tr>
+                  
                                              <td>{{khachhang[0]}}</td>
                                              <td>{{khachhang[1]}}</td>
                                              <td>{{khachhang[2]}}</td>
@@ -212,6 +213,43 @@
       </div>
    </div>
    <style>
+        .buttoncheck {
+         border: none;
+      }
+
+      /* Đổi màu cho biểu tượng fa-check */
+      .fa-check {
+         color: black;
+         /* Màu hiển thị */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm đường viền cho biểu tượng fa-eye */
+      .fa-eye {
+         color: blue;
+         /* Màu hiển thị */
+         font-size: 22px;
+         /* Đường viền */
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-wrench */
+      .fa-wrench {
+         color: orange;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+
+      /* Đổi màu và thêm độ bóng cho biểu tượng fa-delete-left */
+      .fa-delete-left {
+         color: red;
+         /* Màu hiển thị */
+         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+         /* Độ bóng */
+         font-size: 22px;
+      }
+
       /* Định nghĩa lớp cho hộp thoại alert */
       .centered-alert {
           display: flex;
