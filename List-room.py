@@ -196,6 +196,7 @@ def edit_infor_room(item_id):
         mycursor.execute(sqlshow, val)
         edit_room = mycursor.fetchone()
         if request.method == "POST":
+            #lấy thông tin từ form 
             MAPHONG = request.form["MAPHONG"]
             TENPHONG = request.form["TENPHONG"]
             LOAIPHONG = request.form["LOAIPHONG"]
@@ -207,7 +208,7 @@ def edit_infor_room(item_id):
             try:
                 mycursor.execute(sql, val)
                 mydb.commit()
-                message = "Cập nhật thông tin thành công!"
+                message = "Cập nhật thông tin thành công!" # thông báo kết quả thành công 
             except Exception as e:
                 message = "Cập nhật thông tin không thành công!"
         return render_template(
@@ -1527,7 +1528,7 @@ def reciveIconClicked(item_id):
 # lấy thông tin phòng checkbox
 @app.route("/checkboxdata", methods=["POST", "GET"])
 def checkboxdata():
-    message = ""
+   
     if "email" in session:
         data = request.get_json()
         checkboxdata = data.get("selectedIds")
@@ -1582,7 +1583,7 @@ def checkboxdata():
             try:
                 mycursor.execute(sql_insert_hoadon, val_insert_hoadon)
                 mydb.commit()
-                message = "Create bill successful"
+               
             except Exception as ex:
                 print("Lỗi ", str(ex))
                 success = False
@@ -1640,9 +1641,7 @@ def media_gallery():
         sql_get_status_phong = "SELECT * FROM phong ORDER BY LoaiPhong ASC"
         mycursor.execute(sql_get_status_phong)
         result_status = mycursor.fetchall()
-        # sql_get_status_phieuthuephong = "SELECT * FROM phieuthuephong"
-        # mycursor.execute(sql_get_status_phieuthuephong)
-        # result_status_phieuthuephong = mycursor.fetchall()
+
         sql_get_status_phieu = "SELECT DISTINCT Maphong FROM phieuthuephong"
         mycursor.execute(sql_get_status_phieu)
         result_status_phieu = mycursor.fetchall()
