@@ -36,10 +36,10 @@ def login():
                 url_for("Room")
             )  # Điều hướng đến trang Room khi đăng nhập thành công
 
-    return render_template("login.html")
+    return render_template("admin/login.html")
 
 
-@app.route("/login.html")
+@app.route("/admin/login.html")
 def logout():
     session.pop("email", None)
     return redirect(url_for("login"))  # Điều hướng đến trang đăng nhập
@@ -61,12 +61,12 @@ def Room():
         mycursor.close()
         mydb.close()
         return render_template(
-            "widgets.html", data=result
+            "admin/widgets.html", data=result
         )  # Thêm "return" ở đây để hiển thị template
 
     else:
         return redirect(
-            "login"
+            "admin/login"
         )  # Điều hướng đến trang login nếu email không tồn tại trong session
 
 
@@ -160,8 +160,8 @@ def add_infor_room():
                         except Exception as ex:
                             message = "Thêm phòng thất bại"
                             print("Lỗi " + str(ex))
-            return render_template("add_infor_room.html", message=message)
-        return render_template("add_infor_room.html", message=message)
+            return render_template("admin/add_infor_room.html", message=message)
+        return render_template("admin/add_infor_room.html", message=message)
     return redirect("login")
 
 
@@ -177,7 +177,7 @@ def show_infor_room(item_id):
         val = (item_id,)
         mycursor.execute(sqlshow, val)
         show_room = mycursor.fetchone()
-        return render_template("show_infor_room.html", data_show_room=show_room)
+        return render_template("admin/show_infor_room.html", data_show_room=show_room)
     else:
         return redirect("login")
 
@@ -212,7 +212,7 @@ def edit_infor_room(item_id):
             except Exception as e:
                 message = "Cập nhật thông tin không thành công!"
         return render_template(
-            "edit_infor_room.html",
+            "admin/edit_infor_room.html",
             item_id=item_id,
             data_edit_room=edit_room,
             message=message,
@@ -250,7 +250,7 @@ def general_elements():
         sql = "SELECT * FROM giahanngaythue"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("general_elements.html", data=result)
+        return render_template("admin/general_elements.html", data=result)
     else:
         return redirect("login")
 
@@ -284,7 +284,7 @@ def edit_retal_date(item_id):
             if ngay_thue_moi < ngay_thue_hien_tai:
                 message = "vui lòng nhập ngày thuê lớn hơn ngày hiện tại"
                 return render_template(
-                    "edit_retal_date.html",
+                    "admin/edit_retal_date.html",
                     item_id=item_id,
                     message=message,
                     data_edit_retal_date=result_show_retal_date,
@@ -292,7 +292,7 @@ def edit_retal_date(item_id):
             elif ngay_thue_moi > ngay_thue_phong_tuong_lai:
                 message = "vui lòng nhập ngày thuê mới"
                 return render_template(
-                    "edit_retal_date.html",
+                    "admin/edit_retal_date.html",
                     item_id=item_id,
                     message=message,
                     data_edit_retal_date=result_show_retal_date,
@@ -300,7 +300,7 @@ def edit_retal_date(item_id):
             elif ngay_thue_moi == ngay_thue_hien_tai:
                 message = "vui lòng nhập ngày thuê mới lớn hơn ngày thuê hiện tại"
                 return render_template(
-                    "edit_retal_date.html",
+                    "admin/edit_retal_date.html",
                     item_id=item_id,
                     message=message,
                     data_edit_retal_date=result_show_retal_date,
@@ -317,13 +317,13 @@ def edit_retal_date(item_id):
                 except Exception as e:
                     message = "Cập nhật không thành công!"
                 return render_template(  # reload lại trang nếu truy vấn thành công
-                    "edit_retal_date.html",
+                    "admin/edit_retal_date.html",
                     item_id=item_id,
                     data_edit_retal_date=result_show_retal_date,
                     message=message,
                 )
         return render_template(
-            "edit_retal_date.html",
+            "admin/edit_retal_date.html",
             item_id=item_id,
             message=message,
             data_edit_retal_date=result_show_retal_date,
@@ -361,7 +361,7 @@ def icons():
         sql = "SELECT * FROM huythuephong"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("icons.html", data=result)
+        return render_template("admin/icons.html", data=result)
     else:
         return redirect("login")
 
@@ -385,7 +385,7 @@ def edit_destroy_room(item_id):
             if not LyDoHuy:
                 message = "Không được để rỗng"
                 return render_template(
-                    "edit_destroy_room.html",
+                    "admin/edit_destroy_room.html",
                     item_id=item_id,
                     destroy_room=result_show_destroy,
                     message=message,
@@ -402,13 +402,13 @@ def edit_destroy_room(item_id):
                 except Exception as e:
                     message = "Cập nhật không thành công"
                 return render_template(
-                    "edit_destroy_room.html",
+                    "admin/edit_destroy_room.html",
                     item_id=item_id,
                     destroy_room=result_show_destroy,
                     message=message,
                 )
         return render_template(
-            "edit_destroy_room.html", item_id=item_id, destroy_room=result_show_destroy
+            "admin/edit_destroy_room.html", item_id=item_id, destroy_room=result_show_destroy
         )
     else:
         return redirect("login")
@@ -443,7 +443,7 @@ def invoice():
         sql = "SELECT * FROM thaydoiphong"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("invoice.html", data=result)
+        return render_template("admin/invoice.html", data=result)
     else:
         return redirect("login")
 
@@ -488,7 +488,7 @@ def edit_change_room(item_id):
             if Ngay_thuc_hien < Ngay_tra_phong:
                 message = "Ngày thay đổi phải lớn hơn ngày trả phòng"
                 return render_template(
-                    "edit_change_room.html",
+                    "admin/edit_change_room.html",
                     item_id=item_id,
                     data_change_room=result_change_room,
                     message=message,
@@ -496,7 +496,7 @@ def edit_change_room(item_id):
             elif Ngay_thuc_hien > Ngay_thue_phong_tuong_lai:
                 message = "Ngày thay đổi phải nhỏ hơn 90 ngày"
                 return render_template(
-                    "edit_change_room.html",
+                    "admin/edit_change_room.html",
                     item_id=item_id,
                     data_change_room=result_change_room,
                     message=message,
@@ -513,13 +513,13 @@ def edit_change_room(item_id):
                 except Exception as e:
                     message = "Cập nhật không thành công"
                 return render_template(
-                    "edit_change_room.html",
+                    "admin/edit_change_room.html",
                     item_id=item_id,
                     data_change_room=result_change_room,
                     message=message,
                 )
         return render_template(
-            "edit_change_room.html",
+            "admin/edit_change_room.html",
             item_id=item_id,
             data_change_room=result_change_room,
             message=message,
@@ -557,7 +557,7 @@ def tables():
         sql = "SELECT * FROM khachhang"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("tables.html", data=result)
+        return render_template("admin/tables.html", data=result)
     else:
         return redirect("login")
 
@@ -602,7 +602,7 @@ def add_infor_customer():
                 if len(HoTen_KH) < 6:  # kiếm tra xem họ tên có trên 6 kí tự
                     message = "vui lòng nhập tên lớn hơn 6 kí tự "  # thông báo
                     return render_template(
-                        "add_infor_customer.html",
+                        "admin/add_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -613,7 +613,7 @@ def add_infor_customer():
                     # hiện tại và kiếm tra xem có đủ trên 18 tuổi
                     message = "vui lòng kiểm tra lại ngày tháng năm sinh, phải đảm bảo khách hàng trên 18+"  # thông báo
                     return render_template(
-                        "add_infor_customer.html",
+                        "admin/add_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -622,7 +622,7 @@ def add_infor_customer():
                 ):  # kiếm tra số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0
                     message = "vui lòng kiểm tra lại số điện thoại"  # thông báo
                     return render_template(
-                        "add_infor_customer.html",
+                        "admin/add_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -631,7 +631,7 @@ def add_infor_customer():
                 ):  # kiếm tra địa chỉ email có đúng
                     message = "vui lòng kiểm tra lại địa chỉ email"
                     return render_template(
-                        "add_infor_customer.html",
+                        "admin/add_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -642,7 +642,7 @@ def add_infor_customer():
                 ):  # kiếm tra xem chứng minh nhân dân hoặc passport có đủ điều kiện
                     message = "vui lòng kiểm tra lại chứng minh nhân dân hoặc passport"  # thông báo
                     return render_template(
-                        "add_infor_customer.html",
+                        "admin/add_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -667,14 +667,14 @@ def add_infor_customer():
                     except Exception as ex:
                         message = "Thêm thất bại"
                 return render_template(
-                    "add_infor_customer.html",
+                    "admin/add_infor_customer.html",
                     message=message,
                     data_country=countries,
                 )
             else:
                 message = "Đã tồn tại, vui lòng kiểm tra lại"
         return render_template(
-            "add_infor_customer.html", message=message, data_country=countries
+            "admin/add_infor_customer.html", message=message, data_country=countries
         )
     else:
         return redirect("login")
@@ -694,7 +694,7 @@ def show_infor_customer(item_id):
         mycursor.execute(sql_get_edit_customter, val_get_edit_customer)
         result_get_infor_customter = mycursor.fetchone()
         return render_template(
-            "show_infor_customer.html",
+            "admin/show_infor_customer.html",
             message=message,
             item_id=item_id,
             data_infor_customter=result_get_infor_customter,
@@ -747,7 +747,7 @@ def edit_infor_customer(item_id):
                 if len(HoTen_KH) < 6:  # kiếm tra xem họ tên có trên 6 kí tự
                     message = "vui lòng nhập tên lớn hơn 6 kí tự "  # thông báo
                     return render_template(
-                        "edit_infor_customer.html",
+                        "admin/edit_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -758,7 +758,7 @@ def edit_infor_customer(item_id):
                     # hiện tại và kiếm tra xem có đủ trên 18 tuổi
                     message = "vui lòng kiểm tra lại ngày tháng năm sinh, phải đảm bảo khách hàng trên 18+"  # thông báo
                     return render_template(
-                        "edit_infor_customer.html",
+                        "admin/edit_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -767,7 +767,7 @@ def edit_infor_customer(item_id):
                 ):  # kiếm tra số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0
                     message = "vui lòng kiểm tra lại số điện thoại"  # thông báo
                     return render_template(
-                        "edit_infor_customer.html",
+                        "admin/edit_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -776,7 +776,7 @@ def edit_infor_customer(item_id):
                 ):  # kiếm tra địa chỉ email có đúng
                     message = "vui lòng kiểm tra lại địa chỉ email"
                     return render_template(
-                        "edit_infor_customer.html",
+                        "admin/edit_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -787,7 +787,7 @@ def edit_infor_customer(item_id):
                 ):  # kiếm tra xem chứng minh nhân dân hoặc passport có đủ điều kiện
                     message = "vui lòng kiểm tra lại chứng minh nhân dân hoặc passport"  # thông báo
                     return render_template(
-                        "edit_infor_customer.html",
+                        "admin/edit_infor_customer.html",
                         message=message,
                         data_country=countries,
                     )
@@ -811,7 +811,7 @@ def edit_infor_customer(item_id):
                     except Exception as ex:
                         message = "Thêm thất bại"
                 return render_template(
-                    "edit_infor_customer.html",
+                    "admin/edit_infor_customer.html",
                     message=message,
                     data_country=countries,
                 )
@@ -819,7 +819,7 @@ def edit_infor_customer(item_id):
                 message = "Đã tồn tại, vui lòng kiểm tra lại"
 
         return render_template(
-            "edit_infor_customer.html",
+            "admin/edit_infor_customer.html",
             message=message,
             item_id=item_id,
             data_edit_customter=result_get_edit_customter,
@@ -861,7 +861,7 @@ def price():
         sql = "SELECT * FROM nhanvien"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("price.html", data=result)
+        return render_template("admin/price.html", data=result)
     else:
         return redirect("login")
 
@@ -879,7 +879,7 @@ def show_infor_employee(item_id):
         mycursor.execute(sql_show_infor_employee, val_show_infor_employee)
         result_show_infor_employee = mycursor.fetchone()
         return render_template(
-            "show_infor_employee.html",
+            "admin/show_infor_employee.html",
             item_id=item_id,
             data_show_infor_employee=result_show_infor_employee,
         )
@@ -934,7 +934,7 @@ def add_infor_employees():
                 if len(HoTen_NV) < 6:
                     message = "Tên phải lớn hơn 6 ký tự"
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về thông kết quả
                 elif (
                     NgaySinh_nhanvien > Ngay_hien_tai
@@ -943,41 +943,41 @@ def add_infor_employees():
                     # thông báo kiếm tra ngày tháng năm sinh
                     message = "Nhân viên phải trên 18 tuổi và ngày tháng năm sinh không được lớn hơn ngày tháng năm hiện tại"
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về kết quả
                 elif (
                     len(SDT_NV) != 10 or not SDT_NV.isdigit() or int(SDT_NV[0]) != 0
                 ):  # kiếm tra số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0
                     message = "số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0"
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về kết quả
                 elif re.fullmatch(Email_NV, regex):  # kiêm tra email có hợp lệ
                     message = "Địa chỉ email không hợp lệ"
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về kết quả
                 elif len(ChucVu_NV) == 0:  # kiểm tra chức vụ có rỗng không
                     message = "chức vụ không được đẻ rỗng "  # thông báo
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về kết quả
                 elif len(DiaChi_NV) < 10:  # kiêm tra xem địa chỉ có 10 ký tự.
                     message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về kết quả
                 elif len(GioiTinh_NV) == 0:  # kiêm tra giói tính nhân viên có rỗng.
                     message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về kết quả
                 elif (
                     NBĐLV < Ngay_hien_tai
                 ):  # kiểm tra ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại
                     message = "ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại"  # thông báo
                     return render_template(
-                        "add_infor_employees.html", message=message
+                        "admin/add_infor_employees.html", message=message
                     )  # trả về kết quả
                 else:  # thỏa mãn mọi điều kiện thực hiện câu lệnh insert dữ liệu vào database
                     ma = None  # Đặt giá trị mặc định cho biến 'ma'
@@ -1047,9 +1047,9 @@ def add_infor_employees():
                         message = "Lỗi thêm"
                         print(ex)
             return render_template(
-                "add_infor_employees.html", message=message
+                "admin/add_infor_employees.html", message=message
             )  # trả về kết quả
-        return render_template("add_infor_employees.html")
+        return render_template("admin/add_infor_employees.html")
     else:
         return redirect("login")
 
@@ -1094,7 +1094,7 @@ def edit_infor_employee(item_id):
             if len(HoTen_NV) < 6:
                 message = "Tên phải lớn hơn 6 ký tự"
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
@@ -1105,7 +1105,7 @@ def edit_infor_employee(item_id):
                 # thông báo kiếm tra ngày tháng năm sinh
                 message = "Nhân viên phải trên 18 tuổi và ngày tháng năm sinh không được lớn hơn ngày tháng năm hiện tại"
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
@@ -1116,35 +1116,35 @@ def edit_infor_employee(item_id):
                     "số điện thoại có đủ 10 kí tự và có phải là số và só đầu tiền là 0"
                 )
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
             elif re.fullmatch(Email_NV, regex):  # kiêm tra email có hợp lệ
                 message = "Địa chỉ email không hợp lệ"
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
             elif len(ChucVu_NV) == 0:  # kiểm tra chức vụ có rỗng không
                 message = "chức vụ không được đẻ rỗng "  # thông báo
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
             elif len(DiaChi_NV) < 10:  # kiêm tra xem địa chỉ có 10 ký tự.
                 message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
             elif len(GioiTinh_NV) == 0:  # kiêm tra giói tính nhân viên có rỗng.
                 message = "Địa chỉ phải hơn 10 ký tự"  # thông báo
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
@@ -1153,7 +1153,7 @@ def edit_infor_employee(item_id):
             ):  # kiểm tra ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại
                 message = "ngày bắt đầu làm việc phải lớn hơn hoặc bằng ngày hiện tại"  # thông báo
                 return render_template(
-                    "edit_infor_employee.html",
+                    "admin/edit_infor_employee.html",
                     message=message,
                     result_Get_infor_employee=Get_infor_employee,
                 )  # trả về kết quả
@@ -1229,13 +1229,13 @@ def edit_infor_employee(item_id):
                     message = "Cập nhật thất bại: " + str(ex)
                     print(ex)
             return render_template(
-                "edit_infor_employee.html",
+                "admin/edit_infor_employee.html",
                 message=message,
                 result_Get_infor_employee=Get_infor_employee,
                 item_id=item_id,
             )
         return render_template(
-            "edit_infor_employee.html",
+            "admin/edit_infor_employee.html",
             result_Get_infor_employee=Get_infor_employee,
             item_id=item_id,
         )
@@ -1273,7 +1273,7 @@ def contact():
         sql = "SELECT * FROM phieuthuephong"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("contact.html", data=result)
+        return render_template("admin/contact.html", data=result)
     else:
         return redirect("login")
 
@@ -1372,7 +1372,7 @@ def add_infor_roomretalvoucher():
             if NgayNhanPhong_moi <= Ngayhientai or current_year > next_year:
                 message = "vui lòng kiểm tra lại ngày nhận phòng, ngày nhận phòng phải nhỏ hơn năm hiện tại"
                 return render_template(
-                    "add_infor_roomretalvoucher.html",
+                    "admin/add_infor_roomretalvoucher.html",
                     result_get_infor=result_get_room,
                     result_get_customers=result_get_customers,
                     message=message,
@@ -1384,7 +1384,7 @@ def add_infor_roomretalvoucher():
             ):
                 message = "vui lòng kiểm tra lại ngày trả phòng, ngày trả phòng không được quá 30 ngày"
                 return render_template(
-                    "add_infor_roomretalvoucher.html",
+                    "admin/add_infor_roomretalvoucher.html",
                     result_get_infor=result_get_room,
                     result_get_customers=result_get_customers,
                     message=message,
@@ -1398,7 +1398,7 @@ def add_infor_roomretalvoucher():
             if re.fullmatch(MAKH, regex):
                 message = "Địa chỉ email không hợp lệ"
                 return render_template(
-                    "add_infor_roomretalvoucher.html",
+                    "admin/add_infor_roomretalvoucher.html",
                     result_get_infor=result_get_room,
                     result_get_customers=result_get_customers,
                     message=message,
@@ -1436,7 +1436,7 @@ def add_infor_roomretalvoucher():
             if kiemtra_maphong:
                 message = "Phòng đã được đặt"
                 return render_template(
-                    "add_infor_roomretalvoucher.html",
+                    "admin/add_infor_roomretalvoucher.html",
                     result_get_infor=result_get_room,
                     result_get_customers=result_get_customers,
                     message=message,
@@ -1469,7 +1469,7 @@ def add_infor_roomretalvoucher():
                 print(message)
                 return redirect("contact.html")
         return render_template(
-            "add_infor_roomretalvoucher.html",
+            "admin/add_infor_roomretalvoucher.html",
             result_get_infor=result_get_room,
             result_get_customers=result_get_customers,
             message=message,
@@ -1669,7 +1669,7 @@ def media_gallery():
                 if "check" in CHECKIN:
                     status = Maphong
             return render_template(
-                "media_gallery.html",
+                "admin/media_gallery.html",
                 result_status=result_status,
                 checkstatus=status,
                 phongstt=maphieuthuephong,
@@ -1691,7 +1691,7 @@ def map():
         sql = "SELECT * FROM hoadonthanhtoan"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("map.html", data=result)
+        return render_template("admin/map.html", data=result)
     else:
         return redirect("login")
 
@@ -1708,7 +1708,7 @@ def show_infor_bill(item_id):
         mycursor.execute(sql_show_infor_bill, val_show_infor_bill)
         result_show_infor_bill = mycursor.fetchone()
         return render_template(
-            "show_infor_bill.html",
+            "admin/show_infor_bill.html",
             item_id=item_id,
             show_infor_bill=result_show_infor_bill,
         )
@@ -1738,10 +1738,10 @@ def edit_infor_bill(item_id):
             MAHDNH=request.form["MAHDNH"]
             if float(TongTienThanhToan)<0:
                 message="Please enter again money"
-                return render_template("edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
+                return render_template("admin/edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
             elif float(SoTienPhuThem)<0:
                 message="Please enter again money and money > 0 "
-                return render_template("edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
+                return render_template("admin/edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
             else:
                 sql_update_hoadon="UPDATE `hoadonthanhtoan` SET `HinhThucThanhToan`=%s,`SoTienPhuThem`=%s,`TongTienThanhToan`=%s,`NguoiThanhToan`=%s,`GhiChu`=%s,`MAptp`=%s,`MAHDNH`=%s WHERE MAHD =%s"
                 val_update_hoadon=(HinhThucThanhToan,SoTienPhuThem,TongTienThanhToan,NguoiThanhToan,GhiChu,MAptp,MAHDNH,item_id,)
@@ -1752,7 +1752,7 @@ def edit_infor_bill(item_id):
                 except Exception as ex:
                     print("Lỗi update hóa đơn ", str(ex))
                     message="Error update"
-        return render_template("edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
+        return render_template("admin/edit_infor_bill.html",  result_edit_infor_bill= result_edit_infor_bill, message=message)
     else:
         return redirect("login")
 # xóa hóa đơn
@@ -1805,7 +1805,6 @@ def delete_bill(item_id):
     else:
         return redirect("login")
 
-    
 # Điều hướng đến trang thêm hóa đơn nhà hàng
 @app.route("/charts.html")
 def charts():
@@ -1817,7 +1816,7 @@ def charts():
         sql = "SELECT * FROM hoadonnhahang"
         mycursor.execute(sql)
         result = mycursor.fetchall()
-        return render_template("charts.html", data=result)
+        return render_template("admin/charts.html", data=result)
     else:
         return redirect("login")
 
