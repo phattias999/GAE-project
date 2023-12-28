@@ -67,7 +67,6 @@ def rent_room(item_id):
         children=request.form["children"]
         message=request.form["message"]
         
-
     return render_template("user/rent_room.html", data_receive=result_receive_data)
 
 
