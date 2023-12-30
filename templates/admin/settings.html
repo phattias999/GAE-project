@@ -51,35 +51,39 @@
                <div class="sidebar_blog_2">
                   <h4>General</h4>
                   <ul class="list-unstyled components">
-                     <li><a href="widgets.html"><i class="fa-solid fa-bed orange_color"></i> <span>List Rooms</span></a>
+                     <li><a href="{{url_for('admin.Room')}}"><i class="fa-solid fa-bed orange_color"></i> <span>List
+                              Rooms</span></a>
                      </li>
                      <li>
                         <a href="#element" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
                               class="fa fa-diamond purple_color"></i> <span>Room rental voucher</span></a>
                         <ul class="collapse list-unstyled" id="element">
-                           <li><a href="{{url_for('general_elements')}}"> <span>> Extend the rental date</span></a></li>
-                           <li><a href="{{url_for('media_gallery')}}">> <span>Room Status</span></a></li>
-                           <li><a href="{{url_for('icons')}}">> <span>Destroy the rental room</span></a></li>
-                           <li><a href="{{url_for('invoice')}}">> <span>Change the rental date </span></a></li>
+                           <li><a href="{{url_for('admin.general_elements')}}"> <span>> Extend the rental date</span></a>
+                           </li>
+                           <li><a href="{{url_for('admin.media_gallery')}}">> <span>Room Status</span></a></li>
+                           <li><a href="{{url_for('admin.icons')}}">> <span>Destroy the rental room</span></a></li>
+                           <li><a href="{{url_for('admin.invoice')}}">> <span>Change the rental date </span></a></li>
                         </ul>
                      </li>
-                     <li><a href="{{url_for('tables')}}"><i class="fa-solid fa-person purple_color2"></i> <span>List
+                     <li><a href="{{url_for('admin.tables')}}"><i class="fa-solid fa-person purple_color2"></i> <span>List
                               Customers</span></a>
                      </li>
-                     <li><a href="{{url_for('price')}}"><i class="fa-solid fa-person-military-pointing blue1_color"></i>
+                     <li><a href="{{url_for('admin.price')}}"><i
+                              class="fa-solid fa-person-military-pointing blue1_color"></i>
                            <span>List
                               Employee</span></a></li>
                      <li>
-                        <a href="{{url_for('contact')}}">
+                        <a href="{{url_for('admin.contact')}}">
                            <i class="fa fa-paper-plane red_color"></i> <span>Room rental voucher</span></a>
                      </li>
-                     <li><a href="{{url_for('map')}}"><i class="fa-solid fa-wallet purple_color2"></i> <span>Room
+                     <li><a href="{{url_for('admin.map')}}"><i class="fa-solid fa-wallet purple_color2"></i> <span>Room
                               Bill</span></a>
                      </li>
-                     <li><a href="{{url_for('charts')}}"><i class="fa-solid fa-money-bill green_color"></i>
+                     <li><a href="{{url_for('admin.charts')}}"><i class="fa-solid fa-money-bill green_color"></i>
                            <span>Restaurant
                               Bill</span></a></li>
-                     <li><a href="{{url_for('settings')}}"><i class="fa fa-cog yellow_color"></i> <span>Settings</span></a>
+                     <li><a href="{{url_for('admin.settings')}}"><i class="fa fa-cog yellow_color"></i>
+                           <span>Settings</span></a>
                      </li>
                   </ul>
                </div>
@@ -109,7 +113,7 @@
                                        <!-- <a class="dropdown-item" href="profile.html">My Profile</a> -->
                                        <a class="dropdown-item" href="settings.html">Settings</a>
                                        <!-- <a class="dropdown-item" href="help.html">Help</a> -->
-                                       <a class="dropdown-item" href="{{url_for('logout')}}"><span>Log Out</span> <i
+                                       <a class="dropdown-item" href="{{url_for('admin.logout')}}"><span>Log Out</span> <i
                                              class="fa fa-sign-out"></i></a>
                                     </div>
                                  </li>

@@ -1,12 +1,14 @@
 import os
-from flask import Flask, app, jsonify, request, render_template, redirect, session, url_for
-from google.cloud import storage
+from flask import Flask, jsonify, request, render_template, redirect, session, url_for
 import mysql.connector
-from datetime import datetime as dt
-import re
-
+import datetime as dt
+from List_room import app_admin
 #tạo một đối tượng của lớp
-app=Flask(__name__)
+app_user=Flask(__name__, template_folder='templates')
+app_user.register_blueprint(app_admin, url_prefix='/admin')
+# Đặt key bí mật cho phiên làm việc (session)
+app_user.secret_key = "admin"
+
 
 #hàm kết nối tới database
 def connect_to_database():
@@ -14,12 +16,12 @@ def connect_to_database():
         host="localhost", user="root", password="", database="cnpm"
     )
 
-@app.route("/")
+@app_user.route("/")
 def index():
     return redirect(url_for("home"))
 
 # màn hình chính của trang web index
-@app.route("/index.html", methods=["GET","POST"])
+@app_user.route("/index.html", methods=["GET","POST"])
 def home():
     mydb=connect_to_database()
     mycursor=mydb.cursor()
@@ -31,7 +33,7 @@ def home():
     return render_template("user/index.html", data_result_index=result_get_room_in_index)
 
 #form điền thông tin thuê phòng
-@app.route("/rent_room/<item_id>", methods=["GET","POST"])
+@app_user.route("/rent_room/<item_id>", methods=["GET","POST"])
 def rent_room(item_id):
     mydb=connect_to_database() #hàm kết nối databse  
     mycursor=mydb.cursor()
@@ -71,35 +73,61 @@ def rent_room(item_id):
 
 
 # điều hướng đến trang about
-@app.route("/about.html")
+@app_user.route("/about.html")
 def about():
     return render_template("user/about.html")
 
 # điều hướng đến trang contact 
-@app.route("/contact.html")
+@app_user.route("/contact.html")
 def contact():
     return render_template("user/contact.html")
 
 # điều hướng tới trang sự kiên (events) 
-@app.route("/events.html")
+@app_user.route("/events.html")
 def events():
     return render_template("user/events.html")
 
 # điều hướng đên trang đặt chỗ (reservation)
-@app.route("/reservation.html")
+@app_user.route("/reservation.html")
 def reservation():
     return render_template("user/reservation.html")
 
 # điều hướng tới trang phòng (rooms)
-@app.route("/rooms.html")
+@app_user.route("/rooms.html")
 def rooms():
     mydb=connect_to_database()
     mycursor=mydb.cursor()
-
     return render_template("user/rooms.html")
 
+#điều hướng tới tranh danh sách các phòng
+@app_user.route("/listroom.html")
+def listroom():
+    return render_template("user/listroom.html")
+
+# điều hướng tới trang đăng nhập
+@app_user.route("/login.html", methods=['GET','POST'])
+def login():
+    mydb=connect_to_database()
+    mycursor=mydb.cursor()
+    if request.method=="POST":
+        email_admin=request.form["email"]
+        print(" email_admin"+ email_admin)
+        password_admin=request.form["password"]
+        sql_login="SELECT Namelogin, passwordlogin FROM adminmanager WHERE Namelogin=%s AND passwordlogin=%s"
+        val_login=(email_admin,password_admin,)
+        mycursor.execute(sql_login,val_login)
+        result_login=mycursor.fetchone()
+        print("result_login", str(result_login))
+        if result_login:
+            session["email"]=email_admin
+            print("session",session)
+
+            return redirect(url_for('admin.Room'))
+        
+    return render_template("user/login.html")
+
 if __name__=="__main__":
-    app.run(debug=True)
+    app_user.run(debug=True)
 
 
 #Sử dụng strptime để chuyển đổi chuỗi ngày thành đối tượng datetime. 

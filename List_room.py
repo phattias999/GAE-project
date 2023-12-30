@@ -1,54 +1,28 @@
 import os
-from flask import Flask, jsonify, request, render_template, redirect, session, url_for
+from flask import Flask, jsonify, request, render_template, redirect, session, url_for, Blueprint
 from google.cloud import storage
 import mysql.connector
 import datetime as dt
 import pycountry
 import re
 
-app = Flask(__name__)
+app_admin=Blueprint('admin',__name__)
+
+
 # Đặt key bí mật cho phiên làm việc (session)
-app.secret_key = "admin"
-# Dùng đề config với firebase
+app_admin.secret_key = "admin"
 
 
-# kiểm tra xem thông tin đăng nhập của manager
-@app.route("/", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="cnpm",
-        )
-        mycursor = mydb.cursor()
-        query = f"SELECT Namelogin, passwordlogin FROM adminmanager WHERE Namelogin = '{email}' AND passwordlogin = '{password}'"
-        mycursor.execute(query)
-        myresult = mycursor.fetchone()
-
-        if myresult:
-            session["email"] = email
-            return redirect(
-                url_for("Room")
-            )  # Điều hướng đến trang Room khi đăng nhập thành công
-
-    return render_template("admin/login.html")
-
-
-@app.route("/admin/login.html")
+@app_admin.route("/login.html")
 def logout():
     session.pop("email", None)
     return redirect(url_for("login"))  # Điều hướng đến trang đăng nhập
 
-
 # Điều hướng trang phòng
-@app.route("/widgets.html")
+@app_admin.route("/widgets.html")
 def Room():
     if "email" in session:
+        print("session",session)
         mydb = mysql.connector.connect(
             host="localhost", user="root", password="", database="cnpm"
         )
@@ -63,14 +37,11 @@ def Room():
         return render_template(
             "admin/widgets.html", data=result
         )  # Thêm "return" ở đây để hiển thị template
-
     else:
-        return redirect(
-            "admin/login"
-        )  # Điều hướng đến trang login nếu email không tồn tại trong session
+        return redirect("login.html")
 
 
-@app.route("/add_infor_room", methods=["GET", "POST"])
+@app_admin.route("/add_infor_room", methods=["GET", "POST"])
 def add_infor_room():
     message = ""  # Khởi tạo biến thông báo rỗng
     # Kiểm tra nếu người dùng đã đăng nhập bằng session
@@ -166,7 +137,7 @@ def add_infor_room():
 
 
 # Điều hướng đến trang xem chi tiết phòng
-@app.route("/show_infor_room/<item_id>", methods=["GET"])
+@app_admin.route("/show_infor_room/<item_id>", methods=["GET"])
 def show_infor_room(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -183,7 +154,7 @@ def show_infor_room(item_id):
 
 
 # Điều hướng đến trang chỉnh sửa phòng
-@app.route("/edit_infor_room/<item_id>", methods=["GET", "POST"])
+@app_admin.route("/edit_infor_room/<item_id>", methods=["GET", "POST"])
 def edit_infor_room(item_id):
     message = ""  # Khởi tạo biến thông báo rỗng
     if "email" in session:
@@ -222,7 +193,7 @@ def edit_infor_room(item_id):
 
 
 # Điều hướng xóa phòng
-@app.route("/delete_room/<item_id>")
+@app_admin.route("/delete_room/<item_id>")
 def delete_infor_room(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -240,7 +211,7 @@ def delete_infor_room(item_id):
 
 
 # Điều hướng đến trang Gia hạn ngày thuê
-@app.route("/general_elements.html")
+@app_admin.route("/general_elements.html")
 def general_elements():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -256,7 +227,7 @@ def general_elements():
 
 
 # Điều hướng đến trang chỉnh sửa gia hạn phòng
-@app.route("/edit_retal_date/<item_id>", methods=["GET", "POST"])
+@app_admin.route("/edit_retal_date/<item_id>", methods=["GET", "POST"])
 def edit_retal_date(item_id):
     message = ""  # Khởi tạo biến thông báo rỗng
     if "email" in session:
@@ -333,7 +304,7 @@ def edit_retal_date(item_id):
 
 
 # Điều hướng xóa gia hạn phòng
-@app.route("/delete_retaldate/<item_id>")
+@app_admin.route("/delete_retaldate/<item_id>")
 def delete_retal_date(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -351,7 +322,7 @@ def delete_retal_date(item_id):
 
 
 # Điều hướng hủy phòng
-@app.route("/icons.html")
+@app_admin.route("/icons.html")
 def icons():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -367,7 +338,7 @@ def icons():
 
 
 # Điều hướng đến trang chỉnh sửa hủy thuê phòng
-@app.route("/edit_destroy_room/<item_id>", methods=["GET", "POST"])
+@app_admin.route("/edit_destroy_room/<item_id>", methods=["GET", "POST"])
 def edit_destroy_room(item_id):
     message = ""  # Khởi tạo biến thông báo rỗng
     if "email" in session:
@@ -415,7 +386,7 @@ def edit_destroy_room(item_id):
 
 
 # Điều hướng xóa hủy thuê phòng
-@app.route("/delete_destroy_room/<item_id>")
+@app_admin.route("/delete_destroy_room/<item_id>")
 def delete_destroy_room(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -433,7 +404,7 @@ def delete_destroy_room(item_id):
 
 
 # Điều hướng thay đổi phòng
-@app.route("/invoice.html")
+@app_admin.route("/invoice.html")
 def invoice():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -449,7 +420,7 @@ def invoice():
 
 
 # Điều hướng đến chỉnh sửa thay đổi phòng
-@app.route("/edit_change_room/<item_id>", methods=["POST", "GET"])
+@app_admin.route("/edit_change_room/<item_id>", methods=["POST", "GET"])
 def edit_change_room(item_id):
     message = ""  # Khởi tạo biến thông báo rỗng
     # Kiểm tra nếu người dùng đã đăng nhập bằng session
@@ -529,7 +500,7 @@ def edit_change_room(item_id):
 
 
 # Điều hướng xóa thay đổi phòng
-@app.route("/data_change_room/<item_id>")
+@app_admin.route("/data_change_room/<item_id>")
 def data_change_room(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -547,7 +518,7 @@ def data_change_room(item_id):
 
 
 # Điều hướng trang khách hàng
-@app.route("/tables.html")
+@app_admin.route("/tables.html")
 def tables():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -563,7 +534,7 @@ def tables():
 
 
 # Điều hướng trang đến trang thêm khách hàng
-@app.route("/add_infor_customer.html", methods=["GET", "POST"])
+@app_admin.route("/add_infor_customer.html", methods=["GET", "POST"])
 def add_infor_customer():
     message = ""  # Khởi tạo biến thông báo rỗng
     if "email" in session:
@@ -681,7 +652,7 @@ def add_infor_customer():
 
 
 # Điều hướng đến trang xem chi tiết khách hàng
-@app.route("/show_infor_customer/<item_id>", methods=["POST", "GET"])
+@app_admin.route("/show_infor_customer/<item_id>", methods=["POST", "GET"])
 def show_infor_customer(item_id):
     message = ""  # Khởi tạo biến thông báo rỗng
     if "email" in session:
@@ -704,7 +675,7 @@ def show_infor_customer(item_id):
 
 
 # Điều hướng đến trang chỉnh sửa thông tin khách hàng
-@app.route("/edit_infor_customer/<item_id>", methods=["POST", "GET"])
+@app_admin.route("/edit_infor_customer/<item_id>", methods=["POST", "GET"])
 def edit_infor_customer(item_id):
     message = ""  # Khởi tạo biến thông báo rỗng
     if "email" in session:
@@ -830,7 +801,7 @@ def edit_infor_customer(item_id):
 
 
 # xóa thông tin trang khách hàng
-@app.route("/delete_infor_customer/<item_id>")
+@app_admin.route("/delete_infor_customer/<item_id>")
 def delete_infor_customer(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -851,7 +822,7 @@ def delete_infor_customer(item_id):
 
 
 # Điều hướng đến trang nhân viên
-@app.route("/price.html")
+@app_admin.route("/price.html")
 def price():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -867,7 +838,7 @@ def price():
 
 
 # Điều hướng trang đến trang xem chi tiết nhân viên
-@app.route("/show_infor_employee/<item_id>", methods=["POST", "GET"])
+@app_admin.route("/show_infor_employee/<item_id>", methods=["POST", "GET"])
 def show_infor_employee(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -888,7 +859,7 @@ def show_infor_employee(item_id):
 
 
 # Điều hướng đến trang thêm nhân viên
-@app.route("/add_infor_employees.html", methods=["POST", "GET"])
+@app_admin.route("/add_infor_employees.html", methods=["POST", "GET"])
 def add_infor_employees():
     message = ""
     if "email" in session:
@@ -1055,7 +1026,7 @@ def add_infor_employees():
 
 
 # Điều hướng đến trang chỉnh sửa thông tin nhân viên
-@app.route("/edit_infor_employee/<item_id>", methods=["POST", "GET"])
+@app_admin.route("/edit_infor_employee/<item_id>", methods=["POST", "GET"])
 def edit_infor_employee(item_id):
     message = ""
     if "email" in session:
@@ -1244,7 +1215,7 @@ def edit_infor_employee(item_id):
 
 
 # Xóa thông tin nhân viên
-@app.route("/delete_infor_employees/<item_id>")
+@app_admin.route("/delete_infor_employees/<item_id>")
 def delete_infor_employees(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -1261,7 +1232,7 @@ def delete_infor_employees(item_id):
 
 
 # hiển thị trang phiếu thuê phòng
-@app.route("/contact.html")
+@app_admin.route("/contact.html")
 def contact():
     # iconClicked = False
     if "email" in session:
@@ -1278,7 +1249,7 @@ def contact():
         return redirect("login")
 
 # update tổng tiền tự động
-@app.route("/update_total_price", methods=["POST"])
+@app_admin.route("/update_total_price", methods=["POST"])
 def update_total_price():
     selected_room = request.get_json().get(
         "selected_room"
@@ -1309,7 +1280,7 @@ def update_total_price():
 
 
 # Điều hướng đến trang tạo hóa đơn
-@app.route("/add_infor_roomretalvoucher.html", methods=["POST", "GET"])
+@app_admin.route("/add_infor_roomretalvoucher.html", methods=["POST", "GET"])
 def add_infor_roomretalvoucher():
     message = ""
     if "email" in session:
@@ -1479,7 +1450,7 @@ def add_infor_roomretalvoucher():
 
 
 # chấp nhận thông tin khách hàng
-@app.route("/reciveIconClicked/<item_id>", methods=["POST", "GET"])
+@app_admin.route("/reciveIconClicked/<item_id>", methods=["POST", "GET"])
 def reciveIconClicked(item_id):
     message = ""
     if "email" in session:
@@ -1526,7 +1497,7 @@ def reciveIconClicked(item_id):
 
 
 # lấy thông tin phòng checkbox
-@app.route("/checkboxdata", methods=["POST", "GET"])
+@app_admin.route("/checkboxdata", methods=["POST", "GET"])
 def checkboxdata():
    
     if "email" in session:
@@ -1596,7 +1567,7 @@ def checkboxdata():
 
 
 # xóa thông tin phiếu thuê phòng
-@app.route("/delete_infor_rentalroom/<item_id>")
+@app_admin.route("/delete_infor_rentalroom/<item_id>")
 def delete_infor_rentalroom(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -1631,7 +1602,7 @@ def delete_infor_rentalroom(item_id):
 
 
 # Điều hướng tình trạng phòng
-@app.route("/media_gallery.html")
+@app_admin.route("/media_gallery.html")
 def media_gallery():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -1681,7 +1652,7 @@ def media_gallery():
         return redirect("login")
 
 
-@app.route("/map.html")
+@app_admin.route("/map.html")
 def map():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -1696,7 +1667,7 @@ def map():
         return redirect("login")
 
 # Điều hướng đến trang xem hóa đơn
-@app.route("/show_infor_bill/<item_id>", methods=["GET", "POST"])
+@app_admin.route("/show_infor_bill/<item_id>", methods=["GET", "POST"])
 def show_infor_bill(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -1716,7 +1687,7 @@ def show_infor_bill(item_id):
         return redirect("login")
 
 # Điều hướng trang chỉnh sửa thông tin hóa đơn 
-@app.route("/edit_infor_bill/<item_id>", methods=["POST","GET"])
+@app_admin.route("/edit_infor_bill/<item_id>", methods=["POST","GET"])
 def edit_infor_bill(item_id):
     message = ""
     if "email" in session:
@@ -1756,7 +1727,7 @@ def edit_infor_bill(item_id):
     else:
         return redirect("login")
 # xóa hóa đơn
-@app.route("/delete_bill/<item_id>")
+@app_admin.route("/delete_bill/<item_id>")
 def delete_bill(item_id):
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -1806,7 +1777,7 @@ def delete_bill(item_id):
         return redirect("login")
 
 # Điều hướng đến trang thêm hóa đơn nhà hàng
-@app.route("/charts.html")
+@app_admin.route("/charts.html")
 def charts():
     if "email" in session:
         mydb = mysql.connector.connect(
@@ -1820,15 +1791,14 @@ def charts():
     else:
         return redirect("login")
 
-
 # Điều hướng trang cài đặt
-@app.route("/settings.html")
+@app_admin.route("/settings.html")
 def settings():
     return render_template("settings.html")
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app_admin.run(debug=True)
 
 
 # fetchone(): Phương thức này trả về dòng đầu tiên của kết quả truy vấn dưới dạng tuple hoặc None nếu không có dữ liệu nào được tìm thấy.
@@ -1851,3 +1821,31 @@ if __name__ == "__main__":
 #     so_luong_voucher = int(row[0][4])  # lấy số lượng voucher
 # # lấy ngày hiện tại của voucher
 # ngay_hien_tai_voucher = dt.datetime.now().strftime("%Y-%m-%d")
+
+# kiểm tra xem thông tin đăng nhập của manager
+# @app.route("/", methods=["GET", "POST"])
+# def login():
+#      # Đường dẫn đầy đủ đến thư mục user
+#     if request.method == "POST":
+#         email = request.form["email"]
+#         password = request.form["password"]
+
+#         mydb = mysql.connector.connect(
+#             host="localhost",
+#             user="root",
+#             password="",
+#             database="cnpm",
+#         )
+#         mycursor = mydb.cursor()
+#         query = f"SELECT Namelogin, passwordlogin FROM adminmanager WHERE Namelogin = '{email}' AND passwordlogin = '{password}'"
+#         mycursor.execute(query)
+#         myresult = mycursor.fetchone()
+
+#         # if myresult:
+#         #     session["email"] = email
+#         #     return redirect(
+#         #         url_for("Room")
+#         #     )  # Điều hướng đến trang Room khi đăng nhập thành công
+
+#     return render_template("admin/login.html")
+
