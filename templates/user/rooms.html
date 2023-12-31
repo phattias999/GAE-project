@@ -119,10 +119,10 @@
                   <div class="icon"><span class="icon-calendar"></span></div>
                   <!-- <input type="text" id="find_rooms" class="form-control" /> -->
                   <select name="" id="find_rooms" class="form-control">
-                    <option value="">1</option>
-                    <option value="">2</option>
-                    <option value="">3</option>
-                    <option value="">4+</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4+</option>
                   </select>
                 </div>
               </div>  
@@ -360,12 +360,19 @@
       showMonths: 2,
       minDate: "today",
       onClose: function (selectedDates, dateStr, instance) {
-        instance.element.value = dateStr.replace("to", "-");
-        const [checkin, checkout] = dateStr
-          .split(" to ")
-          .map((date) => date.trim());
-        document.getElementById("checkin").value = checkin;
-        document.getElementById("checkout").value = checkout;
+        // instance.element.value = dateStr.replace("to", "-");
+        // const [checkin, checkout] = dateStr
+        //   .split(" to ")
+        //   .map((date) => date.trim());
+        // document.getElementById("checkin").value = checkin;
+        // document.getElementById("checkout").value = checkout;
+        if (selectedDates.length === 2) {
+            const checkin = selectedDates[0].toLocaleDateString('vi-VN');
+            const checkout = selectedDates[1].toLocaleDateString('vi-VN');
+            instance.element.value = `${checkin} - ${checkout}`;
+            document.getElementById("checkin").value = checkin;
+            document.getElementById("checkout").value = checkout;
+        }
       },
     });
     function navigateToNextPage(){
@@ -377,14 +384,14 @@
         localStorage.setItem("checkin",checkin);
         localStorage.setItem("checkout",checkout);
         localStorage.setItem("findroom",findroom);
-        
+         // hiển thị thông báo với dữ liệu
+        alert(`Checkin: ${checkin}, Checkout: ${checkout}, Find Room: ${findroom}`);
         //chuyển qua trang html mới
-        window.Location.href=".html"
+        window.open("listroom.html", '_blank');
+        window.location.href = "listroom.html";
     }
-
     // bắt sự kiện nút button 
     document.getElementById('button-check').addEventListener("click", navigateToNextPage);
-
   </script>
   <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/jquery-migrate-3.0.1.min.js') }}"></script>
@@ -403,10 +410,6 @@
 </body>
 
 </html>
-
-
-
-
 
  <!-- <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
                 <label for="checkout_date" class="font-weight-bold text-black">Check Out</label>

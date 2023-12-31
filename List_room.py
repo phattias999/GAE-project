@@ -8,7 +8,6 @@ import re
 
 app_admin=Blueprint('admin',__name__)
 
-
 # Đặt key bí mật cho phiên làm việc (session)
 app_admin.secret_key = "admin"
 
