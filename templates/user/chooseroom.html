@@ -169,11 +169,10 @@
         .tong {
             margin-left: 60px;
         }
-
         .container_row {
-            display: flex;
-
-        }
+    display: flex;
+ 
+}
     </style>
     <header class="site-header js-site-header">
         <div class="container-fluid">
@@ -249,8 +248,8 @@
                                             class="form-control" />
                                         <span class="calendar-icon" id="calendarIcon"><i
                                                 class="fa-solid fa-calendar-days"></i></span>
-                                        <input type="hidden" name="checkin" id="checkin" value=" " />
-                                        <input type="hidden" name="checkout" id="checkout" value=" " />
+                                        <input type="hidden" name="checkin" id="checkin" value="20/12/2024" />
+                                        <input type="hidden" name="checkout" id="checkout" value="21/12/2024" />
                                     </div>
                                 </div>
                             </div>
@@ -302,41 +301,41 @@
                         </div>
                     </div>
                 </div>
-                <div class="forlistroom">
-                    {% for data in data %}
-                    <div class="list_rooms">
-                        <div class="row">
-                            <div class="image_rooms">
-                                <figure>
-                                    <img src="{{data[7]}}" alt="Free website template" class="img-fluid mb-3" />
-                                </figure>
-                            </div>
-                            <div class="name_hotel">
-                                <p>Sogo hotel holiday</p>
-                                <p class="loaiphong">{{data[2]}}</p>
-                            </div>
-                            <div class="row3">
-                                <div class="tong">
-                                    <div>
-                                        <p class="chitu">Chỉ từ</p>
-                                    </div>
-                                    <div class="price">
-                                        <p>${{data[4]}}</p>
-                                    </div>
-                                    <div class="menhgia">
-                                        <p>USD</p>
-                                    </div>
-                                    <div class="dem">
-                                        <p>per night</p>
-                                    </div>
+               <div class="forlistroom">
+                {% for data in data %}
+                <div class="list_rooms">
+                    <div class="row">
+                        <div class="image_rooms">
+                            <figure>
+                                <img src="{{data[7]}}"
+                                    alt="Free website template" class="img-fluid mb-3" />
+                            </figure>
+                        </div>
+                        <div class="name_hotel">
+                            <p>Sogo hotel holiday</p>
+                            <p class="loaiphong">{{data[2]}}</p>
+                        </div>
+                        <div class="row3">
+                            <div class="tong">
+                                <div>
+                                    <p class="chitu">Chỉ từ</p>
                                 </div>
-                                <button class="button" id="click_button"><a href="rent_room/{{data[0]}}">Book
-                                        Now</a></button </div>
+                                <div class="price">
+                                    <p>${{data[4]}}</p>
+                                </div>
+                                <div class="menhgia">
+                                    <p>USD</p>
+                                </div>
+                                <div class="dem">
+                                    <p>per night</p>
+                                </div>
                             </div>
+                            <button class="button" id="click_button"><a href="rent_room/{{data[0]}}">Book Now</a></button </div>
                         </div>
                     </div>
-                    {%endfor%}
                 </div>
+                {%endfor%}
+               </div>
             </div>
     </section>
     <footer class="section footer-section">
@@ -434,10 +433,9 @@
             // alert(`Checkin: ${checkin}, Checkout: ${checkout}, Find Room: ${findroom}`);
             document.getElementById("range_date").value = `${checkin} - ${checkout}`;
             document.getElementById("find_rooms").value = findroom;
-            document.getElementById("checkin").value = checkin || "";
-            document.getElementById("checkout").value = checkout || "";
             // Set giá trị cho dropdown
             // const dropdown = document.getElementById("find_rooms");
+
             // for (let i = 0; i < dropdown.options.length; i++) {
             //     if (dropdown.options[i].value === findroom) {
             //         dropdown.selectedIndex = i;
@@ -446,37 +444,23 @@
             // }
 
         });
-    </script>
-    <script>
-        //hàm chuyền dữ liệu qua rent room
-        function navigateToNextPage() {
-            const checkin = localStorage.getItem("checkin");
-            const checkout = localStorage.getItem("checkout");
-            const findroom = localStorage.getItem("findroom");
+        function navigateToNextPage(){
+            const checkin=document.getElementById('checkin').value;
+            const checkout=document.getElementById('checkout').value;
+            const finroom=document.getElementById('find_rooms').value;
 
             localStorage.setItem('checkin', checkin);
-            localStorage.setItem('checkout', checkout);
-            localStorage.setItem('findroom', finroom);
+            localStorage.setItem('checkout',checkout);
+            localStorage.setItem('findroom',finroom);
+            alert(`Checkin: ${checkin}, Checkout: ${checkout}, Find Room: ${findroom}`);
         }
-        document.getElementById('click_button').addEventListener('click', navigateToNextPage);
-    </script>
-    <script>
-        //hàm reload lại 
-        function navigateToNextPage() {
-            const checkin = document.getElementById('checkin').value;
-            const checkout = document.getElementById('checkout').value;
-            const finroom = document.getElementById('find_rooms').value;
-
-            localStorage.setItem('checkin', checkin);
-            localStorage.setItem('checkout', checkout);
-            localStorage.setItem('findroom', finroom);
-        }
-        document.getElementById('button-check').addEventListener('click', function () {
-            navigateToNextPage();
+        document.getElementById('click_button').addEventListener('click',navigateToNextPage);
+        const check_click=document.getElementById('button-check').addEventListener('click',navigateToNextPage);
+        if (check_click){
             window.location.href = "listroom.html";
-        });
+          
+        }
     </script>
-
     <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery-migrate-3.0.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>

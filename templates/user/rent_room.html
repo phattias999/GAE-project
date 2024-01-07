@@ -1,343 +1,674 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sogo Hotel by Colorlib.com</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="" />
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/aos.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.timepicker.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fancybox.min.css') }}">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/ionicons/css/ionicons.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/fontawesome/css/font-awesome.min.css') }}">
-    
-    <!-- Theme Style -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
-  </head>
-  <body>
-    <header class="site-header js-site-header">
-      <div class="container-fluid">
-        <div class="row align-items-center">
-          <div class="col-6 col-lg-4 site-logo" data-aos="fade">
-            <a href="{{url_for('index')}}">Sogo Hotel</a>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Sogo Hotel by Colorlib.com</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="" />
+  <link rel="stylesheet" type="text/css"
+    href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/aos.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.timepicker.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fancybox.min.css') }}" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/ionicons/css/ionicons.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/fontawesome/css/font-awesome.min.css') }}" />
+
+  <!-- Theme Style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <!-- Thư viện Flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <!-- Font Awesome for the calendar icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <style>
+    #date_form {
+      background-color: white;
+      width: 253px;
+      color: black;
+    }
+
+    .calendar-icon_form {
+      position: absolute;
+      top: 50%;
+      right: 90%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: black;
+    }
+
+    #AmountRooms {
+      color: black;
+    }
+
+    #adults1,
+    #adults2,
+    #adults3 {
+      color: black;
+    }
+
+    #infants1,
+    #infants2,
+    #infants3 {
+      color: black;
+    }
+
+    #children1,
+    #children2,
+    #children3 {
+      color: black;
+    }
+
+    figure.img-wrap {
+      height: 250px;
+    }
+
+    .thongtin {
+      display: flex;
+      margin-top: -12px;
+      margin-bottom: 20px;
+    }
+
+    span.text-uppercase.letter-spacing-1 {
+      font-size: 18px;
+      margin-left: 30px;
+    }
+
+    .thongtinphong {
+      color: black;
+      /* width: 500px; */
+      font-family: "Playfair Display", times, serif;
+      font-size: 25px;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #ffaa34;
+      margin-top: 20px;
+    }
+
+    p.phong,
+    .mini,
+    .soluongnguoi {
+      margin-top: -20px;
+    }
+
+    .soluongnguoi {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .toltalprice.col-md-12.ml-auto {
+      display: flex;
+      justify-content: space-between;
+      font-size: 25px;
+      color: black;
+      font-family: -webkit-body;
+    }
+
+    div#informationBooking {
+      overflow: auto;
+      height: 206px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    #nationality { 
+    position: relative;
+    }
+  </style>
+  <header class="site-header js-site-header">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-6 col-lg-4 site-logo" data-aos="fade">
+          <a href="{{url_for('index')}}">Sogo Hotel</a>
+        </div>
+        <div class="col-6 col-lg-8">
+          <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-          <div class="col-6 col-lg-8">
-            <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <!-- END menu-toggle -->
-  
-            <div class="site-navbar js-site-navbar">
-              <nav role="navigation">
-                <div class="container">
-                  <div class="row full-height align-items-center">
-                    <div class="col-md-6 mx-auto">
-                      <ul class="list-unstyled menu">
-                        <li class="active"><a href="{{url_for('index')}}">Home</a></li>
-                        <li><a href="{{url_for('rooms')}}">Rooms</a></li>
-                        <li><a href="{{url_for('about')}}">About</a></li>
-                        <li><a href="{{url_for('events')}}">Events</a></li>
-                        <li><a href="{{url_for('contact')}}">Contact</a></li>
-                        <!-- <li><a href="{{url_for('reservation')}}">Reservation</a></li> -->
-                      </ul>
-                    </div>
+          <!-- END menu-toggle -->
+
+          <div class="site-navbar js-site-navbar">
+            <nav role="navigation">
+              <div class="container">
+                <div class="row full-height align-items-center">
+                  <div class="col-md-6 mx-auto">
+                    <ul class="list-unstyled menu">
+                      <li class="active">
+                        <a href="{{url_for('index')}}">Home</a>
+                      </li>
+                      <li><a href="{{url_for('rooms')}}">Rooms</a></li>
+                      <li><a href="{{url_for('about')}}">About</a></li>
+                      <li><a href="{{url_for('events')}}">Events</a></li>
+                      <li><a href="{{url_for('contact')}}">Contact</a></li>
+                      <!-- <li><a href="{{url_for('reservation')}}">Reservation</a></li> -->
+                    </ul>
                   </div>
                 </div>
-              </nav>
-            </div>
+              </div>
+            </nav>
           </div>
         </div>
       </div>
-    </header>
-    <!-- END head -->
-
-    <section class="site-hero inner-page overlay" style="background-image: url(images/hero_4.jpg)" data-stellar-background-ratio="0.5">
-      <div class="container">
-        <div class="row site-hero-inner justify-content-center align-items-center">
-          <div class="col-md-10 text-center" data-aos="fade">
-            <h1 class="heading mb-3">Reservation Form</h1>
-            <ul class="custom-breadcrumbs mb-4">
-              <li><a href="{{url_for('reservation')}}">Home</a></li>
-              <li>&bullet;</li>
-              <li>Reservation</li>
-            </ul>
-          </div>
+    </div>
+  </header>
+  <!-- END head -->
+  <section class="site-hero inner-page overlay" style="background-image: url(images/hero_4.jpg)"
+    data-stellar-background-ratio="0.5">
+    <div class="container">
+      <div class="row site-hero-inner justify-content-center align-items-center">
+        <div class="col-md-10 text-center" data-aos="fade">
+          <h1 class="heading mb-3">Reservation Form</h1>
+          <ul class="custom-breadcrumbs mb-4">
+            <li><a href="{{url_for('reservation')}}">Home</a></li>
+            <li>&bullet;</li>
+            <li>Reservation</li>
+          </ul>
         </div>
       </div>
+    </div>
 
-      <a class="mouse smoothscroll" href="#next">
-        <div class="mouse-icon">
-          <span class="mouse-wheel"></span>
-        </div>
-      </a>
-    </section>
-    <!-- END section -->
-
-    <section class="section contact-section" id="next">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">        
-            <form action="#" method="post" class="bg-white p-md-5 p-4 mb-5 border" enctype="multipart/form-data">
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <label class="text-black font-weight-bold" for="name">Name</label>
-                  <input type="text" id="name" class="form-control " name="name">
-                </div>
-                <div class="col-md-6 form-group">
-                  <label class="text-black font-weight-bold" for="phone">Phone</label>
-                  <input type="text" id="phone" class="form-control " name="phone">
-                </div>
-              </div>         
-              <div class="row">
-                <div class="col-md-12 form-group">
-                  <label class="text-black font-weight-bold" for="email">Email</label>
-                  <input type="email" id="email" class="form-control " name="email">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <label class="text-black font-weight-bold" for="checkin_date">Date Check In</label>
-                  <input type="text" id="checkin_date" class="form-control" name="checkin_in">
-                </div>
-                <div class="col-md-6 form-group">
-                  <label class="text-black font-weight-bold" for="checkout_date">Date Check Out</label>
-                  <input type="text" id="checkin_date" class="form-control" name="checkin_out">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <label for="adults" class="font-weight-bold text-black">Adults</label>
-                  <div class="field-icon-wrap">
-                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                    <select name="adults" id="adults" class="form-control">
-                      <option value="1">1</option>
-                      <option value="2">2</option>                   
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6 form-group">
-                  <label for="children" class="font-weight-bold text-black">Children</label>
-                  <div class="field-icon-wrap">
-                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                    <select name="children" id="children" class="form-control">
-                      <option value="1">1</option>
-                      <option value="2">2</option>                    
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row mb-4">
-                <div class="col-md-12 form-group">
-                  <label class="text-black font-weight-bold" for="message">Notes</label>
-                  <textarea name="message" id="message" class="form-control " cols="30" rows="8"></textarea>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <input type="submit" value="Reserve Now" class="btn btn-primary text-white py-3 px-5 font-weight-bold">
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="col-md-5" data-aos="fade-up" data-aos-delay="200">
+    <a class="mouse smoothscroll" href="#next">
+      <div class="mouse-icon">
+        <span class="mouse-wheel"></span>
+      </div>
+    </a>
+  </section>
+  <!-- END section -->
+  <section class="section pb-4">
+    <div class="container">
+      <div class="row check-availabilty" id="next">
+        <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
+          <form action="#">
             <div class="row">
-                <div class="" data-aos="fade-up">
-                    <a href="#" class="room">
-                      <figure class="img-wrap">
-                        <img src="{{data_receive[7]}}" alt="Free website template"
-                          class="img-fluid mb-3 col-md-12" />
-                      </figure>
-                      <div class="p-3 room-info">
-                        <h2>{{data_receive[2]}}</h2>
-                        <span class="text-uppercase letter-spacing-1">{{data_receive[4]}}$ / per night</span>
-                      </div>
-                    </a>
-                  </div>  
-              <div class="col-md-12 ml-auto contact-info">              
-                <p><span class="d-block">Address:</span> <span class="text-black"> 98 West 21th Street, Suite 721 New York NY 10016</span></p>
-                <p><span class="d-block">Phone:</span> <span class="text-black"> (+1) 435 3533</span></p>
-                <p><span class="d-block">Email:</span> <span class="text-black"> info@yourdomain.com</span></p>
+              <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
+                <label for="checkin_date" class="font-weight-bold text-black">Check In</label>
+                <div class="field-icon-wrap">
+                  <div class="input">
+                    <input type="text" id="range_date" placeholder="Chọn ngày" class="form-control" />
+                    <span class="calendar-icon" id="calendarIcon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <input type="hidden" name="checkin" id="checkin" value="" />
+                    <input type="hidden" name="checkout" id="checkout" value="" />
+                  </div>
+                </div>
               </div>
+              <div class="col-md-6 mb-3 mb-lg-0 col-lg-3" id="find-room">
+                <label for="find_rooms" class="font-weight-bold text-black">Find Rooms</label>
+                <div class="field-icon-wrap">
+                  <div class="icon"><span class="icon-calendar"></span></div>
+                  <!-- <input type="text" id="find_rooms" class="form-control" /> -->
+                  <select name="" id="find_rooms" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4+</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3 align-self-end">
+                <button class="btn btn-primary btn-block text-white" id="button-check">
+                  Check Availabilty
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section contact-section" id="next">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
+          <form action="#" method="post" class="bg-white p-md-5 p-4 mb-5 border" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="name">Name</label>
+                <input type="text" id="name" class="form-control" name="name" />
+              </div>
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="phone">Phone</label>
+                <input type="text" id="phone" class="form-control" name="phone" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="nationality">Nationality</label>
+                <select id="nationality" class="form-control" name="nationality">
+                  <option value="0" >Select a country</option>
+                </select>
+              </div>
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="gender">Gender</label>
+                <select id="gender" class="form-control" name="gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label class="text-black font-weight-bold" for="email">Email</label>
+                <input type="email" id="email" class="form-control" name="email" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3 mb-lg-0">
+                <label for="checkin_date" class="font-weight-bold text-black">Check In - Check Out</label>
+                <div class="field-icon-wrap">
+                  <div class="input">
+                    <input type="text" id="date_form" placeholder="Chọn ngày" class="form-control" readonly value="" />
+                    <span class="calendar-icon_form" id="calendarIcon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <input type="hidden" name="check_in" id="check_in" value="" />
+                    <input type="hidden" name="check_out" id="check_out" value="" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="AmountRooms" class="font-weight-bold text-black">Amount Rooms</label>
+                <div class="field-icon-wrap">
+                  <div class="icon">
+                    <span class="ion-ios-arrow-down"></span>
+                  </div>
+                  <select name="AmountRooms" id="AmountRooms" class="form-control"
+                    onchange="updateGuests(); addInformation(); updatePrice();">
+                    <option value="0">Choose Rooms</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div id="guestsSection"></div>
+            <div class="row mb-4">
+              <div class="col-md-12 form-group">
+                <label class="text-black font-weight-bold" for="message">Notes</label>
+                <textarea name="message" id="message" class="form-control" cols="30" rows="8"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <input type="submit" value="Reserve Now"
+                  class="btn btn-primary text-white py-3 px-5 font-weight-bold" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-5" data-aos="fade-up" data-aos-delay="200">
+          <div class="row">
+            <div class="" data-aos="fade-up">
+              <a href="#" class="room">
+                <figure class="img-wrap">
+                  <img src="{{data_receive[7]}}" alt="Free website template" class="img-fluid mb-3 col-md-12" />
+                </figure>
+                <div class="p-3 room-info">
+                  <h3>Information Booking Rooms:</h3>
+                </div>
+              </a>
+            </div>
+            <div class="col-md-12 ml-auto" id="informationBooking" hidden></div>
+            <div class="toltalprice col-md-12 ml-auto">
+              <div>Total Price:</div>
+              <div id="pricetotal" value="initial_value">0 USD</div>
             </div>
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="section testimonial-section bg-light">
-      <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-          <div class="col-md-7">
-            <h2 class="heading" data-aos="fade-up">People Says</h2>
-          </div>
+    </div>
+  </section>
+  <footer class="section footer-section">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-md-3 mb-5">
+          <ul class="list-unstyled link">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Rooms</a></li>
+          </ul>
         </div>
-        <div class="row">
-          <div class="js-carousel-2 owl-carousel mb-5" data-aos="fade-up" data-aos-delay="200">
-            
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="{{ url_for('static', filename='images/person_1') }}" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; Jean Smith</em></p>
-            </div> 
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="{{ url_for('static', filename='images/person_2') }}" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-                <p>&ldquo;Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="{{ url_for('static', filename='images/person_3') }}" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="{{ url_for('static', filename='images/person_1.jpg') }}" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; Jean Smith</em></p>
-            </div> 
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="{{ url_for('static', filename='images/person_2.jpg') }}" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-                <p>&ldquo;Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-            <div class="testimonial text-center slider-item">
-              <div class="author-image mb-3">
-                <img src="{{ url_for('static', filename='images/person_3.jpg') }}" alt="Image placeholder" class="rounded-circle mx-auto">
-              </div>
-              <blockquote>
-
-                <p>&ldquo;When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane.&rdquo;</p>
-              </blockquote>
-              <p><em>&mdash; John Doe</em></p>
-            </div>
-
-          </div>
-            <!-- END slider -->
+        <div class="col-md-3 mb-5">
+          <ul class="list-unstyled link">
+            <li><a href="#">The Rooms &amp; Suites</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Restaurant</a></li>
+          </ul>
         </div>
-
-      </div>
-    </section>
-
-    
-    
-    <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">
-        <div class="container" >
-          <div class="row align-items-center">
-            <div class="col-12 col-md-6 text-center mb-4 mb-md-0 text-md-left" data-aos="fade-up">
-              <h2 class="text-white font-weight-bold">A Best Place To Stay. Reserve Now!</h2>
-            </div>
-            <div class="col-12 col-md-6 text-center text-md-right" data-aos="fade-up" data-aos-delay="200">
-              <a href="{{url_for('reservation')}}" class="btn btn-outline-white-primary py-3 text-white px-5">Reserve Now</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    <footer class="section footer-section">
-      <div class="container">
-        <div class="row mb-4">
-          <div class="col-md-3 mb-5">
-            <ul class="list-unstyled link">
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Terms &amp; Conditions</a></li>
-              <li><a href="#">Privacy Policy</a></li>
-             <li><a href="#">Rooms</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-5">
-            <ul class="list-unstyled link">
-              <li><a href="#">The Rooms &amp; Suites</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Contact Us</a></li>
-              <li><a href="#">Restaurant</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-5 pr-md-5 contact-info">
-            <!-- <li>198 West 21th Street, <br> Suite 721 New York NY 10016</li> -->
-            <p><span class="d-block"><span class="ion-ios-location h5 mr-3 text-primary"></span>Address:</span> <span> 198 West 21th Street, <br> Suite 721 New York NY 10016</span></p>
-            <p><span class="d-block"><span class="ion-ios-telephone h5 mr-3 text-primary"></span>Phone:</span> <span> (+1) 435 3533</span></p>
-            <p><span class="d-block"><span class="ion-ios-email h5 mr-3 text-primary"></span>Email:</span> <span> info@domain.com</span></p>
-          </div>
-          <div class="col-md-3 mb-5">
-            <p>Sign up for our newsletter</p>
-            <form action="#" class="footer-newsletter">
-              <div class="form-group">
-                <input type="email" class="form-control" placeholder="Email...">
-                <button type="submit" class="btn"><span class="fa fa-paper-plane"></span></button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="row pt-5">
-          <p class="col-md-6 text-left">
-            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
-            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+        <div class="col-md-3 mb-5 pr-md-5 contact-info">
+          <!-- <li>198 West 21th Street, <br> Suite 721 New York NY 10016</li> -->
+          <p>
+            <span class="d-block"><span class="ion-ios-location h5 mr-3 text-primary"></span>Address:</span>
+            <span>
+              198 West 21th Street, <br />
+              Suite 721 New York NY 10016</span>
           </p>
-            
-          <p class="col-md-6 text-right social">
-            <a href="#"><span class="fa fa-tripadvisor"></span></a>
-            <a href="#"><span class="fa fa-facebook"></span></a>
-            <a href="#"><span class="fa fa-twitter"></span></a>
-            <a href="#"><span class="fa fa-linkedin"></span></a>
-            <a href="#"><span class="fa fa-vimeo"></span></a>
+          <p>
+            <span class="d-block"><span class="ion-ios-telephone h5 mr-3 text-primary"></span>Phone:</span>
+            <span> (+1) 435 3533</span>
+          </p>
+          <p>
+            <span class="d-block"><span class="ion-ios-email h5 mr-3 text-primary"></span>Email:</span>
+            <span> info@domain.com</span>
           </p>
         </div>
+        <div class="col-md-3 mb-5">
+          <p>Sign up for our newsletter</p>
+          <form action="#" class="footer-newsletter">
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="Email..." />
+              <button type="submit" class="btn">
+                <span class="fa fa-paper-plane"></span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </footer>
-    
-    <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jquery-migrate-3.0.1.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jquery.stellar.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jquery.fancybox.min.js') }}"></script>   
-    <script src="{{ url_for('static', filename='js/aos.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jquery.timepicker.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
-  </body>
+      <div class="row pt-5">
+        <p class="col-md-6 text-left">
+          <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+          Copyright &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          All rights reserved | This template is made with
+          <i class="icon-heart-o" aria-hidden="true"></i> by
+          <a href="https://colorlib.com" target="_blank">Colorlib</a>
+          <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+        </p>
+
+        <p class="col-md-6 text-right social">
+          <a href="#"><span class="fa fa-tripadvisor"></span></a>
+          <a href="#"><span class="fa fa-facebook"></span></a>
+          <a href="#"><span class="fa fa-twitter"></span></a>
+          <a href="#"><span class="fa fa-linkedin"></span></a>
+          <a href="#"><span class="fa fa-vimeo"></span></a>
+        </p>
+      </div>
+    </div>
+  </footer>
+  <script>
+    flatpickr("#range_date", {
+      mode: "range",
+      dateFormat: "d/m/Y",
+      showMonths: 2,
+      minDate: "today",
+      onClose: function (selectedDates, dateStr, instance) {
+        if (selectedDates.length === 2) {
+          const checkin = selectedDates[0].toLocaleDateString("vi-VN");
+          const checkout = selectedDates[1].toLocaleDateString("vi-VN");
+          instance.element.value = `${checkin} - ${checkout}`;
+          document.getElementById("checkin").value = checkin;
+          document.getElementById("checkout").value = checkout;
+        }
+      },
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkin = localStorage.getItem("checkin");
+      const checkout = localStorage.getItem("checkout");
+      const findroom = localStorage.getItem("findroom");
+      // alert(`Checkin: ${checkin}, Checkout: ${checkout}, Find Room: ${findroom}`);
+      document.getElementById(
+        "range_date"
+      ).value = `${checkin} - ${checkout}`;
+      document.getElementById("find_rooms").value = findroom;
+      document.getElementById("date_form").value = `${checkin} - ${checkout}`;
+      // Set giá trị cho dropdown
+      // const dropdown = document.getElementById("find_rooms");
+
+      // for (let i = 0; i <script dropdown.options.length; i++) {
+      //     if (dropdown.options[i].value === findroom) {
+      //         dropdown.selectedIndex = i;
+      //         break;
+      //     }
+      // }
+    });
+  </script>
+  <script>
+    function updateGuests() {
+      var amountRooms = document.getElementById("AmountRooms").value;
+      var guestsSectionContainer = document.getElementById("guestsSection");
+      var informationBooking = document.getElementById("informationBooking");
+      informationBooking.removeAttribute("hidden");
+
+      // Thêm class để kích hoạt animation
+      informationBooking.classList.add("fade-in");
+
+      // Xóa tất cả các guestsSection hiện tại
+      guestsSectionContainer.innerHTML = "";
+
+      // Tạo mới các guestsSection tương ứng với số phòng được chọn
+      for (var i = 0; i < amountRooms; i++) {
+        var guestsSection = document.createElement("div");
+        guestsSection.className = "row";
+
+        guestsSection.innerHTML = `
+          <div class="col-md-4 form-group">
+            <label for="adults${i + 1
+          }" class="font-weight-bold text-black">Adults</label>
+            <div class="field-icon-wrap">
+              <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+              <select name="adults${i + 1}" id="adults${i + 1
+          }" class="form-control" onchange="getAdult(${i});">
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="children${i + 1
+          }" class="font-weight-bold text-black">Child Age(6-11)</label>
+            <div class="field-icon-wrap">
+              <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+              <select name="children${i + 1}" id="children${i + 1
+          }" class="form-control" onchange="getChild(${i});">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="infants${i + 1
+          }" class="font-weight-bold text-black">Baby Age(0-5)</label>
+            <div class="field-icon-wrap">
+              <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+              <select name="infants${i + 1}" id="infants${i + 1
+          }" class="form-control" onchange="getBaby(${i})">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+          </div>
+        `;
+
+        guestsSectionContainer.appendChild(guestsSection);
+      }
+      for (var i = 0; i < amountRooms; i++) {
+        var adultsValue = document.getElementById(`adults${i + 1}`).value;
+        var childrenValue = document.getElementById(`children${i + 1}`).value;
+        var infantsValue = document.getElementById(`infants${i + 1}`).value;
+        console.log(
+          `Trẻ Em (${i + 1}): ${document.getElementById(`children${i + 1}`).value
+          }`
+        );
+      }
+    }
+    function addInformation() {
+      var amountRooms = document.getElementById("AmountRooms").value;
+      var informationBooking = document.getElementById("informationBooking");
+      informationBooking.innerHTML = "";
+      for (var i = 0; i < amountRooms; i++) {
+        var booking = document.createElement("div");
+        booking.className = "thongtinphong";
+
+        booking.innerHTML = `
+          <div class="namephong customname${i + 1}">
+            <p class="phong">Phòng: ${i + 1} {{data_receive[2]}}</p>
+            <p class="mini">LAST MINUTES</p>
+          </div>
+          <div class="thongtin customthongtin${i + 1}">
+            <h4>{{data_receive[2]}}</h4>
+            <span class="text-uppercase letter-spacing-1">{{data_receive[4]}}$ / mỗi đêm</span>
+          </div>
+          <div class="soluongnguoi customsoluong${i + 1}">
+            <span id="nguoilon">Người Lớn: ${document.getElementById(`adults${i + 1}`).value
+          }</span>
+            <span>-</span>
+            <span id="treem">Trẻ Em: ${document.getElementById(`children${i + 1}`).value
+          }</span>
+            <span>-</span>
+            <span id="embe">Em Bé: ${document.getElementById(`infants${i + 1}`).value
+          }</span>
+          </div>`;
+        informationBooking.appendChild(booking);
+      }
+    }
+    function getAdult(i) {
+      // Lấy giá trị đã chọn
+      var adultsValue = document.getElementById(`adults${i + 1}`).value;
+      var childrenValue = document.getElementById(`children${i + 1}`).value;
+      var infantsValue = document.getElementById(`infants${i + 1}`).value;
+
+      // Cập nhật nội dung của thẻ div tương ứng
+      var soluongnguoiDiv = document.querySelector(`.customsoluong${i + 1}`);
+      if (soluongnguoiDiv) {
+        soluongnguoiDiv.innerHTML = `
+      <span id="nguoilon">Người Lớn: ${adultsValue}</span>
+      <span>-</span>
+      <span id="treem">Trẻ Em: ${childrenValue}</span>
+      <span>-</span>
+      <span id="embe">Em Bé: ${infantsValue}</span>
+    `;
+      }
+    }
+    function getChild(i) {
+      // Lấy giá trị đã chọn
+      var adultsValue = document.getElementById(`adults${i + 1}`).value;
+      var childrenValue = document.getElementById(`children${i + 1}`).value;
+      var infantsValue = document.getElementById(`infants${i + 1}`).value;
+
+      // Cập nhật nội dung của thẻ div tương ứng
+      var soluongnguoiDiv = document.querySelector(`.customsoluong${i + 1}`);
+      if (soluongnguoiDiv) {
+        soluongnguoiDiv.innerHTML = `
+      <span id="nguoilon">Người Lớn: ${adultsValue}</span>
+      <span>-</span>
+      <span id="treem">Trẻ Em: ${childrenValue}</span>
+      <span>-</span>
+      <span id="embe">Em Bé: ${infantsValue}</span>
+    `;
+      }
+    }
+    function getBaby(i) {
+      // Lấy giá trị đã chọn
+      var adultsValue = document.getElementById(`adults${i + 1}`).value;
+      var childrenValue = document.getElementById(`children${i + 1}`).value;
+      var infantsValue = document.getElementById(`infants${i + 1}`).value;
+
+      // Cập nhật nội dung của thẻ div tương ứng
+      var soluongnguoiDiv = document.querySelector(`.customsoluong${i + 1}`);
+      if (soluongnguoiDiv) {
+        soluongnguoiDiv.innerHTML = `
+      <span id="nguoilon">Người Lớn: ${adultsValue}</span>
+      <span>-</span>
+      <span id="treem">Trẻ Em: ${childrenValue}</span>
+      <span>-</span>
+      <span id="embe">Em Bé: ${infantsValue}</span>
+    `;
+      }
+    }
+  </script>
+  <script>
+    //hàm câp nhật giá
+    var getprice = parseFloat("{{data_receive[4]}}"); // Chuyển đổi thành số thực để tính toán
+    // console.log("getprice: " + getprice);
+    function updatePrice() {
+      var sum = 0;
+      var amountRooms = document.getElementById("AmountRooms").value;
+      for (var i = 0; i < amountRooms; i++) {
+        sum += getprice;
+      }
+      var pricetotalElement = document.getElementById("pricetotal");
+      pricetotalElement.innerText = sum + " USD";
+      pricetotalElement.setAttribute("value", sum);
+    }
+  </script>
+  <script>
+    // Hàm nhận dữ liệu
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkin = localStorage.getItem("checkin");
+      const checkout = localStorage.getItem("checkout");
+      const findroom = localStorage.getItem("findroom");
+
+      // Sửa dòng mã dưới từ getElementsByName thành getElementById
+      document.getElementById("check_in").value = checkin || "";
+      document.getElementById("check_out").value = checkout || "";
+      document.getElementById("checkin").value = checkin || "";
+      document.getElementById("checkout").value = checkout || "";
+      if (checkin && checkout && findroom) {
+        document.getElementById("range_date").value = `${checkin} - ${checkout}`;
+        document.getElementById("find_rooms").value = findroom;
+        document.getElementById("date_form").value = `${checkin} - ${checkout}`;
+        console.log(`Checkin: ${checkin}, Checkout: ${checkout}, Find Room: ${findroom}`);
+      } else {
+        alert("Một số dữ liệu bị thiếu trong bộ nhớ cục bộ.");
+      }
+    });
+  </script>
+  <script>
+    // Hàm thông báo
+    var message = "{{ message }}";
+    var alertShown = sessionStorage.getItem('alertShown');
+
+    // Kiểm tra nếu có thông báo và 'alertShown' không tồn tại trong sessionStorage
+    if (message && !alertShown) {
+      alert(message);
+      // Thay vì lưu 'alertShown' trong sessionStorage, hãy lưu nó trong localStorage
+      localStorage.setItem('alertShown', 'true');
+    }
+  </script>
+  <script src="{{ url_for('static', filename='js/country.js') }}"> </script>
+  <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-migrate-3.0.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.stellar.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.fancybox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.timepicker.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
 </html>

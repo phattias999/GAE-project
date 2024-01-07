@@ -1,8 +1,11 @@
 import os
 from flask import Flask, jsonify, request, render_template, redirect, session, url_for
-import mysql.connector
+import mysql.connector,re
 import datetime as dt
 from List_room import app_admin
+import smtplib
+from email.mime.text import MIMEText
+from dotenv import load_dotenv
 #tạo một đối tượng của lớp
 app_user=Flask(__name__, template_folder='templates')
 app_user.register_blueprint(app_admin, url_prefix='/admin')
@@ -15,6 +18,10 @@ def connect_to_database():
     return mysql.connector.connect(
         host="localhost", user="root", password="", database="cnpm"
     )
+
+# hàm trả về 404
+def not_found():
+    return render_template('user/404.html')
 
 @app_user.route("/")
 def index():
@@ -35,6 +42,7 @@ def home():
 #form điền thông tin thuê phòng
 @app_user.route("/rent_room/<item_id>", methods=["GET","POST"])
 def rent_room(item_id):
+    message=" "
     mydb=connect_to_database() #hàm kết nối databse  
     mycursor=mydb.cursor()
     sql_receive_data="SELECT * FROM phong WHERE stt=%s" # hàm truy vấn dữ liệu 
@@ -44,33 +52,107 @@ def rent_room(item_id):
     money_per_night=result_receive_data[4] # lấy thong tin tiền từ phòng 
     print("moneypernight: ", money_per_night) # in thông tin tiền
     print("kết quả là: ", str(result_receive_data)) # in thong tin kết quả lấy toàn bị dữ liệu
+    print("item_id", item_id)
+    # hàm trả về lại trang
+    def re_turn():
+        return render_template("user/rent_room.html", data_receive=result_receive_data,message=message, item_id=item_id)
     if request.method=="POST":
         name=request.form["name"]
-        phone=request.form["phone"]
+        # if name<'4' or name==" ":  # câu lệnh kiểm tra tên
+        #     message="Please enter your name again"
+        #     print("lỗi tên") # in lỗi tên 
+        #     return  re_turn() # trả về một hàm 
+        
+        phone=request.form["phone"] 
+        # print("phoen", phone)
+        # regexPhone = r"^0(3[2-9]|7[0-9]|8[1-9]|9[0-9]|12[0-9])\d{7}$"
+        # if not re.match(regexPhone,phone) or phone== " ": # câu lệnh kiểm tra số điện thoại việt nam
+        #     message="Please enter your phone number again"
+        #     print("lỗi số điện thoại")
+        #     return re_turn()
+        
+        regexEmail=r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         email=request.form["email"]
-        checkin_in=request.form["checkin_in"]
-        
+        # if not re.match(regexEmail,email) or email==" ":
+        #     message="Please enter your email again"
+        #     print("lỗi email")
+        #     return re_turn()
+
+        AmountRooms=int(request.form["AmountRooms"])
+        print("AmountRooms",   AmountRooms) # in số lượng 
+        if AmountRooms==0: # câu lệnh kiểm tra số lượng phòng 
+            message="Please choose amount rooms"
+            print("lỗi ", AmountRooms) # in lỗi số lượng
+            return re_turn()
+
+        checkin_in=request.form["check_in"]
+        print("checkin", checkin_in) # in ngày checkin 
         #dùng strptime để chuyển chuỗi checkin-in thành datetime
-        checkin_in_strptime=dt.strptime(checkin_in,"%d %B, %Y")
-        # print("checkin_in_strptime",checkin_in_strptime) 
-        
-        #dùng strftime để chuyển thành chuỗi datetime
-        checkin_in_strftime=checkin_in_strptime.strftime("%Y-%m-%d")
+        checkin_in_strptime = dt.datetime.strptime(checkin_in, "%d/%m/%Y")
+        print("checkin_in_strptime",checkin_in_strptime) 
 
-        checkin_out=request.form["checkin_out"]
 
+        checkin_out=request.form["check_out"]
+        print("checkout", checkin_out)
         #dùng strptime để chuyển chuỗi checkin-out thành datetime
-        checkin_out_strptime=dt.strptime(checkin_out,"%d %B, %Y")
-        
-        #dùng strftime để chuyển thành chuỗi datetime của checkin_out
-        checkin_out_strftime=checkin_out_strptime.strftime("%Y-%m-%d") 
-          
-        adults=request.form["adults"]
-        children=request.form["children"]
-        message=request.form["message"]
-        
-    return render_template("user/rent_room.html", data_receive=result_receive_data)
+        checkin_out_strptime=dt.datetime.strptime(checkin_out, "%d/%m/%Y")
+        print("checkin_out_strptime",checkin_out_strptime)
 
+        # lấy dữ liệu thông tin chọn quốc tịch
+        nationality=request.form["nationality"]
+        print("nationality",nationality) # in thông tin quốc gia
+        if nationality=="0":
+            message="Please choose countries"
+            return re_turn()
+        
+        # lấy dữ liệu gender
+        gender=request.form["gender"]
+        print("gender",gender)
+        
+        # câu lệnh lấy số lượng của form người lớn và trẻ em
+        sumAdults=0
+        sumChildren=0 
+        sumInfants=0
+        for i in range(AmountRooms):
+            adults=int(request.form[f'adults{i + 1}'])
+            print("adults",str(adults))
+            sumAdults+=adults # tính tống số lượng người lớn
+            print("adults",str(adults))
+
+            children=int(request.form[f'children{i+1}'])
+            print("children",str(children))
+            sumChildren+=children # tính tổng số lượng trẻ em
+            print("sumChildren",str(sumChildren))
+
+            infants=int(request.form[f'infants{i+1}'])
+            print("infants",str(infants))
+            sumInfants+=infants # tính tổng số lượng em bé
+            print("infants",str(infants))
+        
+
+        print("tổng số lượng các bé", sumChildren+sumInfants)
+        print("tổng số lượng người lớn: ", sumAdults)
+        notes=request.form["message"]
+        
+        # thêm dữ liệu vào bảng khách hàng
+        check_khachhang="SELECT SDT_KH,	Email_KH,TenTaiKhoan_KH FROM khachhang WHERE SDT_KH=%s OR Email_KH=%s OR TenTaiKhoan_KH=%s"
+        val_check_khachhang=(phone,email,email,)
+        mycursor.execute(check_khachhang,val_check_khachhang)
+        check_in_khachhang=mycursor.fetchone()
+        if check_in_khachhang:
+            message="your account already exits please login acount"
+            return re_turn()
+        else:
+            # thêm thông tin khách hàng
+            insert_infor_customers="INSERT INTO `khachhang`(`HoTen_KH`,  `SDT_KH`, `Email_KH`, `QuocTich_KH`,`GioiTinh_KH`, `TenTaiKhoan_KH`, `MatKhau_KH`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+            val_insert_infor_customers=(name,phone,email,nationality,gender,email,phone)
+            check_insert_customer= mycursor.execute(insert_infor_customers,val_insert_infor_customers)
+            print("thêm khách hàng thành công ở rentroom: ",check_insert_customer )
+            mydb.commit()
+            Newid_khachhang=mycursor.lastrowid
+
+           
+    return render_template("user/rent_room.html", data_receive=result_receive_data)
 
 # điều hướng đến trang about
 @app_user.route("/about.html")
@@ -102,7 +184,20 @@ def rooms():
 #điều hướng tới tranh danh sách các phòng
 @app_user.route("/listroom.html")
 def listroom():
+    mydb=connect_to_database()
+    mycursor=mydb.cursor()
+    sql_get_data_listroom="SELECT * FROM phong WHERE TinhTrang=%s"
+    val_get_data_listroom=("None",)
+    mycursor.execute(sql_get_data_listroom,val_get_data_listroom,)
+    result_get_data_listroom=mycursor.fetchall()
+    print("result_get_data_listroom", result_get_data_listroom)
+    if result_get_data_listroom:
+        return render_template("user/listroom.html", data=result_get_data_listroom)
+    else:
+        return not_found()
+    
     return render_template("user/listroom.html")
+   
 
 # điều hướng tới trang đăng nhập
 @app_user.route("/login.html", methods=['GET','POST'])
