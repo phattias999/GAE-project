@@ -31,13 +31,18 @@
 
 <body>
   <style>
-    .name_user{
-      color: white;
+    .name_user {
+      color: rgb(0, 0, 0);
       font-size: 20px;
     }
+
     span#toltal_user {
-    margin-left: 770px;
-}
+      margin-left: 770px;
+    }
+    .dropdown-menu {
+    top: 30px !important;
+    height: 60px;
+  }
   </style>
   <header class="site-header js-site-header">
     <div class="container-fluid">
@@ -45,30 +50,64 @@
         <div class="col-6 col-lg-4 site-logo" data-aos="fade">
           <a href="{{url_for('index')}}">Sogo Hotel</a>
         </div>
-        <div class="col-12 col-lg-8">
-          <span id="toltal_user" style="position: relative; margin-top: 10px;" hidden>
-            <span class="image_user" style="position: absolute; margin-top: 8px;"><img src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt="" style="width: 40px; height: 40px;"></span>
-            <span class="name_user" style="position: absolute; left: 40px; white-space: nowrap; margin-top: 10px;">Gia kiệt</span>
+        <div class="col-6 col-lg-8">
+          {% if session.email %}
+          <span id="total_user" class="dropdown" style="position: relative; margin-top: 10px; margin-left: 75%;">
+            <a href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <span class="image_user" style="position: absolute; margin-top: 8px;"><img
+                  src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt=""
+                  style="width: 40px; height: 40px;"></span>
+              <span class="name_user" style="position: absolute; left: 40px; white-space: nowrap; margin-top: 10px;">{{
+                data_name }}</span>
+              <i class="fas fa-caret-down" style="position: absolute; transform: translate(120px,20px);"></i>
+            </a>
+            <div class="dropdown-menu"
+              style="position: absolute;top: 50px !important;left: 0px; will-change: transform;">
+              <a class="dropdown-item" href="{{ url_for('admin.logout') }}"><span>Log Out</span> <i
+                  class="fa fa-sign-out"></i></a>
+            </div>
           </span>
-          <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade" style="margin-top: 15px;">
+          {% else %}
+          <span id="total_user" class="dropdown" style="position: relative; margin-top: 10px; margin-left: 75%;" hidden>
+            <a href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <span class="image_user" style="position: absolute; margin-top: 8px;"><img
+                  src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt=""
+                  style="width: 40px; height: 40px;"></span>
+              <span class="name_user" style="position: absolute; left: 40px; white-space: nowrap; margin-top: 10px;">Gia
+                kiệt</span>
+              <i class="fas fa-caret-down" style="position: absolute; transform: translate(120px,20px);"></i>
+            </a>
+            <div class="dropdown-menu"
+              style="position: absolute;top: 50px !important;left: 0px; will-change: transform;">
+              <a class="dropdown-item" href="{{ url_for('admin.logout') }}"><span>Log Out</span> <i
+                  class="fa fa-sign-out"></i></a>
+            </div>
+          </span>
+          {% endif %}
+          <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
             <span></span>
             <span></span>
             <span></span>
           </div>
           <!-- END menu-toggle -->
+
           <div class="site-navbar js-site-navbar">
             <nav role="navigation">
               <div class="container">
-                <div class="row full-height ">
+                <div class="row full-height align-items-center">
                   <div class="col-md-6 mx-auto">
                     <ul class="list-unstyled menu">
                       <li class="active"><a href="{{url_for('index')}}">Home</a></li>
                       <li><a href="{{url_for('rooms')}}">Rooms</a></li>
                       <li><a href="{{url_for('about')}}">About</a></li>
                       <li><a href="{{url_for('events')}}">Events</a></li>
-                      <li><a href="{{url_for('contact')}}">Contact</a></li>
+                      <!-- <li><a href="{{url_for('contact')}}">Contact</a></li> -->
                       <li><a href="{{url_for('login')}}">Login</a></li>
-                      <li><a href="{{url_for('reservation')}}">Reservation</a></li>
+                      {% if session.email%}
+                        <li><a href="{{url_for('reservation')}}">Reservation</a></li>
+                      {%endif%}
                     </ul>
                   </div>
                 </div>
@@ -78,10 +117,10 @@
         </div>
       </div>
     </div>
-</header>
+  </header>
 
   <!-- END head -->
-
+  
   <section class="site-hero overlay" style="background-image: url(images/hero_4.jpg)"
     data-stellar-background-ratio="0.5">
     <div class="container">
@@ -189,8 +228,7 @@
         <div class="col-md-6 col-lg-4" data-aos="fade-up">
           <a href="/rent_room/{{data_index[0]}}" class="room">
             <figure class="img-wrap">
-              <img src="{{data_index[7]}}" alt="Free website template"
-                class="img-fluid mb-3" />
+              <img src="{{data_index[7]}}" alt="Free website template" class="img-fluid mb-3" />
             </figure>
             <div class="p-3 text-center room-info">
               <h2>{{data_index[2]}}</h2>
@@ -848,49 +886,54 @@
         // document.getElementById("checkin").value = checkin;
         // document.getElementById("checkout").value = checkout;
         if (selectedDates.length === 2) {
-            const checkin = selectedDates[0].toLocaleDateString('vi-VN');
-            const checkout = selectedDates[1].toLocaleDateString('vi-VN');
-            instance.element.value = `${checkin} - ${checkout}`;
-            document.getElementById("checkin").value = checkin;
-            document.getElementById("checkout").value = checkout;
+          const checkin = selectedDates[0].toLocaleDateString('vi-VN');
+          const checkout = selectedDates[1].toLocaleDateString('vi-VN');
+          instance.element.value = `${checkin} - ${checkout}`;
+          document.getElementById("checkin").value = checkin;
+          document.getElementById("checkout").value = checkout;
         }
       },
     });
-    function navigateToNextPage(){
-        const checkin=document.getElementById('checkin').value;
-        const checkout=document.getElementById('checkout').value;
-        const findroom=document.getElementById('find_rooms').value;
-        
-        // lưu dữ liệu vào localstorage
-        localStorage.setItem("checkin",checkin);
-        localStorage.setItem("checkout",checkout);
-        localStorage.setItem("findroom",findroom);
-         // hiển thị thông báo với dữ liệu
-        // alert(`Checkin: ${checkin}, Checkout: ${checkout}, Find Room: ${findroom}`);
-        //chuyển qua trang html mới
-        window.open("listroom.html", '_blank');
-        window.location.href = "listroom.html";
+    function navigateToNextPage() {
+      const checkin = document.getElementById('checkin').value;
+      const checkout = document.getElementById('checkout').value;
+      const findroom = document.getElementById('find_rooms').value;
+
+      // lưu dữ liệu vào localstorage
+      localStorage.setItem("checkin", checkin);
+      localStorage.setItem("checkout", checkout);
+      localStorage.setItem("findroom", findroom);
+      // hiển thị thông báo với dữ liệu
+      // alert(`Checkin: ${checkin}, Checkout: ${checkout}, Find Room: ${findroom}`);
+      //chuyển qua trang html mới
+      window.open("listroom.html", '_blank');
+      window.location.href = "listroom.html";
     }
     // bắt sự kiện nút button 
     document.getElementById('button-check').addEventListener("click", navigateToNextPage);
   </script>
-  <!-- <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/jquery.fancybox.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Ẩn dropdown khi click bất kỳ nơi nào trên trang
+      $(document).on('click', function (event) {
+        if (!$(event.target).closest('.dropdown').length) {
+          $('.dropdown-menu').hide();
+        }
+      });
 
+      // Hiển thị hoặc ẩn dropdown khi click vào nút dropdown
+      $('#userDropdown').on('click', function (event) {
+        event.stopPropagation(); // Ngăn chặn sự kiện click lan rộng
+        $('#userDropdownMenu').toggle();
+      });
 
-  <script src="js/aos.js"></script>
-
-  <script src="js/bootstrap-datepicker.js"></script>
-  <script src="js/jquery.timepicker.min.js"></script>
-
-
-
-  <script src="js/main.js"></script> -->
+      // Đóng dropdown khi click bất kỳ nơi nào trên trang, ngoại trừ dropdown
+      $('#userDropdownMenu').on('click', function (event) {
+        event.stopPropagation(); // Ngăn chặn sự kiện click lan rộng
+      });
+    });
+  </script>
+  <script src="js/main.js"></script>
   <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/jquery-migrate-3.0.1.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>

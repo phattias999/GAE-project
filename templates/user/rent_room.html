@@ -135,8 +135,24 @@
     .fade-in {
       animation: fadeIn 1s ease-in-out;
     }
-    #nationality { 
-    position: relative;
+
+    #nationality {
+      position: relative;
+    }
+  </style>
+  <style>
+    .name_user {
+      color: rgb(0, 0, 0);
+      font-size: 20px;
+    }
+
+    span#toltal_user {
+      margin-left: 770px;
+    }
+
+    .dropdown-menu {
+      top: 30px !important;
+      height: 60px;
     }
   </style>
   <header class="site-header js-site-header">
@@ -146,6 +162,41 @@
           <a href="{{url_for('index')}}">Sogo Hotel</a>
         </div>
         <div class="col-6 col-lg-8">
+          {% if session.email %}
+          <span id="total_user" class="dropdown" style="position: relative; margin-top: 10px; margin-left: 75%;">
+            <a href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <span class="image_user" style="position: absolute; margin-top: 8px;"><img
+                  src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt=""
+                  style="width: 40px; height: 40px;"></span>
+              <span class="name_user" style="position: absolute; left: 40px; white-space: nowrap; margin-top: 10px;">{{
+                data_name }}</span>
+              <i class="fas fa-caret-down" style="position: absolute; transform: translate(120px,20px);"></i>
+            </a>
+            <div class="dropdown-menu"
+              style="position: absolute;top: 50px !important;left: 0px; will-change: transform;">
+              <a class="dropdown-item" href="{{ url_for('admin.logout') }}"><span>Log Out</span> <i
+                  class="fa fa-sign-out"></i></a>
+            </div>
+          </span>
+          {% else %}
+          <span id="total_user" class="dropdown" style="position: relative; margin-top: 10px; margin-left: 75%;" hidden>
+            <a href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <span class="image_user" style="position: absolute; margin-top: 8px;"><img
+                  src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt=""
+                  style="width: 40px; height: 40px;"></span>
+              <span class="name_user" style="position: absolute; left: 40px; white-space: nowrap; margin-top: 10px;">Gia
+                kiệt</span>
+              <i class="fas fa-caret-down" style="position: absolute; transform: translate(120px,20px);"></i>
+            </a>
+            <div class="dropdown-menu"
+              style="position: absolute;top: 50px !important;left: 0px; will-change: transform;">
+              <a class="dropdown-item" href="{{ url_for('admin.logout') }}"><span>Log Out</span> <i
+                  class="fa fa-sign-out"></i></a>
+            </div>
+          </span>
+          {% endif %}
           <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
             <span></span>
             <span></span>
@@ -159,14 +210,15 @@
                 <div class="row full-height align-items-center">
                   <div class="col-md-6 mx-auto">
                     <ul class="list-unstyled menu">
-                      <li class="active">
-                        <a href="{{url_for('index')}}">Home</a>
-                      </li>
+                      <li class="active"><a href="{{url_for('index')}}">Home</a></li>
                       <li><a href="{{url_for('rooms')}}">Rooms</a></li>
                       <li><a href="{{url_for('about')}}">About</a></li>
                       <li><a href="{{url_for('events')}}">Events</a></li>
-                      <li><a href="{{url_for('contact')}}">Contact</a></li>
-                      <!-- <li><a href="{{url_for('reservation')}}">Reservation</a></li> -->
+                      <!-- <li><a href="{{url_for('contact')}}">Contact</a></li> -->
+                      <li><a href="{{url_for('login')}}">Login</a></li>
+                      {% if session.email%}
+                      <li><a href="{{url_for('reservation')}}">Reservation</a></li>
+                      {%endif%}
                     </ul>
                   </div>
                 </div>
@@ -245,30 +297,113 @@
     <div class="container">
       <div class="row">
         <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
+          {% if session.email %}
           <form action="#" method="post" class="bg-white p-md-5 p-4 mb-5 border" enctype="multipart/form-data">
             <div class="row">
               <div class="col-md-6 form-group">
                 <label class="text-black font-weight-bold" for="name">Name</label>
-                <input type="text" id="name" class="form-control" name="name" />
+                <input type="text" id="name" class="form-control" name="name" value="{{ data_infor[1] }}" />
               </div>
               <div class="col-md-6 form-group">
                 <label class="text-black font-weight-bold" for="phone">Phone</label>
-                <input type="text" id="phone" class="form-control" name="phone" />
+                <input type="text" id="phone" class="form-control" name="phone"  />
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 form-group">
                 <label class="text-black font-weight-bold" for="nationality">Nationality</label>
                 <select id="nationality" class="form-control" name="nationality">
-                  <option value="0" >Select a country</option>
+                  {%for countries in data_country%}
+                  {%if data_infor[7]==countries.alpha_2 %}
+                  <option value="{{ countries.alpha_2 }}">{{countries.name}}</option>
+                  {% endif %}
+                  {% endfor %}
                 </select>
               </div>
               <div class="col-md-6 form-group">
                 <label class="text-black font-weight-bold" for="gender">Gender</label>
                 <select id="gender" class="form-control" name="gender">
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="male" {% if data_infor[8]=='male' %} selected {% endif %}>Male</option>
+                  <option value="female" {% if data_infor[8]=='female' %} selected {% endif %}>Female</option>
+                  <option value="other" {% if data_infor[8]=='other' %} selected {% endif %}>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label class="text-black font-weight-bold" for="email">Email</label>
+                <input type="email" id="email" class="form-control" name="email" value="{{ data_infor[4] }}" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3 mb-lg-0">
+                <label for="checkin_date" class="font-weight-bold text-black">Check In - Check Out</label>
+                <div class="field-icon-wrap">
+                  <div class="input">
+                    <input type="text" id="date_form" placeholder="Chọn ngày" class="form-control" readonly value="" />
+                    <span class="calendar-icon_form" id="calendarIcon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <input type="hidden" name="check_in" id="check_in" value="" />
+                    <input type="hidden" name="check_out" id="check_out" value="" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="AmountRooms" class="font-weight-bold text-black">Amount Rooms</label>
+                <div class="field-icon-wrap">
+                  <div class="icon">
+                    <span class="ion-ios-arrow-down"></span>
+                  </div>
+                  <select name="AmountRooms" id="AmountRooms" class="form-control"
+                    onchange="updateGuests(); addInformation(); updatePrice();">
+                    <option value="0">Choose Rooms</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div id="guestsSection"></div>
+            <div class="row mb-4">
+              <div class="col-md-12 form-group">
+                <label class="text-black font-weight-bold" for="message">Notes</label>
+                <textarea name="message" id="message" class="form-control" cols="30" rows="8"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <input type="submit" value="Reserve Now"
+                  class="btn btn-primary text-white py-3 px-5 font-weight-bold" />
+              </div>
+            </div>
+          </form>
+          {% else %}
+          <form action="#" method="post" class="bg-white p-md-5 p-4 mb-5 border" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="name">Name</label>
+                <input type="text" id="name" class="form-control" name="name" " />
+              </div>
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="phone">Phone</label>
+                <input type="text" id="phone" class="form-control" name="phone" " />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="nationality">Nationality</label>
+                <select id="nationality" class="form-control" name="nationality">
+                  {%for countries in data_country%}
+                    <option value="{{ countries.alpha_2 }}">{{countries.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6 form-group">
+                <label class="text-black font-weight-bold" for="gender">Gender</label>
+                <select id="gender" class="form-control" name="gender">
+                  <option value="male" >Male</option>
+                  <option value="female" >Female</option>
+                  <option value="other" >Other</option>
                 </select>
               </div>
             </div>
@@ -320,6 +455,7 @@
               </div>
             </div>
           </form>
+          {% endif %}
         </div>
         <div class="col-md-5" data-aos="fade-up" data-aos-delay="200">
           <div class="row">

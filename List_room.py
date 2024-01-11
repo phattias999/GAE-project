@@ -12,10 +12,10 @@ app_admin=Blueprint('admin',__name__)
 app_admin.secret_key = "admin"
 
 
-@app_admin.route("/login.html")
+@app_admin.route("/login.html",endpoint='logout')
 def logout():
     session.pop("email", None)
-    return redirect(url_for("login"))  # Điều hướng đến trang đăng nhập
+    return redirect(url_for("home"))  # Điều hướng đến trang đăng nhập
 
 # Điều hướng trang phòng
 @app_admin.route("/widgets.html")

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Sogo Hotel by Colorlib.com</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="" />
+  <link rel="stylesheet" type="text/css"
+    href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/aos.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.timepicker.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fancybox.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/ionicons/css/ionicons.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/fontawesome/css/font-awesome.min.css') }}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <!-- Theme Style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body>
+  <style>
+    .name_user {
+      color: white;
+      font-size: 20px;
+    }
+
+    span#toltal_user {
+      margin-left: 770px;
+    }
+  </style>
+   <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+     
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .success-container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #4CAF50;
+    }
+
+    p {
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+    }
+  </style>
+  <!-- END head -->
+  <header class="site-header js-site-header">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-6 col-lg-4 site-logo" data-aos="fade">
+          <a href="{{url_for('index')}}">Sogo Hotel</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section class="site-hero overlay" style="background-image: url(images/hero_4.jpg)"
+    data-stellar-background-ratio="0.5">
+    <div class="container">
+      <div class="row site-hero-inner justify-content-center align-items-center">
+        <div class="col-md-10 text-center" data-aos="fade-up">
+          <div class="success-container">
+            <h1>Đặt Phòng Thành Công!</h1>
+            <p>Cảm ơn bạn đã đặt phòng. Thông tin chi tiết đã được gửi đến email của bạn. Vui lòng kiểm tra lại email trong vòng 15 phút tới 30 phút.</p>
+            <p><a href="{{url_for('index')}}">Quay lại trang chủ</a></p>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="section footer-section">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-md-3 mb-5">
+          <ul class="list-unstyled link">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Rooms</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-5">
+          <ul class="list-unstyled link">
+            <li><a href="#">The Rooms &amp; Suites</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Restaurant</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-5 pr-md-5 contact-info">
+          <!-- <li>198 West 21th Street, <br> Suite 721 New York NY 10016</li> -->
+          <p>
+            <span class="d-block"><span class="ion-ios-location h5 mr-3 text-primary"></span>Address:</span>
+            <span>
+              198 West 21th Street, <br />
+              Suite 721 New York NY 10016</span>
+          </p>
+          <p>
+            <span class="d-block"><span class="ion-ios-telephone h5 mr-3 text-primary"></span>Phone:</span>
+            <span> (+1) 435 3533</span>
+          </p>
+          <p>
+            <span class="d-block"><span class="ion-ios-email h5 mr-3 text-primary"></span>Email:</span>
+            <span> info@domain.com</span>
+          </p>
+        </div>
+        <div class="col-md-3 mb-5">
+          <p>Sign up for our newsletter</p>
+          <form action="#" class="footer-newsletter">
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="Email..." />
+              <button type="submit" class="btn">
+                <span class="fa fa-paper-plane"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row pt-5">
+        <p class="col-md-6 text-left">
+          <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+          Copyright &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          All rights reserved | This template is made with
+          <i class="icon-heart-o" aria-hidden="true"></i> by
+          <a href="https://colorlib.com" target="_blank">Colorlib</a>
+          <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+        </p>
+
+        <p class="col-md-6 text-right social">
+          <a href="#"><span class="fa fa-tripadvisor"></span></a>
+          <a href="#"><span class="fa fa-facebook"></span></a>
+          <a href="#"><span class="fa fa-twitter"></span></a>
+          <a href="#"><span class="fa fa-linkedin"></span></a>
+          <a href="#"><span class="fa fa-vimeo"></span></a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-migrate-3.0.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.stellar.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.fancybox.min.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='js/aos.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.timepicker.min.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

@@ -175,6 +175,21 @@
 
         }
     </style>
+    <style>
+        .name_user {
+            color: rgb(0, 0, 0);
+            font-size: 20px;
+        }
+
+        span#toltal_user {
+            margin-left: 770px;
+        }
+
+        .dropdown-menu {
+            top: 30px !important;
+            height: 60px;
+        }
+    </style>
     <header class="site-header js-site-header">
         <div class="container-fluid">
             <div class="row align-items-center">
@@ -182,26 +197,69 @@
                     <a href="{{url_for('index')}}">Sogo Hotel</a>
                 </div>
                 <div class="col-6 col-lg-8">
+                    {% if session.email %}
+                    <span id="total_user" class="dropdown"
+                        style="position: relative; margin-top: 10px; margin-left: 75%;">
+                        <a href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <span class="image_user" style="position: absolute; margin-top: 8px;"><img
+                                    src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt=""
+                                    style="width: 40px; height: 40px;"></span>
+                            <span class="name_user"
+                                style="position: absolute; left: 40px; white-space: nowrap; margin-top: 10px;">{{
+                                data_name }}</span>
+                            <i class="fas fa-caret-down"
+                                style="position: absolute; transform: translate(120px,20px);"></i>
+                        </a>
+                        <div class="dropdown-menu"
+                            style="position: absolute;top: 50px !important;left: 0px; will-change: transform;">
+                            <a class="dropdown-item" href="{{ url_for('admin.logout') }}"><span>Log Out</span> <i
+                                    class="fa fa-sign-out"></i></a>
+                        </div>
+                    </span>
+                    {% else %}
+                    <span id="total_user" class="dropdown"
+                        style="position: relative; margin-top: 10px; margin-left: 75%;" hidden>
+                        <a href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            <span class="image_user" style="position: absolute; margin-top: 8px;"><img
+                                    src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt=""
+                                    style="width: 40px; height: 40px;"></span>
+                            <span class="name_user"
+                                style="position: absolute; left: 40px; white-space: nowrap; margin-top: 10px;">Gia
+                                kiệt</span>
+                            <i class="fas fa-caret-down"
+                                style="position: absolute; transform: translate(120px,20px);"></i>
+                        </a>
+                        <div class="dropdown-menu"
+                            style="position: absolute;top: 50px !important;left: 0px; will-change: transform;">
+                            <a class="dropdown-item" href="{{ url_for('admin.logout') }}"><span>Log Out</span> <i
+                                    class="fa fa-sign-out"></i></a>
+                        </div>
+                    </span>
+                    {% endif %}
                     <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
                     <!-- END menu-toggle -->
+
                     <div class="site-navbar js-site-navbar">
                         <nav role="navigation">
                             <div class="container">
                                 <div class="row full-height align-items-center">
                                     <div class="col-md-6 mx-auto">
                                         <ul class="list-unstyled menu">
-                                            <li class="active">
-                                                <a href="{{url_for('index')}}">Home</a>
-                                            </li>
+                                            <li class="active"><a href="{{url_for('index')}}">Home</a></li>
                                             <li><a href="{{url_for('rooms')}}">Rooms</a></li>
                                             <li><a href="{{url_for('about')}}">About</a></li>
                                             <li><a href="{{url_for('events')}}">Events</a></li>
-                                            <li><a href="{{url_for('contact')}}">Contact</a></li>
-                                            <!-- <li><a href="{{url_for('reservation')}}">Reservation</a></li> -->
+                                            <!-- <li><a href="{{url_for('contact')}}">Contact</a></li> -->
+                                            <li><a href="{{url_for('login')}}">Login</a></li>
+                                            {% if session.email%}
+                                            <li><a href="{{url_for('reservation')}}">Reservation</a></li>
+                                            {%endif%}
                                         </ul>
                                     </div>
                                 </div>

@@ -110,7 +110,7 @@ body.demos .service-widget {
     background-color: #fff
 }
 
-body.demos .container-fluid {
+body.demos .-fluid {
     max-width: 1080px
 }
 
@@ -185,7 +185,7 @@ h4 a,
 h5 a,
 h6 a {
     color: #212121;
-    text-decoration: none!important;
+    text-decoration: none !important;
     opacity: 1
 }
 
@@ -451,6 +451,7 @@ a:focus {
 
 .container {
     width: 1200px;
+
 }
 
 .section_padding {
@@ -986,6 +987,7 @@ a[data-toggle="collapse"] {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -995,6 +997,7 @@ a[data-toggle="collapse"] {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -2963,17 +2966,21 @@ ul.labels-category li p {
     .files .btn span {
         display: none;
     }
+
     .files .preview * {
         width: 40px;
     }
+
     .files .name * {
         display: inline-block;
         width: 80px;
         word-wrap: break-word;
     }
+
     .files .progress {
         width: 20px;
     }
+
     .files .delete {
         width: 60px;
     }
@@ -3249,6 +3256,7 @@ table.projects tr td:first-child {
 
 .full_height {
     height: 100vh;
+
 }
 
 .login_section {
@@ -3403,6 +3411,12 @@ table.projects tr td:first-child {
     height: 100%;
     min-height: 720px;
 }
+
 #AmountRooms {
     color: black;
-  }
+}
+
+li.active {
+    margin-top: 50px;
+}
+
