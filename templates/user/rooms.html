@@ -9,6 +9,7 @@
   <meta name="description" content="" />
   <meta name="keywords" content="" />
   <meta name="author" content="" />
+  <link rel="icon" href="/static/images/facvicon1.jpg" type="image/x-icon">
   <link rel="stylesheet" type="text/css"
     href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700" />
 
@@ -191,83 +192,20 @@
   <section class="section">
     <div class="container">
       <div class="row">
+        {% for Get_rooms in get_Rooms %}
         <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-          <a href="#" class="room">
+          <a href="/rent_room/{{Get_rooms[0]}}" class="room">
             <figure class="img-wrap">
-              <img src="{{ url_for('static', filename='images/img_1.jpg ') }}" alt="Free website template"
+              <img src="{{Get_rooms[7]}}" alt="Free website template"
                 class="img-fluid mb-3" />
             </figure>
             <div class="p-3 text-center room-info">
-              <h2>Single Room</h2>
-              <span class="text-uppercase letter-spacing-1">90$ / per night</span>
+              <h2>{{Get_rooms[2]}}</h2>
+              <span class="text-uppercase letter-spacing-1">{{Get_rooms[4]}}$ / per night</span>
             </div>
           </a>
         </div>
-
-        <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-          <a href="#" class="room">
-            <figure class="img-wrap">
-              <img src="{{ url_for('static', filename='images/img_2.jpg ') }}" alt="Free website template"
-                class="img-fluid mb-3" />
-            </figure>
-            <div class="p-3 text-center room-info">
-              <h2>Family Room</h2>
-              <span class="text-uppercase letter-spacing-1">120$ / per night</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-          <a href="#" class="room">
-            <figure class="img-wrap">
-              <img src="{{ url_for('static', filename='images/img_3.jpg ') }}" alt="Free website template"
-                class="img-fluid mb-3" />
-            </figure>
-            <div class="p-3 text-center room-info">
-              <h2>Presidential Room</h2>
-              <span class="text-uppercase letter-spacing-1">250$ / per night</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-          <a href="#" class="room">
-            <figure class="img-wrap">
-              <img src="{{ url_for('static', filename='images/img_1.jpg ') }}" alt="Free website template"
-                class="img-fluid mb-3" />
-            </figure>
-            <div class="p-3 text-center room-info">
-              <h2>Single Room</h2>
-              <span class="text-uppercase letter-spacing-1">90$ / per night</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-          <a href="#" class="room">
-            <figure class="img-wrap">
-              <img src="{{ url_for('static', filename='images/img_2.jpg ') }}" alt="Free website template"
-                class="img-fluid mb-3" />
-            </figure>
-            <div class="p-3 text-center room-info">
-              <h2>Family Room</h2>
-              <span class="text-uppercase letter-spacing-1">120$ / per night</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mb-5" data-aos="fade-up">
-          <a href="#" class="room">
-            <figure class="img-wrap">
-              <img src="{{ url_for('static', filename='images/img_3.jpg ') }}" alt="Free website template"
-                class="img-fluid mb-3" />
-            </figure>
-            <div class="p-3 text-center room-info">
-              <h2>Presidential Room</h2>
-              <span class="text-uppercase letter-spacing-1">250$ / per night</span>
-            </div>
-          </a>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -284,40 +222,43 @@
           </p>
         </div>
       </div>
-
+      {% for One_room in One_room%}
       <div class="site-block-half d-block d-lg-flex bg-white" data-aos="fade" data-aos-delay="100">
-        <a href="#" class="image d-block bg-image-2" style="background-image: url('static/images/img_1.jpg')"></a>
+        <a href="/rent_room/{{One_room[0]}}" class="image d-block bg-image-2" style="background-image: url('{{One_room[7]}}')"></a>
         <div class="text">
-          <span class="d-block mb-4"><span class="display-4 text-primary">$199</span>
+          <span class="d-block mb-4"><span class="display-4 text-primary">$ {{One_room[4]}}</span>
             <span class="text-uppercase letter-spacing-2">/ per night</span>
           </span>
-          <h2 class="mb-4">Family Room</h2>
+          <h2 class="mb-4">{{One_room[2]}}</h2>
           <p>
             Far far away, behind the word mountains, far from the countries
             Vokalia and Consonantia, there live the blind texts. Separated
             they live in Bookmarksgrove right at the coast of the Semantics, a
             large language ocean.
           </p>
-          <p><a href="#" class="btn btn-primary text-white">Book Now</a></p>
+          <p><a href="/rent_room/{{One_room[0]}}" class="btn btn-primary text-white">Book Now</a></p>
         </div>
       </div>
+      {% endfor %}
+      {% for Two_rooms in Two_rooms%}
       <div class="site-block-half d-block d-lg-flex bg-white" data-aos="fade" data-aos-delay="200">
-        <a href="#" class="image d-block bg-image-2 order-2"
-          style="background-image: url('static/images/img_2.jpg')"></a>
+        <a href="/rent_room/{{Two_rooms[0]}}" class="image d-block bg-image-2 order-2"
+          style="background-image: url('{{Two_rooms[7]}}')"></a>
         <div class="text order-1">
-          <span class="d-block mb-4"><span class="display-4 text-primary">$299</span>
+          <span class="d-block mb-4"><span class="display-4 text-primary">${{Two_rooms[4]}}</span>
             <span class="text-uppercase letter-spacing-2">/ per night</span>
           </span>
-          <h2 class="mb-4">Presidential Room</h2>
+          <h2 class="mb-4">{{Two_rooms[2]}}</h2>
           <p>
             Far far away, behind the word mountains, far from the countries
             Vokalia and Consonantia, there live the blind texts. Separated
             they live in Bookmarksgrove right at the coast of the Semantics, a
             large language ocean.
           </p>
-          <p><a href="#" class="btn btn-primary text-white">Book Now</a></p>
+          <p><a href="/rent_room/{{Two_rooms[0]}}" class="btn btn-primary text-white">Book Now</a></p>
         </div>
       </div>
+      {% endfor %}
     </div>
   </section>
   <!-- <section class="section bg-image overlay" style="background-image: url('images/hero_4.jpg');">

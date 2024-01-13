@@ -9,6 +9,7 @@
   <meta name="description" content="" />
   <meta name="keywords" content="" />
   <meta name="author" content="" />
+  <link rel="icon" href="/static/images/facvicon1.jpg" type="image/x-icon">
   <link rel="stylesheet" type="text/css"
     href="//fonts.googleapis.com/css?family=|Roboto+Sans:400,700|Playfair+Display:400,700" />
 
@@ -315,7 +316,7 @@
                 <select id="nationality" class="form-control" name="nationality">
                   {%for countries in data_country%}
                   {%if data_infor[7]==countries.alpha_2 %}
-                  <option value="{{ countries.alpha_2 }}">{{countries.name}}</option>
+                  <option value="{{ countries.name }}">{{countries.name}}</option>
                   {% endif %}
                   {% endfor %}
                 </select>
@@ -394,7 +395,7 @@
                 <label class="text-black font-weight-bold" for="nationality">Nationality</label>
                 <select id="nationality" class="form-control" name="nationality">
                   {%for countries in data_country%}
-                    <option value="{{ countries.alpha_2 }}">{{countries.name}}</option>
+                    <option value="{{ countries.name}}">{{countries.name}}</option>
                   {% endfor %}
                 </select>
               </div>

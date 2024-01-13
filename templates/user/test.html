@@ -1,55 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Menu</title>
-    <style>
-        .user-container {
-            position: relative;
-            margin-top: 10px;
-        }
-
-        .image-user {
-            position: absolute;
-            margin-top: 8px;
-            cursor: pointer;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            padding: 10px;
-            z-index: 1;
-        }
-
-        .image-user:hover .dropdown-menu {
-            display: block;
-        }
-
-        .menu-item {
-            margin-bottom: 5px;
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Thông Tin Phòng Đã Đặt</title>
 </head>
+
 <body>
+    <style>
+      
 
-<div class="user-container">
-    <span class="image-user">
-        <img src="{{ url_for('static', filename='images/logo/user_login.png') }}" alt="" style="width: 40px; height: 40px;">
-        <div class="dropdown-menu">
-            <p class="menu-item">Item 1</p>
-            <p class="menu-item">Item 2</p>
-            <p class="menu-item">Item 3</p>
-            <!-- Thêm các mục khác tùy ý -->
+      .container_no_booking {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        #no-booking-message h1 {
+            text-align: center;
+            color: #333;
+        }
+
+   
+        #no-booking-message {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #book-room-btn {
+            padding: 10px 20px;
+            background-color: #ffba5a;
+            color: black;
+            border: 2px solid black;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        #book-room-btn:hover {
+            background-color: white;
+            color: #ffba5a;
+        }
+       
+    </style>
+    <div class="container_no_booking">
+        <div id="no-booking-message">
+            <h1>There are currently no rooms booked.</h1>
+            <a href="" id="book-room-btn">Booking Now</a>
         </div>
-    </span>
-</div>
-
+    </div>
 </body>
+
 </html>
