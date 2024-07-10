@@ -1,62 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Thông Tin Phòng Đã Đặt</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sign-In</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .g-signin2 {
+            display: inline-block;
+            background-color: #4285f4;
+            color: #ffffff;
+            border-radius: 5px;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .g-signin2:hover {
+            background-color: #357ae8;
+        }
+    </style>
 </head>
 
 <body>
-    <style>
-      
+    <!-- Nút đăng nhập Google -->
+    <div class="g-signin2" data-onsuccess="onSignIn">Sign-In</div>
 
-      .container_no_booking {
-            max-width: 800px;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId());
+            console.log('Tên: ' + profile.getName());
+            console.log('Email: ' + profile.getEmail());
         }
 
-        #no-booking-message h1 {
-            text-align: center;
-            color: #333;
-        }
+        gapi.load('auth2', function () {
+            gapi.auth2.init({
+                client_id: 'YOUR_ACTUAL_CLIENT_ID',
+            });
+        });
 
-   
-        #no-booking-message {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #book-room-btn {
-            padding: 10px 20px;
-            background-color: #ffba5a;
-            color: black;
-            border: 2px solid black;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            text-decoration: none;
-        }
-
-        #book-room-btn:hover {
-            background-color: white;
-            color: #ffba5a;
-        }
-       
-    </style>
-    <div class="container_no_booking">
-        <div id="no-booking-message">
-            <h1>There are currently no rooms booked.</h1>
-            <a href="" id="book-room-btn">Booking Now</a>
-        </div>
-    </div>
+    </script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </body>
 
 </html>
